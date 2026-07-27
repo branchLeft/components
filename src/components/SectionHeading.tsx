@@ -59,11 +59,7 @@ export function SectionHeading({
 
   return (
     <Tag id={anchor} className={rootClass} {...rest}>
-      <a
-        className="bl-section-heading__link"
-        href={`#${anchor}`}
-        aria-label={`Link to this section`}
-      >
+      <a className="bl-section-heading__link" href={`#${anchor}`}>
         <span className="bl-section-heading__text">{children}</span>
         <LinkIcon />
       </a>

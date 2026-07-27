@@ -36,8 +36,9 @@ describe('SectionHeading', () => {
     expect(html).toContain('bl-section-heading__link');
     expect(html).toContain('bl-section-heading__icon');
     expect(html).toContain('<svg');
-    expect(html).toContain('Values');
-  });
+    expect(html).toContain('Values');    // The anchor must NOT set aria-label — it would override the heading's
+    // accessible name (which should come from the visible text).
+    expect(html).not.toContain("aria-label=");  });
 
   it('appends consumer `className` to the root heading', () => {
     const html = renderToStaticMarkup(
