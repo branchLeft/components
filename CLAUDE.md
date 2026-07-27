@@ -8,6 +8,14 @@
 - **Dev environment:** Storybook 8
 - **Tests:** Vitest + jsdom
 
+## Node Version
+
+This repo has an `.nvmrc`. Always run `nvm use` before any commands to activate the correct Node version. Do not hardcode version paths or manipulate `$PATH` manually.
+
+```bash
+nvm use
+```
+
 ## Commands
 
 ### Non-interactive (safe to run directly)
@@ -91,3 +99,24 @@ If a commit is blocked, fix the reported issues and re-commit. Hooks run automat
 
 - Strict mode. No `any`.
 - Prop types are named `ComponentNameProps` and exported alongside the component.
+
+## Publishing
+
+Publishing is handled by CI — do not run `pnpm publish` locally.
+
+### Release flow
+
+1. Bump `version` in `package.json`, commit, and push to `main`.
+2. Create and push a semver tag — CI publishes automatically:
+
+```bash
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+The `.github/workflows/publish.yml` workflow triggers on tags matching `v[0-9]+.[0-9]+.[0-9]+`, builds the package via `prepublishOnly`, and publishes to GitHub Packages using `GITHUB_TOKEN`.
+
+### Notes
+
+- The tag version must match `version` in `package.json` — there is no automated check, so bump the version before tagging.
+- Pre-release tags (e.g. `v1.0.0-beta.1`) do **not** trigger the workflow. Stable semver only.
