@@ -1,6 +1,6 @@
 {
   "name": "@branchleft/components",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Reusable component library for branchLeft",
   "type": "module",
   "exports": {

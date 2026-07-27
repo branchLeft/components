@@ -11,7 +11,11 @@ export default defineConfig({
       fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      // Externalise every subpath of react/react-dom (including
+      // `react/jsx-runtime`) so consumers use their own React copy. Bundling
+      // `react/jsx-runtime` inline breaks React 19 consumers because the
+      // inlined helper reads React 18 internals.
+      external: [/^react(\/.*)?$/, /^react-dom(\/.*)?$/],
       output: {
         globals: {
           react: 'React',
