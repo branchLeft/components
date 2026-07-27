@@ -1,0 +1,93 @@
+# CLAUDE.md — branchLeft Components
+
+## Stack
+
+- **Runtime/Package manager:** Node.js, pnpm
+- **Framework:** React 18 + TypeScript
+- **Build:** Vite (library mode) — outputs ESM + CJS to `dist/`
+- **Dev environment:** Storybook 8
+- **Tests:** Vitest + jsdom
+
+## Commands
+
+### Non-interactive (safe to run directly)
+
+```bash
+pnpm build             # compile library to dist/
+pnpm build:storybook   # build static Storybook to storybook-static/
+pnpm type-check        # tsc --noEmit
+pnpm test:unit --run   # single vitest pass — ALWAYS use --run to avoid watch mode
+pnpm lint              # eslint
+pnpm format            # prettier --write
+```
+
+### Long-running servers — async terminal mode only
+
+These commands block indefinitely. Only start them in a background/async terminal; never `await` them in a script or agent task.
+
+```bash
+pnpm dev       # Storybook dev server on :6006
+pnpm preview   # Vite preview server
+```
+
+### Installing dependencies
+
+```bash
+pnpm install --frozen-lockfile   # CI-safe install; never prompts
+```
+
+## Non-Interactive Tool Guidance
+
+When running commands as an agent or in CI:
+
+- **Vitest:** `pnpm test:unit --run` — omitting `--run` starts watch mode, which blocks forever.
+- **Storybook:** use `pnpm build:storybook` for a one-shot build. Never run `pnpm dev` synchronously.
+- **pnpm install:** always pass `--frozen-lockfile` to prevent interactive dependency prompts.
+- **ESLint / Prettier:** both exit cleanly with non-zero codes on failure — no interaction needed.
+- **TypeScript:** `pnpm type-check` is fully non-interactive.
+
+## Pre-Commit Hooks
+
+Hooks are managed by [pre-commit](https://pre-commit.com) and defined in `.pre-commit-config.yaml`.
+
+### What runs on commit
+
+1. **pre-commit-hooks** — trailing whitespace, end-of-file fixer, YAML check, large-file guard, merge-conflict check
+2. **Prettier** — formats `.js`, `.jsx`, `.ts`, `.tsx`, `.json`, `.yml`, `.yaml`, `.md`
+3. **ESLint** — lints `.js`, `.jsx`, `.ts`, `.tsx`
+4. **Vitest** — runs `pnpm test:unit` (single pass, not watch mode) against any changed source files
+
+### Running checks manually
+
+```bash
+pnpm format            # Prettier
+pnpm lint              # ESLint
+pnpm test:unit --run   # Vitest
+pnpm type-check        # TypeScript
+```
+
+If a commit is blocked, fix the reported issues and re-commit. Hooks run automatically; you do not need to invoke pre-commit directly.
+
+## Project Conventions
+
+### Component authorship
+
+- Components live under `src/components/`. Each component gets its own directory with `ComponentName.tsx`, `ComponentName.test.tsx`, and `ComponentName.stories.tsx`.
+- Export everything public through `src/index.ts`.
+- No default exports.
+
+### Styling
+
+- Components must be unstyled or accept a `className` prop — consumers apply their own styles.
+- Do not import CSS that would leak into the consumer's bundle unless explicitly exported via `dist/index.css`.
+- **Site-level theming is the consumer's job, not this package's.** The `website/` app centralises all visual decisions in `app/theme.css` (tokens, element defaults, component classes) — see `website/CLAUDE.md` → "Styling". Do not mirror those tokens here; keep components style-agnostic so any consumer can theme them.
+
+### Accessibility
+
+- Use semantic HTML. Add ARIA attributes only where semantics are insufficient.
+- All interactive elements must be keyboard-navigable.
+
+### TypeScript
+
+- Strict mode. No `any`.
+- Prop types are named `ComponentNameProps` and exported alongside the component.
