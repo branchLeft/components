@@ -1,6 +1,6 @@
 {
   "name": "@branchleft/components",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Reusable component library for branchLeft",
   "type": "module",
   "exports": {
@@ -45,9 +45,9 @@
   ],
   "author": "branchLeft",
   "license": "MIT",
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
