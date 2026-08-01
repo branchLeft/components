@@ -72,3 +72,12 @@ export const CustomAccents: Story = {
     ),
   ],
 };
+
+/** The idle floating animation on ring nodes turned off via `disableWiggle`. */
+export const NoWiggle: Story = {
+  args: {
+    values,
+    ariaLabel: 'Values',
+    disableWiggle: true,
+  },
+};

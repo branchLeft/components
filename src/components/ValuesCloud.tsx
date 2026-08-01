@@ -20,6 +20,14 @@ export type Value = {
 export interface ValuesCloudProps {
   readonly values: readonly Value[];
   readonly ariaLabel?: string;
+  /**
+   * Disable the idle floating ("wiggle") animation on ring nodes.
+   *
+   * Off by default. `prefers-reduced-motion: reduce` already disables the
+   * wiggle regardless of this prop — use this when you want it off
+   * unconditionally, e.g. for a calmer presentation.
+   */
+  readonly disableWiggle?: boolean;
 }
 
 const SPEECH_ID = 'bl-values-cloud-speech';
@@ -42,14 +50,17 @@ const accordionPanelId = (accent: ValueAccent) => `bl-values-cloud-accordion-pan
  * Nothing is inert and there's no focus trap — background bubbles stay
  * clickable so switching the selection is a direct, one-click action.
  *
- * Ships no CSS — only stable `bl-values-cloud` class-name hooks and a
- * `data-accent` attribute on each node/panel for the consumer to key
- * colour tokens off of. See `Value.accent` — it's an opaque string, this
- * package assigns it no meaning of its own.
+ * Ships structural CSS via `@branchleft/components/css` (see
+ * `ValuesCloud.css`) — the layout/positioning isn't reasonable to ask every
+ * consumer to reimplement. Colour comes from a `data-accent` attribute on
+ * each node/panel, keyed off `Value.accent` (an opaque string — this
+ * package assigns it no meaning of its own) so the consumer's CSS can map
+ * it to a `--value-accent` colour.
  */
 export function ValuesCloud({
   values,
   ariaLabel = 'Values',
+  disableWiggle = false,
 }: Readonly<ValuesCloudProps>): React.JSX.Element {
   const [openValueId, setOpenValueId] = React.useState<ValueAccent | null>(null);
   const selectedTriggerRef = React.useRef<HTMLButtonElement | null>(null);
@@ -84,8 +95,16 @@ export function ValuesCloud({
 
   const speechTransition = { duration: prefersReduced ? 0 : 0.25, ease: 'easeOut' as const };
 
+  const rootClass = [
+    'bl-values-cloud',
+    activeValue ? 'bl-values-cloud--selected' : null,
+    disableWiggle ? 'bl-values-cloud--no-wiggle' : null,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <div className={activeValue ? 'bl-values-cloud bl-values-cloud--selected' : 'bl-values-cloud'}>
+    <div className={rootClass}>
       <motion.div
         className="bl-values-cloud__stage"
         layout

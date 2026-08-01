@@ -44,4 +44,14 @@ describe('ValuesCloud', () => {
     const html = renderToStaticMarkup(<ValuesCloud values={values} ariaLabel="Our values" />);
     expect(html).toContain('aria-label="Our values"');
   });
+
+  it('does not add the no-wiggle modifier class by default', () => {
+    const html = renderToStaticMarkup(<ValuesCloud values={values} />);
+    expect(html).not.toContain('bl-values-cloud--no-wiggle');
+  });
+
+  it('adds the no-wiggle modifier class when disableWiggle is set', () => {
+    const html = renderToStaticMarkup(<ValuesCloud values={values} disableWiggle />);
+    expect(html).toContain('bl-values-cloud--no-wiggle');
+  });
 });

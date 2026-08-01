@@ -204,7 +204,8 @@
   animation: bl-values-cloud-float 7s ease-in-out infinite;
 }
 
-.bl-values-cloud__node--selected .bl-values-cloud__node-inner {
+.bl-values-cloud__node--selected .bl-values-cloud__node-inner,
+.bl-values-cloud--no-wiggle .bl-values-cloud__node-inner {
   animation: none;
 }
 
