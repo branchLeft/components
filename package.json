@@ -1,6 +1,6 @@
 {
   "name": "@branchleft/components",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "packageManager": "pnpm@11.17.0",
   "description": "Reusable component library for branchLeft",
   "type": "module",
@@ -79,6 +79,7 @@
     "vitest": "^2.1.0"
   },
   "dependencies": {
+    "framer-motion": "^12.4.0",
     "lucide-react": "^1.27.0"
   }
 }
