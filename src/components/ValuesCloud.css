@@ -4,12 +4,12 @@
  * — its layout (ring geometry, the selected-node move, the accordion
  * fallback) is too fiddly to reasonably ask every consumer to reimplement.
  *
- * Everything colour/typography-related reads from a `--bl-*` custom
- * property with a sensible fallback, so the component looks reasonable
- * with zero consumer setup but is fully overridable — set `--bl-color-bg`,
- * `--bl-color-fg`, `--bl-color-hairline`, `--bl-font-mono`,
- * `--bl-font-wordmark`, or `--bl-values-cloud-accent` on an ancestor (or
- * `.bl-values-cloud` itself) to retheme it.
+ * Colour reads from a `--bl-*` custom property with a grayscale fallback,
+ * so the component looks reasonable with zero consumer setup but is fully
+ * overridable — set `--bl-color-bg`, `--bl-color-fg`, `--bl-color-hairline`,
+ * or `--bl-values-cloud-accent` on an ancestor (or `.bl-values-cloud`
+ * itself) to retheme it. Typography is left entirely to the consumer — this
+ * stylesheet sets no `font-family`, so text inherits the ambient font.
  *
  * Per-value colour: every node gets the same fallback accent by default.
  * To colour individual values, target `[data-accent='your-key']` (set via
@@ -32,7 +32,7 @@
 }
 
 [data-accent] {
-  --value-accent: var(--bl-values-cloud-accent, #6d5efc);
+  --value-accent: var(--bl-values-cloud-accent, var(--bl-color-fg, #1a1a1a));
 }
 
 /* ─ Selected-state layout ──────────────────────────────────────────────── */
@@ -127,7 +127,6 @@
   font-size: 0.75rem;
   line-height: 1.375;
   text-wrap: balance;
-  font-family: var(--bl-font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
   color: color-mix(in srgb, var(--bl-color-fg, #1a1a1a) 70%, transparent);
 }
 
@@ -312,7 +311,6 @@
   background: var(--bl-color-bg, #fff);
   border: 1px solid var(--value-accent);
   color: var(--value-accent);
-  font-family: var(--bl-font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s ease;
@@ -448,7 +446,6 @@
   align-items: center;
   gap: 0.75rem;
   font-size: 1.5rem;
-  font-family: var(--bl-font-wordmark, system-ui, -apple-system, sans-serif);
   color: var(--value-accent);
   margin: 0;
   padding-right: 2rem;
@@ -499,7 +496,6 @@
 .bl-values-cloud__accordion-title {
   flex: 1;
   font-size: 1rem;
-  font-family: var(--bl-font-wordmark, system-ui, -apple-system, sans-serif);
   color: var(--bl-color-fg, #1a1a1a);
 }
 

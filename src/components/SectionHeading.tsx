@@ -28,10 +28,11 @@ export interface SectionHeadingProps extends Omit<React.HTMLAttributes<HTMLHeadi
 /**
  * A section heading with an optional anchor link.
  *
- * The component ships **no CSS** — only stable class-name hooks. Consumers style
- * hover/focus states themselves (see `.bl-section-heading`,
- * `.bl-section-heading--linked`, `.bl-section-heading__link`, and
- * `.bl-section-heading__icon`).
+ * Ships structural CSS via `@branchleft/components/css` — spacing between the
+ * icon and text. Everything else (colours, fonts, hover/focus states) is left
+ * to the consumer via class-name hooks: `.bl-section-heading`,
+ * `.bl-section-heading--linked`, `.bl-section-heading__link`,
+ * `.bl-section-heading__icon`, and `.bl-section-heading__text`.
  *
  * @example
  * ```tsx

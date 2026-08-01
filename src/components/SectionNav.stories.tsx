@@ -63,3 +63,62 @@ export const Unstyled: Story = {
     ],
   },
 };
+
+/**
+ * Nested navigation built by the consumer as a dropdown, the same pattern
+ * used for the "Solutions" item in the website's `NavBar` — native
+ * `<details>/<summary>` for keyboard and screen-reader support, with no
+ * hand-rolled ARIA state. SectionNav's `Section` type stays flat; a dropdown
+ * item is composed alongside plain links using the same `bl-section-nav__link`
+ * class hook so it matches the surrounding nav visually.
+ */
+export const NestedCustom: Story = {
+  render: () => (
+    <nav className="sb-demo sb-nested-nav" aria-label="Page sections">
+      <ul className="bl-section-nav__inner">
+        <li>
+          <a href="#overview" className="bl-section-nav__link">
+            Overview
+          </a>
+        </li>
+        <li>
+          <details className="sb-nested-nav__details">
+            <summary className="bl-section-nav__link sb-nested-nav__summary">
+              <span>Values</span>
+              <span className="sb-nested-nav__chevron" aria-hidden="true">
+                ▾
+              </span>
+            </summary>
+            <ul className="sb-nested-nav__submenu">
+              <li>
+                <a href="#values-people" className="sb-nested-nav__sublink">
+                  People
+                </a>
+              </li>
+              <li>
+                <a href="#values-craft" className="sb-nested-nav__sublink">
+                  Craft
+                </a>
+              </li>
+              <li>
+                <a href="#values-sustainability" className="sb-nested-nav__sublink">
+                  Sustainability
+                </a>
+              </li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <a href="#solutions" className="bl-section-nav__link">
+            Solutions
+          </a>
+        </li>
+        <li>
+          <a href="#contact" className="bl-section-nav__link">
+            Contact
+          </a>
+        </li>
+      </ul>
+    </nav>
+  ),
+};

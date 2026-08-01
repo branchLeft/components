@@ -80,7 +80,11 @@ export const AllLevels: Story = {
   ),
 };
 
-/** Zero CSS applied — raw markup only, styled by nothing but the `bl-section-heading*` class hooks. */
+/**
+ * The shipped CSS applied — spacing between the icon and text (when an
+ * anchor is present) — but no styling. Hover/focus states and typography
+ * are left to the consumer.
+ */
 export const Unstyled: Story = {
   args: {
     as: 'h2',

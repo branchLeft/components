@@ -1,0 +1,11 @@
+/* ─── bl-section-heading ──────────────────────────────────────────────────
+ * Structural CSS for <SectionHeading>: spacing between the icon and text
+ * when an anchor is present. Everything else (colours, fonts, hover states)
+ * is left to the consumer.
+ */
+
+.bl-section-heading--linked > .bl-section-heading__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
