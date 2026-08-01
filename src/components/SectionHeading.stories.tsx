@@ -1,5 +1,6 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react';
 import { SectionHeading } from './SectionHeading';
+import './SectionHeading.css';
 import './SectionHeading.stories.css';
 
 const meta = {
