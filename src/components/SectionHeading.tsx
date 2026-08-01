@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link as LinkIcon } from 'lucide-react';
 
 export type SectionHeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
@@ -61,35 +62,8 @@ export function SectionHeading({
     <Tag id={anchor} className={rootClass} {...rest}>
       <a className="bl-section-heading__link" href={`#${anchor}`}>
         <span className="bl-section-heading__text">{children}</span>
-        <LinkIcon />
+        <LinkIcon size="1em" className="bl-section-heading__icon" aria-hidden="true" />
       </a>
     </Tag>
-  );
-}
-
-/**
- * Inline chain-link icon. Uses `currentColor` so the consumer's hover styles
- * cascade into the SVG.
- */
-function LinkIcon(): React.JSX.Element {
-  return (
-    <svg
-      className="bl-section-heading__icon"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width="0.7em"
-      height="0.7em"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      {/* Two interlocked ovals, GitHub-style anchor glyph. */}
-      <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5" />
-      <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5" />
-    </svg>
   );
 }

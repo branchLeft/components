@@ -51,11 +51,11 @@ See [`CLAUDE.md`](./CLAUDE.md) for conventions.
 
 ## Release
 
+Bump `version` in `package.json`, commit, push to `main`, then tag — CI publishes automatically:
+
 ```sh
-pnpm build
-pnpm publish        # honors publishConfig -> npm.pkg.github.com
 git tag v$(node -p "require('./package.json').version")
-git push --tags
+git push origin v$(node -p "require('./package.json').version")
 ```
 
 ## License
