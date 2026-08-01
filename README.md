@@ -34,21 +34,25 @@ export function Example() {
 }
 ```
 
-Components ship **no CSS** by default. They expose stable class-name hooks
-(`bl-section-heading`, `bl-section-heading--linked`, `bl-section-heading__link`,
-`bl-section-heading__icon`) so consumers can theme them however they like.
+Most components ship **no CSS** by default. They expose stable class-name
+hooks (`bl-section-heading`, `bl-section-heading--linked`,
+`bl-section-heading__link`, `bl-section-heading__icon`) so consumers can
+theme them however they like.
 
-`ValuesCloud` is the one exception — its ring layout is too fiddly to
-reasonably ask every consumer to reimplement, so it ships structural CSS via
-a separate entry point:
+A few components ship real, structural CSS — layout too fiddly to reasonably
+ask every consumer to reimplement (`ValuesCloud`'s ring geometry) or a single
+spacing rule that's easy to miss and not really a themeable decision
+(`SectionHeading`'s icon/text gap). That CSS lives behind a separate entry
+point — import it once, anywhere in your app, if you use any such component:
 
 ```tsx
 import '@branchleft/components/css';
 ```
 
-That stylesheet only handles layout/positioning; colours and fonts read from
-`--bl-*` custom properties (with built-in fallbacks) so it stays themable —
-see the `ValuesCloud` Storybook docs for the full list.
+That stylesheet only handles layout/positioning/spacing; colours and fonts
+read from `--bl-*` custom properties (with built-in fallbacks) so it stays
+themable — see each component's Storybook docs for the full list of
+customisable properties.
 
 ## Development
 
