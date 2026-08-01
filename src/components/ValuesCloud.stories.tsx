@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Leaf, Users, Sparkles } from 'lucide-react';
 import { ValuesCloud, type Value } from './ValuesCloud';
+import './ValuesCloud.css';
 
 const meta = {
   title: 'Components/ValuesCloud',
@@ -36,13 +37,38 @@ const values: readonly Value[] = [
 ];
 
 /**
- * A minimal set of values with icons. The consumer's CSS supplies the
- * `--value-accent` colour for each `data-accent` and the ring/accordion
- * layout — see the component doc for the full class-hook list.
+ * With the package's shipped CSS (`import '@branchleft/components/css'`)
+ * applied — every node shares the same fallback accent colour here since
+ * no `[data-accent='...']` overrides are defined. See the "Unstyled" story
+ * for what you get with zero CSS.
  */
 export const Default: Story = {
   args: {
     values,
     ariaLabel: 'Values',
   },
+};
+
+/**
+ * The same data with per-value accent colours, set the way a consumer
+ * would: `[data-accent='craft'] { --value-accent: ... }` loaded after the
+ * package CSS.
+ */
+export const CustomAccents: Story = {
+  args: {
+    values,
+    ariaLabel: 'Values',
+  },
+  decorators: [
+    (Story) => (
+      <>
+        <style>{`
+          [data-accent='sustainability'] { --value-accent: #2f9e44; }
+          [data-accent='people'] { --value-accent: #1c7ed6; }
+          [data-accent='craft'] { --value-accent: #f08c00; }
+        `}</style>
+        <Story />
+      </>
+    ),
+  ],
 };

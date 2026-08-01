@@ -89,6 +89,11 @@ If a commit is blocked, fix the reported issues and re-commit. Hooks run automat
 - Components must be unstyled or accept a `className` prop — consumers apply their own styles.
 - Do not import CSS that would leak into the consumer's bundle unless explicitly exported via `dist/index.css`.
 - **Site-level theming is the consumer's job, not this package's.** The `website/` app centralises all visual decisions in `app/theme.css` (tokens, element defaults, component classes) — see `website/CLAUDE.md` → "Styling". Do not mirror those tokens here; keep components style-agnostic so any consumer can theme them.
+- **Exception — components whose layout can't reasonably be reimplemented per-consumer** (currently only `ValuesCloud`) may ship real, structural CSS via the `./css` export subpath:
+  - Source CSS lives colocated as `ComponentName.css` next to the component. Register it in `src/styles.ts` (a CSS-only build entry, kept separate from `src/index.ts` so importing the JS API never pulls in styles as a side effect) — see `vite.config.ts` for how that's wired to `dist/index.css`.
+  - Every colour/font value must read from a `--bl-*` custom property with a fallback (e.g. `var(--bl-color-bg, #fff)`), never a hardcoded design-system token — this is still meant to be themable, just not layout-agnostic.
+  - No `@apply`/Tailwind syntax — this package has no Tailwind pipeline; write plain CSS.
+  - Document the export in the component's Storybook doc comment and in the README.
 
 ### Accessibility
 

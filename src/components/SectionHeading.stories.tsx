@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Decorator, Meta, StoryObj } from '@storybook/react';
 import { SectionHeading } from './SectionHeading';
+import './SectionHeading.stories.css';
 
 const meta = {
   title: 'Components/SectionHeading',
@@ -24,12 +25,19 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const demoDecorator: Decorator = (Story) => (
+  <div className="sb-demo">
+    <Story />
+  </div>
+);
+
 /** Plain heading — no anchor, no link, no interactivity. */
 export const Plain: Story = {
   args: {
     as: 'h2',
     children: 'Plain heading',
   },
+  decorators: [demoDecorator],
 };
 
 /** Anchored heading — clickable, resolves to `#values`, icon reveals on hover. */
@@ -39,6 +47,7 @@ export const WithAnchor: Story = {
     anchor: 'values',
     children: 'Values',
   },
+  decorators: [demoDecorator],
 };
 
 /**
@@ -46,6 +55,7 @@ export const WithAnchor: Story = {
  * type-scale ramps.
  */
 export const AllLevels: Story = {
+  decorators: [demoDecorator],
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <SectionHeading as="h1" anchor="h1-example">
@@ -68,4 +78,13 @@ export const AllLevels: Story = {
       </SectionHeading>
     </div>
   ),
+};
+
+/** Zero CSS applied — raw markup only, styled by nothing but the `bl-section-heading*` class hooks. */
+export const Unstyled: Story = {
+  args: {
+    as: 'h2',
+    anchor: 'values',
+    children: 'Values',
+  },
 };

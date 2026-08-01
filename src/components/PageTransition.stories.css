@@ -1,0 +1,20 @@
+/* Storybook demo styling only — not shipped with the package. Scoped under
+ * .sb-demo so the "Unstyled" story is genuinely unaffected. */
+.sb-demo {
+  display: flex;
+  min-height: 8rem;
+  border: 1px dashed #ccc;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.sb-demo .bl-page-transition {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  font:
+    400 0.9375rem/1.5 system-ui,
+    -apple-system,
+    sans-serif;
+  color: #333;
+}

@@ -1,0 +1,579 @@
+/* ─── bl-values-cloud ────────────────────────────────────────────────────
+ * Structural/extensible CSS for <ValuesCloud>. This is the one component in
+ * the package that ships real CSS (opt in via `@branchleft/components/css`)
+ * — its layout (ring geometry, the selected-node move, the accordion
+ * fallback) is too fiddly to reasonably ask every consumer to reimplement.
+ *
+ * Everything colour/typography-related reads from a `--bl-*` custom
+ * property with a sensible fallback, so the component looks reasonable
+ * with zero consumer setup but is fully overridable — set `--bl-color-bg`,
+ * `--bl-color-fg`, `--bl-color-hairline`, `--bl-font-mono`,
+ * `--bl-font-wordmark`, or `--bl-values-cloud-accent` on an ancestor (or
+ * `.bl-values-cloud` itself) to retheme it.
+ *
+ * Per-value colour: every node gets the same fallback accent by default.
+ * To colour individual values, target `[data-accent='your-key']` (set via
+ * `Value.accent`) and set `--value-accent` — load your override CSS after
+ * this stylesheet so it wins the cascade (equal specificity, later wins).
+ */
+
+/* Registered so the browser animates this custom property's numeric value
+ * directly, rather than relying on `transform` interpolation — that's what
+ * actually keeps the select/deselect move a straight line instead of an
+ * arc (see .bl-values-cloud__node below). */
+@property --bl-values-cloud-node-radius {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+.bl-values-cloud {
+  position: relative;
+}
+
+[data-accent] {
+  --value-accent: var(--bl-values-cloud-accent, #6d5efc);
+}
+
+/* ─ Selected-state layout ──────────────────────────────────────────────── */
+@media (min-width: 426px) {
+  .bl-values-cloud--selected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .bl-values-cloud--selected {
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .bl-values-cloud--selected .bl-values-cloud__stage {
+    margin-inline: 0;
+    flex-shrink: 0;
+  }
+}
+
+/* ─ Stage (desktop) ────────────────────────────────────────────────────────
+ * The sizing/positioning box shared by the hub hint and the ring — kept as
+ * siblings, not parent/child, so their visibility can be governed by the
+ * same breakpoint independently of DOM nesting. `layout`-animated (see
+ * ValuesCloud.tsx) so sliding from centred to left-aligned when a value is
+ * selected is a smooth reflow rather than a jump cut. */
+.bl-values-cloud__stage {
+  text-align: center;
+}
+
+@media (min-width: 426px) {
+  .bl-values-cloud__stage {
+    position: relative;
+    /* Fixed, not viewport-scaled: growing the ring on wide screens just
+     * spreads the icons further apart with more empty space between them,
+     * it doesn't add useful content — so the ring stays one comfortable
+     * size on every viewport from 426px up. */
+    width: 22rem;
+    aspect-ratio: 1;
+    margin-inline: auto;
+    isolation: isolate;
+    --bl-values-cloud-radius: 8rem;
+  }
+}
+
+.bl-values-cloud__ring {
+  display: none;
+}
+
+@media (min-width: 426px) {
+  .bl-values-cloud__ring {
+    display: block;
+    position: absolute;
+    inset: 0;
+  }
+}
+
+.bl-values-cloud__hub {
+  display: none;
+}
+
+@media (min-width: 426px) {
+  .bl-values-cloud__hub {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 9rem;
+    height: 9rem;
+    padding: 0.75rem;
+    border-radius: 9999px;
+    background: var(--bl-color-bg, #fff);
+    border: 1px solid var(--bl-color-hairline, #e2e2e2);
+    transition: opacity 0.25s ease;
+  }
+}
+
+/* A value is selected: the selected bubble takes over this exact spot (see
+ * .bl-values-cloud__node--selected below), so the hint fades out. */
+.bl-values-cloud--selected .bl-values-cloud__hub {
+  opacity: 0;
+}
+
+.bl-values-cloud__hub-text {
+  font-size: 0.75rem;
+  line-height: 1.375;
+  text-wrap: balance;
+  font-family: var(--bl-font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  color: color-mix(in srgb, var(--bl-color-fg, #1a1a1a) 70%, transparent);
+}
+
+.bl-values-cloud__nodes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bl-values-cloud__node {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Nodes are in the order passed to `values` — node 0 sits at 12 o'clock
+   * and the rest follow clockwise: -90deg is "up" (rotate(0) + translateX
+   * points right/3-o'clock by default, so -90deg rotates that to 12
+   * o'clock), then + 360/n * i steps clockwise round the circle. */
+  --bl-values-cloud-angle: calc(-90deg + 360deg / var(--n) * var(--i));
+  --bl-values-cloud-node-radius: var(--bl-values-cloud-radius);
+  /* `top/left: 50%` places this box's top-left corner — not its centre —
+   * at the ring's centre. Without the leading `translate(-50%, -50%)`,
+   * every node ends up offset by half its own box size (constant,
+   * regardless of angle), which turns an otherwise-perfect circle into one
+   * that's visibly shifted off-centre. */
+  transform: translate(-50%, -50%) rotate(var(--bl-values-cloud-angle))
+    translateX(var(--bl-values-cloud-node-radius)) rotate(calc(-1 * var(--bl-values-cloud-angle)));
+  /* Plain CSS transition (not a framer-motion `layout` animation) handles
+   * the ring-position ⇄ centred move — framer-motion's `layout` is
+   * reserved for .bl-values-cloud__stage, since layout animations claim
+   * the `transform` property for their own FLIP math and would fight this
+   * element's transform otherwise. Only `--bl-values-cloud-node-radius`
+   * transitions here — the surrounding rotate/counter-rotate stay pinned
+   * to the node's fixed angle on both sides of the selected ⇄ ring move,
+   * so the node slides straight along its existing radial spoke to/from
+   * the centre rather than sweeping through an arc. */
+  transition: --bl-values-cloud-node-radius 0.4s cubic-bezier(0, 0, 0.2, 1);
+  z-index: 0;
+}
+
+/* Each node is its own stacking context (position + explicit z-index), so
+ * a later sibling always paints over an earlier one regardless of the
+ * label's own z-index below — bump the whole node above its siblings
+ * while its label is showing, not just the label itself. */
+.bl-values-cloud__node:hover,
+.bl-values-cloud__node:focus-within {
+  z-index: 2;
+}
+
+/* The selected bubble abandons its ring position for the fixed centre spot
+ * the hint text just vacated. Radius drops to 0 while the node's angle
+ * stays constant, so `translate(-50%, -50%)` alone lands it exactly on the
+ * ring's centre — the same point `inset: 0` + `margin: auto` centres the
+ * hub on. */
+.bl-values-cloud__node.bl-values-cloud__node--selected {
+  --bl-values-cloud-node-radius: 0px;
+  width: max-content;
+  height: max-content;
+  z-index: 1;
+}
+
+.bl-values-cloud--selected .bl-values-cloud__node:not(.bl-values-cloud__node--selected) {
+  opacity: 0.35;
+  transition:
+    --bl-values-cloud-node-radius 0.4s cubic-bezier(0, 0, 0.2, 1),
+    opacity 0.3s ease;
+}
+
+.bl-values-cloud__node-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(0, 0);
+  animation: bl-values-cloud-float 7s ease-in-out infinite;
+}
+
+.bl-values-cloud__node--selected .bl-values-cloud__node-inner {
+  animation: none;
+}
+
+.bl-values-cloud__node:nth-child(1) .bl-values-cloud__node-inner {
+  animation-duration: 7.4s;
+  animation-delay: -1.2s;
+  --float-x: 6px;
+  --float-y: -9px;
+}
+.bl-values-cloud__node:nth-child(2) .bl-values-cloud__node-inner {
+  animation-duration: 6.1s;
+  animation-delay: -3.6s;
+  --float-x: -7px;
+  --float-y: -6px;
+}
+.bl-values-cloud__node:nth-child(3) .bl-values-cloud__node-inner {
+  animation-duration: 8.2s;
+  animation-delay: -0.4s;
+  --float-x: 8px;
+  --float-y: 7px;
+}
+.bl-values-cloud__node:nth-child(4) .bl-values-cloud__node-inner {
+  animation-duration: 6.8s;
+  animation-delay: -5.1s;
+  --float-x: -6px;
+  --float-y: 8px;
+}
+.bl-values-cloud__node:nth-child(5) .bl-values-cloud__node-inner {
+  animation-duration: 7.7s;
+  animation-delay: -2.3s;
+  --float-x: 9px;
+  --float-y: -5px;
+}
+.bl-values-cloud__node:nth-child(6) .bl-values-cloud__node-inner {
+  animation-duration: 6.5s;
+  animation-delay: -4.4s;
+  --float-x: -8px;
+  --float-y: -8px;
+}
+.bl-values-cloud__node:nth-child(7) .bl-values-cloud__node-inner {
+  animation-duration: 8.6s;
+  animation-delay: -6.2s;
+  --float-x: 7px;
+  --float-y: 6px;
+}
+
+.bl-values-cloud__trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0.625rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--value-accent) 16%, transparent);
+  border: 1.5px solid var(--value-accent);
+  color: var(--value-accent);
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    min-width 0.3s ease-out,
+    min-height 0.3s ease-out;
+}
+
+.bl-values-cloud__node--selected .bl-values-cloud__trigger {
+  min-width: 4rem;
+  min-height: 4rem;
+}
+
+.bl-values-cloud__node--selected .bl-values-cloud__icon {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.bl-values-cloud__trigger:hover,
+.bl-values-cloud__trigger:focus-visible {
+  transform: scale(1.12);
+  background: color-mix(in srgb, var(--value-accent) 28%, transparent);
+}
+
+.bl-values-cloud__node--selected .bl-values-cloud__trigger:hover {
+  transform: none;
+}
+
+.bl-values-cloud__trigger:focus-visible {
+  outline: 3px solid var(--value-accent);
+  outline-offset: 4px;
+}
+
+.bl-values-cloud__icon {
+  color: inherit;
+}
+
+.bl-values-cloud__label {
+  font-size: 0.75rem;
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  translate: -50% 0;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+  background: var(--bl-color-bg, #fff);
+  border: 1px solid var(--value-accent);
+  color: var(--value-accent);
+  font-family: var(--bl-font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 1;
+}
+
+.bl-values-cloud__node-inner:hover .bl-values-cloud__label,
+.bl-values-cloud__node-inner:focus-within .bl-values-cloud__label {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* The selected bubble's name is already the speech-bubble title, so
+ * suppress the redundant hover label on it. */
+.bl-values-cloud__node--selected .bl-values-cloud__label {
+  display: none;
+}
+
+/* ─ Speech bubble ──────────────────────────────────────────────────────── */
+.bl-values-cloud__speech-area {
+  display: none;
+}
+
+@media (min-width: 426px) {
+  .bl-values-cloud--selected .bl-values-cloud__speech-area {
+    display: block;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .bl-values-cloud--selected .bl-values-cloud__speech-area {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.bl-values-cloud__speech {
+  display: flex;
+}
+
+.bl-values-cloud__speech-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  isolation: isolate;
+  margin-inline: auto;
+  max-width: 28rem;
+  background: var(--bl-color-bg, #fff);
+  border: 2px solid var(--value-accent);
+  border-radius: 0.375rem;
+}
+
+/* Tail connecting the bubble to the speech panel: a classic CSS
+ * double-triangle — a larger solid triangle in the accent colour
+ * (::before) with a slightly smaller one in the page background (::after)
+ * layered directly on top of it, offset so only a sliver of the accent
+ * colour shows around the edges. That reads as a 2px stroke around an
+ * actual jutting point, rather than a rotated square. Points up at the
+ * stacked layout (bubble sits above), left once the row layout kicks in
+ * (bubble sits to the left). */
+.bl-values-cloud__speech-box::before,
+.bl-values-cloud__speech-box::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  border: 0.5625rem solid transparent;
+  border-top: none;
+}
+
+.bl-values-cloud__speech-box::before {
+  top: -0.5625rem;
+  border-bottom-color: var(--value-accent);
+}
+
+.bl-values-cloud__speech-box::after {
+  top: -0.4375rem;
+  border-width: 0.4375rem;
+  border-bottom-color: var(--bl-color-bg, #fff);
+}
+
+@media (min-width: 768px) {
+  .bl-values-cloud--selected .bl-values-cloud__speech-box {
+    margin-inline: 0;
+  }
+
+  .bl-values-cloud--selected .bl-values-cloud__speech-box::before,
+  .bl-values-cloud--selected .bl-values-cloud__speech-box::after {
+    top: 50%;
+    translate: 0 -50%;
+    border-top: 0.5625rem solid transparent;
+    border-bottom: 0.5625rem solid transparent;
+    border-left: none;
+  }
+
+  .bl-values-cloud--selected .bl-values-cloud__speech-box::before {
+    left: -0.5625rem;
+    border-width: 0.5625rem;
+    border-right-color: var(--value-accent);
+  }
+
+  .bl-values-cloud--selected .bl-values-cloud__speech-box::after {
+    left: -0.4375rem;
+    border-width: 0.4375rem;
+    border-right-color: var(--bl-color-bg, #fff);
+  }
+}
+
+.bl-values-cloud__speech-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  color: var(--value-accent);
+  transition: background 0.15s ease;
+}
+
+.bl-values-cloud__speech-close:hover,
+.bl-values-cloud__speech-close:focus-visible {
+  background: color-mix(in srgb, var(--value-accent) 16%, transparent);
+}
+
+.bl-values-cloud__speech-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-family: var(--bl-font-wordmark, system-ui, -apple-system, sans-serif);
+  color: var(--value-accent);
+  margin: 0;
+  padding-right: 2rem;
+}
+
+.bl-values-cloud__speech-body {
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: color-mix(in srgb, var(--bl-color-fg, #1a1a1a) 80%, transparent);
+}
+
+/* ─ Accordion (small-mobile fallback) ─────────────────────────────────────
+ * Shown at ~425px and below; hidden once the ring takes over. */
+.bl-values-cloud__accordion {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 426px) {
+  .bl-values-cloud__accordion {
+    display: none;
+  }
+}
+
+.bl-values-cloud__accordion-item {
+  border-bottom: 1px solid var(--bl-color-hairline, #e2e2e2);
+}
+
+.bl-values-cloud__accordion-heading {
+  margin: 0;
+}
+
+.bl-values-cloud__accordion-trigger {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  padding-block: 1rem;
+  text-align: left;
+  color: var(--value-accent);
+}
+
+.bl-values-cloud__accordion-trigger:focus-visible {
+  outline: 2px solid var(--value-accent);
+  outline-offset: 2px;
+}
+
+.bl-values-cloud__accordion-title {
+  flex: 1;
+  font-size: 1rem;
+  font-family: var(--bl-font-wordmark, system-ui, -apple-system, sans-serif);
+  color: var(--bl-color-fg, #1a1a1a);
+}
+
+.bl-values-cloud__accordion-chevron {
+  color: var(--value-accent);
+  transition: transform 0.2s ease;
+}
+
+.bl-values-cloud__accordion-trigger[aria-expanded='true'] .bl-values-cloud__accordion-chevron {
+  transform: rotate(180deg);
+}
+
+/* Panel stays permanently in the DOM (never conditionally mounted) so the
+ * trigger's `aria-controls` always resolves to a real element; `aria-hidden`
+ * — not the `hidden` attribute — communicates collapsed state to AT, since
+ * `hidden` would jump straight to `display: none` with no time to animate.
+ * The grid-rows trick animates the reveal/collapse. */
+.bl-values-cloud__accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out;
+}
+
+.bl-values-cloud__accordion-panel--open {
+  grid-template-rows: 1fr;
+}
+
+.bl-values-cloud__accordion-panel-inner {
+  padding-bottom: 1rem;
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
+}
+
+.bl-values-cloud__accordion-panel--open .bl-values-cloud__accordion-panel-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bl-values-cloud__accordion-panel,
+  .bl-values-cloud__accordion-panel-inner {
+    transition: none;
+  }
+}
+
+.bl-values-cloud__accordion-body {
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: color-mix(in srgb, var(--bl-color-fg, #1a1a1a) 80%, transparent);
+}
+
+@keyframes bl-values-cloud-float {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(var(--float-x, 6px), var(--float-y, -8px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bl-values-cloud__node-inner {
+    animation: none;
+  }
+
+  .bl-values-cloud__node,
+  .bl-values-cloud__node:not(.bl-values-cloud__node--selected),
+  .bl-values-cloud__hub,
+  .bl-values-cloud__trigger {
+    transition: none;
+  }
+}

@@ -6,9 +6,17 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      // Two entries: `index` is the real JS API. `styles` exists only to
+      // pull ValuesCloud.css into the build graph so Vite extracts it to
+      // dist/index.css (see assetFileNames below) for the `./css` export —
+      // it produces a throwaway styles.{js,cjs} chunk that nothing in
+      // package.json references.
+      entry: {
+        index: path.resolve(__dirname, 'src/index.ts'),
+        styles: path.resolve(__dirname, 'src/styles.ts'),
+      },
       name: 'branchLeftComponents',
-      fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
+      fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
       // Externalise every subpath of react/react-dom (including
@@ -21,6 +29,9 @@ export default defineConfig({
           react: 'React',
           'react-dom': 'ReactDOM',
         },
+        // Only one CSS asset is ever produced (from the `styles` entry) —
+        // force it to `index.css` to match the `./css` export in package.json.
+        assetFileNames: 'index.[ext]',
       },
     },
   },

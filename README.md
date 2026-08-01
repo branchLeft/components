@@ -34,9 +34,21 @@ export function Example() {
 }
 ```
 
-Components ship **no CSS**. They expose stable class-name hooks
+Components ship **no CSS** by default. They expose stable class-name hooks
 (`bl-section-heading`, `bl-section-heading--linked`, `bl-section-heading__link`,
 `bl-section-heading__icon`) so consumers can theme them however they like.
+
+`ValuesCloud` is the one exception — its ring layout is too fiddly to
+reasonably ask every consumer to reimplement, so it ships structural CSS via
+a separate entry point:
+
+```tsx
+import '@branchleft/components/css';
+```
+
+That stylesheet only handles layout/positioning; colours and fonts read from
+`--bl-*` custom properties (with built-in fallbacks) so it stays themable —
+see the `ValuesCloud` Storybook docs for the full list.
 
 ## Development
 
