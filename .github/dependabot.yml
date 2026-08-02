@@ -1,0 +1,50 @@
+version: 2
+
+updates:
+  # JS/TS dependencies (package.json / pnpm-lock.yaml)
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 5
+    groups:
+      # Bundle routine minor/patch bumps into one weekly PR instead of
+      # opening a separate PR per package. Majors are deliberately left
+      # out of the group so each lands as its own PR for individual review.
+      npm-minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - 'minor'
+          - 'patch'
+    ignore:
+      # react and react-dom are peerDependencies expressing an intentional
+      # dual-major support range (^18.2.0 || ^19.0.0), not pinned installs
+      # that need patching. Dependabot updates to peer ranges only widen or
+      # narrow that compatibility promise — a deliberate maintainer call,
+      # not something to automate. Leave these out; bump peer ranges by
+      # hand when a new React major is actually being adopted.
+      - dependency-name: 'react'
+      - dependency-name: 'react-dom'
+    labels:
+      - 'dependencies'
+
+  # Actions used by workflows in .github/workflows
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 5
+    groups:
+      # Same rationale as above: group minor/patch action bumps, let
+      # majors (which can change action inputs/outputs) come through
+      # individually.
+      github-actions-minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - 'minor'
+          - 'patch'
+    labels:
+      - 'dependencies'
+      - 'github-actions'
