@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { axe } from '../test/axe';
 import { SectionHeading } from './SectionHeading';
 
 describe('SectionHeading', () => {
@@ -58,5 +59,21 @@ describe('SectionHeading', () => {
       </SectionHeading>
     );
     expect(html).toMatch(/<svg[^>]*aria-hidden="true"/);
+  });
+
+  it('has no axe violations without an anchor', async () => {
+    const html = renderToStaticMarkup(<SectionHeading as="h2">Plain</SectionHeading>);
+    const results = await axe(html);
+    expect(results).toHaveNoViolations();
+  });
+
+  it('has no axe violations with an anchor', async () => {
+    const html = renderToStaticMarkup(
+      <SectionHeading as="h2" anchor="values">
+        Values
+      </SectionHeading>
+    );
+    const results = await axe(html);
+    expect(results).toHaveNoViolations();
   });
 });
