@@ -73,6 +73,10 @@ export const Unstyled: Story = {
  * class hook so it matches the surrounding nav visually.
  */
 export const NestedCustom: Story = {
+  // `render` builds the markup directly below, so `args` is unused at
+  // runtime — it's supplied only to satisfy `SectionNavProps.sections`,
+  // which CSF3 requires even for stories that never read `context.args`.
+  args: { sections: [] },
   render: () => (
     <nav className="sb-demo sb-nested-nav" aria-label="Page sections">
       <ul className="bl-section-nav__inner">
