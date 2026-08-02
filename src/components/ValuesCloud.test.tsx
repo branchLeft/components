@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { axe } from '../test/axe';
 import { ValuesCloud, type Value } from './ValuesCloud';
 
 const values: readonly Value[] = [
@@ -53,5 +54,11 @@ describe('ValuesCloud', () => {
   it('adds the no-wiggle modifier class when disableWiggle is set', () => {
     const html = renderToStaticMarkup(<ValuesCloud values={values} disableWiggle />);
     expect(html).toContain('bl-values-cloud--no-wiggle');
+  });
+
+  it('has no axe violations on initial render', async () => {
+    const html = renderToStaticMarkup(<ValuesCloud values={values} />);
+    const results = await axe(html);
+    expect(results).toHaveNoViolations();
   });
 });

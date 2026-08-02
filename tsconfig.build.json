@@ -12,6 +12,7 @@
     "**/*.stories.ts",
     "**/*.stories.tsx",
     "**/*.test.ts",
-    "**/*.test.tsx"
+    "**/*.test.tsx",
+    "src/test"
   ]
 }
