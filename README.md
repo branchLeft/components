@@ -65,6 +65,10 @@ pnpm build          # emits dist/{index.js, index.cjs, index.d.ts}
 
 See [`CLAUDE.md`](./CLAUDE.md) for conventions.
 
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## Release
 
 Bump `version` in `package.json`, commit, push to `main`, then tag — CI publishes automatically:
