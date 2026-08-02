@@ -14,6 +14,14 @@ export interface LogoProps extends Omit<React.SVGProps<SVGSVGElement>, 'color'> 
   mainColor?: LogoColor;
   overlayColor?: LogoColor;
   overlayOpacity?: number;
+  /**
+   * Wraps the mark in a solid backdrop, sized to the logo itself — for
+   * contexts where the SVG's own transparency isn't wanted (Storybook
+   * previews, print/export). This is a display convenience, not a layout
+   * primitive: it deliberately does not take over the viewport or the
+   * consumer's page. Page-level backgrounds are the consumer's decision
+   * (see CLAUDE.md "Styling").
+   */
   background?: LogoBackground;
 }
 
@@ -89,19 +97,8 @@ export function Logo({
   if (!background) return svg;
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: resolveBackground(background),
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <div style={{ display: 'inline-flex', backgroundColor: resolveBackground(background) }}>
       {svg}
     </div>
   );
 }
-
-export default Logo;
