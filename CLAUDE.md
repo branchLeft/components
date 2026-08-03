@@ -80,7 +80,7 @@ If a commit is blocked, fix the reported issues and re-commit. Hooks run automat
 
 ### Component authorship
 
-- Components live under `src/components/`. Each component gets its own directory with `ComponentName.tsx`, `ComponentName.test.tsx`, and `ComponentName.stories.tsx`.
+- Components live flat under `src/components/` — no per-component subdirectories. Each component is `ComponentName.tsx`, colocated with `ComponentName.test.tsx` and `ComponentName.stories.tsx` (plus `ComponentName.css` for the styled exceptions below).
 - Export everything public through `src/index.ts`.
 - No default exports.
 
