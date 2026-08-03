@@ -18,6 +18,7 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
+    "types": ["vite/client"],
     "allowJs": false,
     "declaration": true,
     "declarationMap": true,
