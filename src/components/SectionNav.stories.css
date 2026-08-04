@@ -2,6 +2,7 @@
  * selector is scoped under .sb-demo so the "Unstyled" story (rendered
  * without that wrapper) is genuinely unaffected. */
 .sb-demo .bl-section-nav {
+  @apply flex flex-wrap items-center justify-between mx-auto;
   display: flex;
   border-bottom: 1px solid #e2e2e2;
 }
@@ -110,4 +111,84 @@
 .sb-nested-nav__sublink:hover,
 .sb-nested-nav__sublink:focus-visible {
   color: #111;
+}
+
+/* ─── Scroll-into-view demo ───────────────────────────────────────────────
+ * Demonstrates the nav automatically scrolling horizontally as sections
+ * become active when the user scrolls down the page. */
+.sb-scroll-demo .bl-section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  border-bottom: 1px solid #e2e2e2;
+  background: #fff;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.sb-scroll-demo .bl-section-nav__inner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  flex-shrink: 0;
+  scroll-behavior: smooth;
+}
+
+.sb-scroll-demo .bl-section-nav__link {
+  display: block;
+  font:
+    500 11px/1.4 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #666;
+  padding-block: 0.375rem;
+  padding-inline: 0.5rem;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.sb-scroll-demo .bl-section-nav__link:hover,
+.sb-scroll-demo .bl-section-nav__link:focus-visible {
+  color: #111;
+}
+
+.sb-scroll-demo .bl-section-nav__link--active {
+  color: #111;
+  border-bottom-color: #6d5efc;
+}
+
+.sb-scroll-demo .bl-section-nav li {
+  flex-shrink: 0;
+}
+
+.sb-section-content {
+  padding: 2rem 1rem;
+  border-top: 1px solid #e2e2e2;
+}
+
+.sb-section-content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+}
+
+.sb-section-content p {
+  margin: 0 0 0.75rem 0;
+  line-height: 1.6;
+  font-size: 0.875rem;
+  color: #666;
 }
