@@ -1,0 +1,87 @@
+/* ─── bl-accordion-item ──────────────────────────────────────────────────
+ * Structural CSS for <AccordionItem>: a single disclosure built on native
+ * <details>/<summary>, with a reveal/collapse animation that needs two
+ * fixes over what a naive implementation gets for free:
+ *
+ * 1. The UA stylesheet hides closed <details> content via `display: none`
+ *    — an unconditional author-origin `display: grid` on the panel beats
+ *    that (author always beats UA regardless of specificity), letting a
+ *    `grid-template-rows` transition animate the collapse instead.
+ * 2. Newer browsers (Chrome 131+/Firefox 143+/Safari 18.4+) additionally
+ *    wrap closed <details> content in an internal `::details-content`
+ *    pseudo-element and apply `content-visibility: hidden` to *that* — a
+ *    different box than the one (1) targets, so it silently defeats the
+ *    transition (nothing gets laid out while collapsed, so there's nothing
+ *    to animate — the reveal just pops instantly). Overriding it back to
+ *    `visible`, scoped to our own root class rather than a bare `details`
+ *    selector, fixes this without reaching into a consumer's unrelated
+ *    <details> elements or touching accessibility semantics — those stay
+ *    driven by the `open` attribute either way, not by computed
+ *    display/visibility.
+ *
+ * Colour reads from `--bl-accordion-accent`, falling back to
+ * `--bl-color-fg` then a hardcoded grey — set it on `.bl-accordion-item`
+ * (or an ancestor) to theme the chevron. Everything else (container
+ * border/padding, summary typography) is left to the consumer via
+ * `className`.
+ */
+
+.bl-accordion-item__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.bl-accordion-item__summary::-webkit-details-marker {
+  display: none;
+}
+
+.bl-accordion-item__chevron {
+  flex-shrink: 0;
+  color: var(--bl-accordion-accent, var(--bl-color-fg, #1a1a1a));
+  transition: transform 0.2s ease;
+}
+
+.bl-accordion-item[open] .bl-accordion-item__chevron {
+  transform: rotate(180deg);
+}
+
+.bl-accordion-item__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out;
+}
+
+.bl-accordion-item::details-content {
+  content-visibility: visible;
+}
+
+.bl-accordion-item[open] > .bl-accordion-item__panel {
+  grid-template-rows: 1fr;
+}
+
+.bl-accordion-item__panel-inner {
+  min-height: 0;
+  overflow: hidden;
+  padding-block-end: 1rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
+}
+
+.bl-accordion-item[open] > .bl-accordion-item__panel .bl-accordion-item__panel-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bl-accordion-item__panel,
+  .bl-accordion-item__panel-inner {
+    transition: none;
+  }
+}

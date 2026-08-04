@@ -4,5 +4,6 @@
  * Import this once in your app if you use components with shipped CSS.
  * See individual component files for what CSS is included and why.
  */
+import './components/AccordionItem.css';
 import './components/SectionHeading.css';
 import './components/ValuesCloud.css';

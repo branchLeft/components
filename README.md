@@ -40,10 +40,12 @@ hooks (`bl-section-heading`, `bl-section-heading--linked`,
 theme them however they like.
 
 A few components ship real, structural CSS — layout too fiddly to reasonably
-ask every consumer to reimplement (`ValuesCloud`'s ring geometry) or a single
-spacing rule that's easy to miss and not really a themeable decision
-(`SectionHeading`'s icon/text gap). That CSS lives behind a separate entry
-point — import it once, anywhere in your app, if you use any such component:
+ask every consumer to reimplement (`ValuesCloud`'s ring geometry,
+`AccordionItem`'s reveal animation and the browser-default overrides it
+needs) or a single spacing rule that's easy to miss and not really a
+themeable decision (`SectionHeading`'s icon/text gap). That CSS lives behind
+a separate entry point — import it once, anywhere in your app, if you use
+any such component:
 
 ```tsx
 import '@branchleft/components/css';

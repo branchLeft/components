@@ -51,6 +51,11 @@ export default [
     },
     rules: {
       ...typescript.configs.recommended.rules,
+      // Base no-unused-vars (from js.configs.recommended above) doesn't
+      // understand TS-only constructs like named parameters in function
+      // type signatures (e.g. `(open: boolean) => void`) and flags them as
+      // unused — @typescript-eslint's version replaces it correctly.
+      'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {

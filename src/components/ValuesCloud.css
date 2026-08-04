@@ -458,7 +458,11 @@
 }
 
 /* ─ Accordion (small-mobile fallback) ─────────────────────────────────────
- * Shown at ~425px and below; hidden once the ring takes over. */
+ * Shown at ~425px and below; hidden once the ring takes over. Each item is
+ * an `AccordionItem` (see `AccordionItem.css` for the reveal animation
+ * itself) — this file only supplies layout (divider between items) and
+ * bridges this component's own `--value-accent` onto the generic
+ * `--bl-accordion-accent` variable `AccordionItem` reads for its chevron. */
 .bl-values-cloud__accordion {
   display: flex;
   flex-direction: column;
@@ -471,24 +475,16 @@
 }
 
 .bl-values-cloud__accordion-item {
+  --bl-accordion-accent: var(--value-accent);
   border-bottom: 1px solid var(--bl-color-hairline, #e2e2e2);
 }
 
-.bl-values-cloud__accordion-heading {
-  margin: 0;
-}
-
-.bl-values-cloud__accordion-trigger {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 0.75rem;
+.bl-values-cloud__accordion-item .bl-accordion-item__summary {
   padding-block: 1rem;
-  text-align: left;
   color: var(--value-accent);
 }
 
-.bl-values-cloud__accordion-trigger:focus-visible {
+.bl-values-cloud__accordion-item .bl-accordion-item__summary:focus-visible {
   outline: 2px solid var(--value-accent);
   outline-offset: 2px;
 }
@@ -497,53 +493,6 @@
   flex: 1;
   font-size: 1rem;
   color: var(--bl-color-fg, #1a1a1a);
-}
-
-.bl-values-cloud__accordion-chevron {
-  color: var(--value-accent);
-  transition: transform 0.2s ease;
-}
-
-.bl-values-cloud__accordion-trigger[aria-expanded='true'] .bl-values-cloud__accordion-chevron {
-  transform: rotate(180deg);
-}
-
-/* Panel stays permanently in the DOM (never conditionally mounted) so the
- * trigger's `aria-controls` always resolves to a real element; `aria-hidden`
- * — not the `hidden` attribute — communicates collapsed state to AT, since
- * `hidden` would jump straight to `display: none` with no time to animate.
- * The grid-rows trick animates the reveal/collapse. */
-.bl-values-cloud__accordion-panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.3s ease-out;
-}
-
-.bl-values-cloud__accordion-panel--open {
-  grid-template-rows: 1fr;
-}
-
-.bl-values-cloud__accordion-panel-inner {
-  padding-bottom: 1rem;
-  min-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 0.3s ease-out,
-    transform 0.3s ease-out;
-}
-
-.bl-values-cloud__accordion-panel--open .bl-values-cloud__accordion-panel-inner {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bl-values-cloud__accordion-panel,
-  .bl-values-cloud__accordion-panel-inner {
-    transition: none;
-  }
 }
 
 .bl-values-cloud__accordion-body {

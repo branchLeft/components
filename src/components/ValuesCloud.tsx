@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { AccordionItem } from './AccordionItem';
 
 /**
  * Consumer-defined accent key, exposed on each node as `data-accent` so the
@@ -33,20 +34,25 @@ export interface ValuesCloudProps {
 const SPEECH_ID = 'bl-values-cloud-speech';
 const SPEECH_TITLE_ID = 'bl-values-cloud-speech-title';
 const SPEECH_BODY_ID = 'bl-values-cloud-speech-body';
-const accordionTriggerId = (accent: ValueAccent) => `bl-values-cloud-accordion-trigger-${accent}`;
-const accordionPanelId = (accent: ValueAccent) => `bl-values-cloud-accordion-panel-${accent}`;
+// Shared across every accordion item so the browser enforces one-open-at-a-
+// time natively (via <details name>) even with JavaScript disabled — a
+// no-JS defense-in-depth layered on top of the `openValueId` state below.
+const ACCORDION_NAME = 'bl-values-cloud-accordion';
 
 /**
  * Cloud of orbiting value icons around a central hint (desktop, above
- * ~425px), falling back to a collapsed accordion on small mobile. Both
- * views share a single `openValueId` state — selecting a value is a plain
- * disclosure toggle (`aria-expanded`/`aria-controls`), not a modal:
+ * ~425px), falling back to a collapsed accordion (`AccordionItem`) on
+ * small mobile. Both views share a single `openValueId` state — selecting
+ * a value is a plain disclosure toggle, not a modal:
  *   - Desktop: the selected bubble animates to a fixed spot at the centre
  *     of the ring (replacing the hint text), the rest of the cloud dims,
  *     and a boxy speech-bubble panel grows out of it with the full text.
  *     Above 768px the whole cloud additionally slides to sit alongside the
- *     speech bubble rather than on top of it.
- *   - Small mobile: the same state expands an accordion panel in place.
+ *     speech bubble rather than on top of it. Toggled via
+ *     `aria-expanded`/`aria-controls` on a plain button.
+ *   - Small mobile: the same state expands an `AccordionItem` panel in
+ *     place — native `<details>`/`<summary>` semantics, no explicit ARIA
+ *     needed, and works with JavaScript disabled.
  * Nothing is inert and there's no focus trap — background bubbles stay
  * clickable so switching the selection is a direct, one-click action.
  *
@@ -190,47 +196,24 @@ export function ValuesCloud({
       </div>
 
       <div className="bl-values-cloud__accordion">
-        {values.map((value) => {
-          const isOpen = openValueId === value.accent;
-          return (
-            <div
-              key={value.accent}
-              className="bl-values-cloud__accordion-item"
-              data-accent={value.accent}
-            >
-              <h3 className="bl-values-cloud__accordion-heading">
-                <button
-                  type="button"
-                  id={accordionTriggerId(value.accent)}
-                  className="bl-values-cloud__accordion-trigger"
-                  aria-expanded={isOpen}
-                  aria-controls={accordionPanelId(value.accent)}
-                  onClick={() => setOpenValueId(isOpen ? null : value.accent)}
-                >
-                  {value.icon && (
-                    <value.icon className="bl-values-cloud__icon" aria-hidden="true" />
-                  )}
-                  <span className="bl-values-cloud__accordion-title">{value.title}</span>
-                  <ChevronDown className="bl-values-cloud__accordion-chevron" aria-hidden="true" />
-                </button>
-              </h3>
-              <section
-                id={accordionPanelId(value.accent)}
-                aria-labelledby={accordionTriggerId(value.accent)}
-                aria-hidden={!isOpen}
-                className={
-                  isOpen
-                    ? 'bl-values-cloud__accordion-panel bl-values-cloud__accordion-panel--open'
-                    : 'bl-values-cloud__accordion-panel'
-                }
-              >
-                <div className="bl-values-cloud__accordion-panel-inner">
-                  {value.body && <p className="bl-values-cloud__accordion-body">{value.body}</p>}
-                </div>
-              </section>
-            </div>
-          );
-        })}
+        {values.map((value) => (
+          <AccordionItem
+            key={value.accent}
+            className="bl-values-cloud__accordion-item"
+            data-accent={value.accent}
+            name={ACCORDION_NAME}
+            open={openValueId === value.accent}
+            onOpenChange={(open) => setOpenValueId(open ? value.accent : null)}
+            summary={
+              <>
+                {value.icon && <value.icon className="bl-values-cloud__icon" aria-hidden="true" />}
+                <span className="bl-values-cloud__accordion-title">{value.title}</span>
+              </>
+            }
+          >
+            {value.body && <p className="bl-values-cloud__accordion-body">{value.body}</p>}
+          </AccordionItem>
+        ))}
       </div>
     </div>
   );
