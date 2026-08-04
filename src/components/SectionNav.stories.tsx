@@ -53,6 +53,57 @@ export const ManySections: Story = {
   decorators: [demoDecorator],
 };
 
+/**
+ * Demonstrates scroll-into-view behavior on a narrow viewport: when the user
+ * scrolls down the page and a new section becomes active, the nav
+ * automatically scrolls horizontally to keep the active link in view.
+ *
+ * View at 375px width to see the horizontal scroll bar. Scroll down to see
+ * the nav follow the active section automatically.
+ */
+export const ScrollIntoViewOnNarrowViewport: Story = {
+  args: {
+    sections: [
+      { id: 'introduction', label: 'Introduction' },
+      { id: 'background', label: 'Background' },
+      { id: 'approach', label: 'Approach' },
+      { id: 'results', label: 'Results' },
+      { id: 'discussion', label: 'Discussion' },
+    ],
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphone12',
+    },
+  },
+  render: (args) => (
+    <div className="sb-scroll-demo">
+      <SectionNav {...args} />
+      {args.sections?.map((section) => (
+        <section key={section.id} id={section.id} className="sb-section-content">
+          <h2>{section.label}</h2>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </p>
+          <p>
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+            officia deserunt mollit anim id est laborum.
+          </p>
+          <p>
+            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+            architecto beatae vitae dicta sunt explicabo.
+          </p>
+        </section>
+      ))}
+    </div>
+  ),
+  decorators: [],
+};
+
 /** Zero CSS applied — raw markup only, styled by nothing but the `bl-section-nav*` class hooks. */
 export const Unstyled: Story = {
   args: {

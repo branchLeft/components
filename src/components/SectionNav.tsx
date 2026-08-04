@@ -24,6 +24,7 @@ export function SectionNav({
   ariaLabel = 'Section navigation',
 }: Readonly<SectionNavProps>): React.JSX.Element {
   const [activeId, setActiveId] = React.useState<string>(sections[0]?.id ?? '');
+  const activeLinksRef = React.useRef<Map<string, HTMLAnchorElement>>(new Map());
 
   React.useEffect(() => {
     if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') {
@@ -81,6 +82,25 @@ export function SectionNav({
     return () => observer.disconnect();
   }, [sections]);
 
+  React.useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const activeLink = activeLinksRef.current.get(activeId);
+    if (!activeLink) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // `block: 'nearest'` keeps this from also scrolling the page vertically —
+    // the browser walks up to whichever ancestor is actually scrollable
+    // (however the consumer's CSS has set that up) and moves only that one.
+    activeLink.scrollIntoView({
+      behavior: prefersReduced ? 'auto' : 'smooth',
+      block: 'nearest',
+      inline: 'center',
+    });
+  }, [activeId]);
+
   const handleClick = React.useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
       const el = document.getElementById(id);
@@ -106,6 +126,10 @@ export function SectionNav({
           return (
             <li key={id}>
               <a
+                ref={(el) => {
+                  if (el) activeLinksRef.current.set(id, el);
+                  else activeLinksRef.current.delete(id);
+                }}
                 href={`#${id}`}
                 className={`bl-section-nav__link${isActive ? ' bl-section-nav__link--active' : ''}`}
                 aria-current={isActive ? 'location' : undefined}
