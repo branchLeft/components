@@ -203,7 +203,20 @@ export function ValuesCloud({
             data-accent={value.accent}
             name={ACCORDION_NAME}
             open={openValueId === value.accent}
-            onOpenChange={(open) => setOpenValueId(open ? value.accent : null)}
+            onOpenChange={(open) =>
+              setOpenValueId((current) => {
+                if (open) return value.accent;
+                // A `false` event can come from two different causes: the
+                // user explicitly closing *this* item, or the browser's
+                // native `name`-based exclusivity auto-closing it because a
+                // *different* item just opened (both fire as separate
+                // `toggle` events from the same click, and React batches
+                // them). Only clear the selection if this item was actually
+                // the one selected — otherwise this stale close event would
+                // stomp on the other item's selection that just landed.
+                return current === value.accent ? null : current;
+              })
+            }
             summary={
               <>
                 {value.icon && <value.icon className="bl-values-cloud__icon" aria-hidden="true" />}
