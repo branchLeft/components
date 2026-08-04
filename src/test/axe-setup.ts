@@ -16,7 +16,7 @@ declare module 'vitest' {
   // `T` must stay to match the `Assertion<T = any>` signature declared
   // upstream in @vitest/expect — interface merging requires an identical
   // type-parameter list, even though `AxeMatchers` itself doesn't use `T`.
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Assertion<T = any> extends AxeMatchers {}
   interface AsymmetricMatchersContaining extends AxeMatchers {}
 }

@@ -34,6 +34,7 @@ describe('ValuesCloud', () => {
     const html = renderToStaticMarkup(<ValuesCloud values={values} />);
     expect(html).not.toContain('bl-values-cloud--selected');
     expect(html).not.toContain('aria-expanded="true"');
+    expect(html).not.toContain(' open=');
   });
 
   it('defaults aria-label to "Values" on the node list', () => {

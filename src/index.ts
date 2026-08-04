@@ -1,4 +1,7 @@
 // Components
+export { AccordionItem } from './components/AccordionItem';
+export type { AccordionItemProps } from './components/AccordionItem';
+
 export { Logo } from './components/Logo';
 export type { LogoColor, LogoBackground, LogoProps } from './components/Logo';
 
