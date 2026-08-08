@@ -1,0 +1,184 @@
+{
+  "nodes": [
+    {
+      "id": "contributing_org_wide_contribution_guide",
+      "label": "Org-Wide Contribution Guide (branchLeft/.github)",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "contributing_prerequisites",
+      "label": "Prerequisites",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L5-L8",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "contributing_setup",
+      "label": "Setup",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L10-L17",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "contributing_ci_checks",
+      "label": "Checks CI Runs on Every PR",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L19-L27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "contributing_pre_commit_hooks",
+      "label": "Pre-Commit Hooks (Contributing)",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L29-L38",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "contributing_component_conventions",
+      "label": "Component Conventions (Contributing)",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L40-L42",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "contributing_publishing",
+      "label": "Publishing (Contributing)",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L44-L46",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "contributing_prerequisites",
+      "target": "contributing_org_wide_contribution_guide",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "contributing_ci_checks",
+      "target": "_github_workflows_ci_workflow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "contributing_ci_checks",
+      "target": "_github_workflows_ci_ci_job",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L19-L27",
+      "weight": 1.0
+    },
+    {
+      "source": "contributing_pre_commit_hooks",
+      "target": "_pre_commit_config",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "contributing_component_conventions",
+      "target": "claude_component_authorship_convention",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "contributing_component_conventions",
+      "target": "claude_styling_convention",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "contributing_component_conventions",
+      "target": "claude_accessibility_convention",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "contributing_component_conventions",
+      "target": "claude_typescript_convention",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "contributing_publishing",
+      "target": "_github_workflows_publish_workflow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "contributing_publishing",
+      "target": "readme_release",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L46",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

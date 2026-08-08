@@ -1,0 +1,236 @@
+{
+  "nodes": [
+    {
+      "id": "_github_workflows_ci_workflow",
+      "label": "CI Workflow",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L1-L109",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_workflows_ci_ci_job",
+      "label": "Lint, Format & Test Job",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L10-L58",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_workflows_ci_deploy_storybook_job",
+      "label": "Deploy Storybook to GitHub Pages Job",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L60-L109",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_workflows_ci_actions_checkout",
+      "label": "actions/checkout",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L16",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_workflows_ci_actions_setup_node",
+      "label": "actions/setup-node",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L19",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_workflows_ci_pnpm_action_setup",
+      "label": "pnpm/action-setup",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L24",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_workflows_ci_actions_cache",
+      "label": "actions/cache",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L33",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_workflows_ci_actions_upload_pages_artifact",
+      "label": "actions/upload-pages-artifact",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L104",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_workflows_ci_actions_deploy_pages",
+      "label": "actions/deploy-pages",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L108",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "_github_workflows_ci_workflow",
+      "target": "_github_workflows_ci_ci_job",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L9-L58",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_workflow",
+      "target": "_github_workflows_ci_deploy_storybook_job",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L60-L109",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_ci_job",
+      "target": "_github_workflows_ci_actions_checkout",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_ci_job",
+      "target": "_github_workflows_ci_actions_setup_node",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_ci_job",
+      "target": "_github_workflows_ci_pnpm_action_setup",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_ci_job",
+      "target": "_github_workflows_ci_actions_cache",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_deploy_storybook_job",
+      "target": "_github_workflows_ci_actions_checkout",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_deploy_storybook_job",
+      "target": "_github_workflows_ci_actions_setup_node",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_deploy_storybook_job",
+      "target": "_github_workflows_ci_pnpm_action_setup",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_deploy_storybook_job",
+      "target": "_github_workflows_ci_actions_cache",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_deploy_storybook_job",
+      "target": "_github_workflows_ci_actions_upload_pages_artifact",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_workflows_ci_deploy_storybook_job",
+      "target": "_github_workflows_ci_actions_deploy_pages",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": "L108",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "ci_quality_gate",
+      "label": "Local and CI Quality Gate (Format, Lint, Test)",
+      "nodes": ["_pre_commit_config", "_github_workflows_ci_ci_job", "contributing_ci_checks"],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".github/workflows/ci.yml"
+    }
+  ]
+}

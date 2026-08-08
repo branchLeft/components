@@ -1,0 +1,132 @@
+{
+  "nodes": [
+    {
+      "id": "_pre_commit_config",
+      "label": ".pre-commit-config.yaml",
+      "file_type": "code",
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L1-L36",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_pre_commit_config_pre_commit_hooks_repo",
+      "label": "pre-commit/pre-commit-hooks (trailing-whitespace, end-of-file-fixer, check-yaml, check-added-large-files, check-merge-conflict)",
+      "file_type": "code",
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L2-L9",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_pre_commit_config_prettier_hook",
+      "label": "prettier Pre-Commit Hook",
+      "file_type": "code",
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L13-L18",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_pre_commit_config_eslint_hook",
+      "label": "eslint Pre-Commit Hook",
+      "file_type": "code",
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L21-L27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_pre_commit_config_vitest_hook",
+      "label": "vitest Pre-Commit Hook",
+      "file_type": "code",
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L30-L35",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "_pre_commit_config",
+      "target": "_pre_commit_config_pre_commit_hooks_repo",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L2-L9",
+      "weight": 1.0
+    },
+    {
+      "source": "_pre_commit_config",
+      "target": "_pre_commit_config_prettier_hook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L13-L18",
+      "weight": 1.0
+    },
+    {
+      "source": "_pre_commit_config",
+      "target": "_pre_commit_config_eslint_hook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L21-L27",
+      "weight": 1.0
+    },
+    {
+      "source": "_pre_commit_config",
+      "target": "_pre_commit_config_vitest_hook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L30-L35",
+      "weight": 1.0
+    },
+    {
+      "source": "_pre_commit_config_prettier_hook",
+      "target": "_github_workflows_ci_ci_job",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L13-L18",
+      "weight": 1.0
+    },
+    {
+      "source": "_pre_commit_config_eslint_hook",
+      "target": "_github_workflows_ci_ci_job",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L21-L27",
+      "weight": 1.0
+    },
+    {
+      "source": "_pre_commit_config_vitest_hook",
+      "target": "_github_workflows_ci_ci_job",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": "L30-L35",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}
