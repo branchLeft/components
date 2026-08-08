@@ -1,5 +1,7 @@
 # CLAUDE.md — branchLeft Components
 
+Cross-repo standards (Node/nvm, non-interactive commands, pre-commit, comment style, ways of working) live in the workspace root CLAUDE.md.
+
 ## Stack
 
 - **Runtime/Package manager:** Node.js, pnpm
@@ -8,73 +10,18 @@
 - **Dev environment:** Storybook 8
 - **Tests:** Vitest + jsdom
 
-## Node Version
-
-This repo has an `.nvmrc`. Always run `nvm use` before any commands to activate the correct Node version. Do not hardcode version paths or manipulate `$PATH` manually.
-
-```bash
-nvm use
-```
-
 ## Commands
-
-### Non-interactive (safe to run directly)
 
 ```bash
 pnpm build             # compile library to dist/
 pnpm build:storybook   # build static Storybook to storybook-static/
 pnpm type-check        # tsc --noEmit
-pnpm test:unit --run   # single vitest pass — ALWAYS use --run to avoid watch mode
+pnpm test:unit --run   # single vitest pass
 pnpm lint              # eslint
 pnpm format            # prettier --write
+pnpm dev               # Storybook dev server on :6006 — async terminal only
+pnpm preview           # Vite preview server — async terminal only
 ```
-
-### Long-running servers — async terminal mode only
-
-These commands block indefinitely. Only start them in a background/async terminal; never `await` them in a script or agent task.
-
-```bash
-pnpm dev       # Storybook dev server on :6006
-pnpm preview   # Vite preview server
-```
-
-### Installing dependencies
-
-```bash
-pnpm install --frozen-lockfile   # CI-safe install; never prompts
-```
-
-## Non-Interactive Tool Guidance
-
-When running commands as an agent or in CI:
-
-- **Vitest:** `pnpm test:unit --run` — omitting `--run` starts watch mode, which blocks forever.
-- **Storybook:** use `pnpm build:storybook` for a one-shot build. Never run `pnpm dev` synchronously.
-- **pnpm install:** always pass `--frozen-lockfile` to prevent interactive dependency prompts.
-- **ESLint / Prettier:** both exit cleanly with non-zero codes on failure — no interaction needed.
-- **TypeScript:** `pnpm type-check` is fully non-interactive.
-
-## Pre-Commit Hooks
-
-Hooks are managed by [pre-commit](https://pre-commit.com) and defined in `.pre-commit-config.yaml`.
-
-### What runs on commit
-
-1. **pre-commit-hooks** — trailing whitespace, end-of-file fixer, YAML check, large-file guard, merge-conflict check
-2. **Prettier** — formats `.js`, `.jsx`, `.ts`, `.tsx`, `.json`, `.yml`, `.yaml`, `.md`
-3. **ESLint** — lints `.js`, `.jsx`, `.ts`, `.tsx`
-4. **Vitest** — runs `pnpm test:unit` (single pass, not watch mode) against any changed source files
-
-### Running checks manually
-
-```bash
-pnpm format            # Prettier
-pnpm lint              # ESLint
-pnpm test:unit --run   # Vitest
-pnpm type-check        # TypeScript
-```
-
-If a commit is blocked, fix the reported issues and re-commit. Hooks run automatically; you do not need to invoke pre-commit directly.
 
 ## Project Conventions
 
