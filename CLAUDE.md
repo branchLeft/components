@@ -1,6 +1,6 @@
 # CLAUDE.md — branchLeft Components
 
-Cross-repo standards (Node/nvm, non-interactive commands, pre-commit, comment style, ways of working) live in the workspace root CLAUDE.md.
+branchLeft-internal: cross-repo standards (Node/nvm, non-interactive commands, pre-commit, comment style) live in the local workspace root CLAUDE.md (not part of this repo).
 
 ## Stack
 
@@ -22,6 +22,8 @@ pnpm format            # prettier --write
 pnpm dev               # Storybook dev server on :6006 — async terminal only
 pnpm preview           # Vite preview server — async terminal only
 ```
+
+To verify Storybook output non-interactively, use `pnpm build:storybook` — never run `pnpm dev` synchronously to check it.
 
 ## Project Conventions
 
