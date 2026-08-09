@@ -1,0 +1,147 @@
+{
+  "nodes": [
+    {
+      "id": "_github_dependabot_npm_ecosystem_update",
+      "label": "Dependabot npm Ecosystem Update",
+      "file_type": "code",
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L5-L30",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_dependabot_github_actions_ecosystem_update",
+      "label": "Dependabot github-actions Ecosystem Update",
+      "file_type": "code",
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L33-L49",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_dependabot_npm_minor_and_patch_group",
+      "label": "npm-minor-and-patch Update Group",
+      "file_type": "code",
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L15-L19",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_dependabot_github_actions_minor_and_patch_group",
+      "label": "github-actions-minor-and-patch Update Group",
+      "file_type": "code",
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L43-L47",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "_github_dependabot_react_peer_dependency_exclusion",
+      "label": "React/React-DOM Peer Dependency Ignore Rule",
+      "file_type": "rationale",
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L20-L28",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "react and react-dom are peerDependencies expressing an intentional dual-major support range (^18.2.0 || ^19.0.0), not pinned installs that need patching. Dependabot updates to peer ranges only widen or narrow that compatibility promise, a deliberate maintainer call. Bump peer ranges by hand when a new React major is actually adopted."
+    }
+  ],
+  "edges": [
+    {
+      "source": "_github_dependabot_npm_ecosystem_update",
+      "target": "_github_dependabot_npm_minor_and_patch_group",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L11-L19",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_dependabot_github_actions_ecosystem_update",
+      "target": "_github_dependabot_github_actions_minor_and_patch_group",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L39-L47",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_dependabot_npm_ecosystem_update",
+      "target": "_github_dependabot_react_peer_dependency_exclusion",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L20-L28",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_dependabot_github_actions_ecosystem_update",
+      "target": "_github_workflows_ci_workflow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_dependabot_github_actions_ecosystem_update",
+      "target": "_github_workflows_codeql_workflow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_dependabot_github_actions_ecosystem_update",
+      "target": "_github_workflows_publish_workflow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "_github_dependabot_npm_ecosystem_update",
+      "target": "pnpm_workspace_allow_builds_esbuild_false",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": ".github/dependabot.yml",
+      "source_location": "L4",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "dependabot_grouping_strategy",
+      "label": "Dependabot Minor/Patch Grouping with Major and Peer-Dep Carve-outs",
+      "nodes": [
+        "_github_dependabot_npm_minor_and_patch_group",
+        "_github_dependabot_github_actions_minor_and_patch_group",
+        "_github_dependabot_react_peer_dependency_exclusion"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/dependabot.yml"
+    }
+  ]
+}

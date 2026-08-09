@@ -74,3 +74,12 @@ The `.github/workflows/publish.yml` workflow triggers on tags matching `v[0-9]+.
 
 - The tag version must match `version` in `package.json` — there is no automated check, so bump the version before tagging.
 - Pre-release tags (e.g. `v1.0.0-beta.1`) do **not** trigger the workflow. Stable semver only.
+
+## graphify
+
+`graphify-out/` holds a knowledge graph of this repo, rebuilt and committed by CI on every push to `main`.
+
+- Answer codebase and architecture questions with `graphify query "<question>"` first — `graphify path "<A>" "<B>"` for a relationship, `graphify explain "<concept>"` for a concept. Each returns a scoped subgraph, far smaller than the equivalent grep.
+- `graphify-out/GRAPH_REPORT.md` is the broad-navigation entry point. The payload files behind it are read-blocked in `.claude/settings.json` and listed in `.claudignore` — go through the query commands instead.
+- After changing code, `graphify update .` refreshes the graph locally. AST-only, no API cost.
+- `graphify-out/.graphify_root` and `.graphify_python` are never committed: they record absolute paths on the machine that built the graph, and a foreign value in either one is worse than its absence.

@@ -1,0 +1,228 @@
+{
+  "nodes": [
+    {
+      "id": "claude_stack",
+      "label": "Stack (React 18 + TypeScript, Vite, Storybook 8, Vitest)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L3-L9",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "claude_node_version_policy",
+      "label": "Node Version Policy (nvm use)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": "L11-L17",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Repo pins Node via .nvmrc; always run `nvm use` before any commands to activate the correct version rather than hardcoding version paths or manipulating $PATH manually."
+    },
+    {
+      "id": "claude_commands",
+      "label": "Commands Reference (build, type-check, test:unit, lint, format, dev, preview, install)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L19-L45",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "claude_non_interactive_tool_guidance",
+      "label": "Non-Interactive Tool Guidance",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": "L47-L55",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Agents/CI must avoid commands that block indefinitely: use `pnpm test:unit --run` (omitting --run starts watch mode), `pnpm build:storybook` instead of `pnpm dev`, and `pnpm install --frozen-lockfile` to prevent interactive prompts."
+    },
+    {
+      "id": "claude_pre_commit_hooks_section",
+      "label": "Pre-Commit Hooks Section",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L57-L77",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "claude_component_authorship_convention",
+      "label": "Component Authorship Convention",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": "L81-L86",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Components live flat under src/components/ (no per-component subdirectories), colocated with .test.tsx and .stories.tsx; everything public is exported through src/index.ts; no default exports, to keep the public API surface explicit and discoverable."
+    },
+    {
+      "id": "claude_styling_convention",
+      "label": "Styling Convention (unstyled-by-default, structural CSS exception)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": "L87-L96",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Components must be unstyled or accept className so consumers theme them; site-level theming is the consumer's job (see website/CLAUDE.md). Exception: ValuesCloud, SectionHeading, AccordionItem ship real structural CSS via a separate `./css` export subpath (registered in src/styles.ts) because their layout/spacing can't reasonably be left to every consumer; colours/fonts still read from --bl-* custom properties with fallbacks so it stays themable, and no Tailwind syntax is used since the package has no Tailwind pipeline."
+    },
+    {
+      "id": "claude_accessibility_convention",
+      "label": "Accessibility Convention",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": "L98-L101",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Use semantic HTML, add ARIA only where semantics are insufficient, and ensure all interactive elements are keyboard-navigable."
+    },
+    {
+      "id": "claude_typescript_convention",
+      "label": "TypeScript Convention (strict, no any)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": "L103-L106",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Strict mode, no `any`; prop types named ComponentNameProps and exported alongside the component for a consistent, type-safe public API."
+    },
+    {
+      "id": "claude_publishing_release_flow",
+      "label": "Publishing / Release Flow",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L108-L127",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "claude_pre_commit_hooks_section",
+      "target": "_pre_commit_config",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "claude_pre_commit_hooks_section",
+      "target": "_pre_commit_config_prettier_hook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "claude_pre_commit_hooks_section",
+      "target": "_pre_commit_config_eslint_hook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "claude_pre_commit_hooks_section",
+      "target": "_pre_commit_config_vitest_hook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "claude_publishing_release_flow",
+      "target": "_github_workflows_publish_workflow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "claude_node_version_policy",
+      "target": "_github_workflows_ci_actions_setup_node",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "CLAUDE.md",
+      "source_location": "L11-L17",
+      "weight": 1.0
+    },
+    {
+      "source": "claude_non_interactive_tool_guidance",
+      "target": "_github_workflows_ci_workflow",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "CLAUDE.md",
+      "source_location": "L47-L55",
+      "weight": 1.0
+    },
+    {
+      "source": "claude_commands",
+      "target": "_github_workflows_ci_ci_job",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md",
+      "source_location": "L19-L30",
+      "weight": 1.0
+    },
+    {
+      "source": "claude_non_interactive_tool_guidance",
+      "target": "contributing_setup",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "CLAUDE.md",
+      "source_location": "L53",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "release_pipeline_flow",
+      "label": "Tag-Triggered Release Pipeline (CLAUDE.md, CONTRIBUTING.md, README.md, publish.yml)",
+      "nodes": [
+        "claude_publishing_release_flow",
+        "contributing_publishing",
+        "readme_release",
+        "_github_workflows_publish_workflow"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md"
+    }
+  ]
+}
