@@ -4,6 +4,32 @@
   "graph": {
     "hyperedges": [
       {
+        "id": "codeql_static_analysis_flow",
+        "label": "CodeQL Static Analysis Flow",
+        "nodes": [
+          "_github_workflows_codeql_codeql_action_init",
+          "_github_workflows_codeql_codeql_action_analyze",
+          "_github_workflows_codeql_analyze_job"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": ".github/workflows/codeql.yml"
+      },
+      {
+        "id": "ci_cd_pipeline",
+        "label": "CI/CD Pipeline",
+        "nodes": [
+          "github_workflows_ci_ci",
+          "github_workflows_ci_deploy_storybook",
+          "github_workflows_publish_publish"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": ".github/workflows/ci.yml"
+      },
+      {
         "id": "pre_commit_pipeline",
         "label": "Pre-commit Quality Pipeline",
         "nodes": [
@@ -15,19 +41,6 @@
         "confidence": "INFERRED",
         "confidence_score": 0.9,
         "source_file": ".pre-commit-config.yaml"
-      },
-      {
-        "id": "ci_quality_gate",
-        "label": "Local and CI Quality Gate (Format, Lint, Test)",
-        "nodes": [
-          "_pre_commit_config",
-          "_github_workflows_ci_ci_job",
-          "contributing_ci_checks"
-        ],
-        "relation": "form",
-        "confidence": "INFERRED",
-        "confidence_score": 0.85,
-        "source_file": ".github/workflows/ci.yml"
       },
       {
         "id": "dependabot_grouping_strategy",
@@ -106,7 +119,7 @@
       "source_file": "package.json",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "package.json",
       "id": "package"
@@ -117,7 +130,7 @@
       "source_file": "package.json",
       "source_location": "L2",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "name",
       "id": "package_name"
@@ -128,7 +141,7 @@
       "source_file": "package.json",
       "source_location": "L3",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "version",
       "id": "package_version"
@@ -139,7 +152,7 @@
       "source_file": "package.json",
       "source_location": "L4",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "packagemanager",
       "id": "package_packagemanager"
@@ -150,7 +163,7 @@
       "source_file": "package.json",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "description",
       "id": "package_description"
@@ -161,7 +174,7 @@
       "source_file": "package.json",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "type",
       "id": "package_type"
@@ -172,7 +185,7 @@
       "source_file": "package.json",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "exports",
       "id": "package_exports"
@@ -183,7 +196,7 @@
       "source_file": "package.json",
       "source_location": "L13",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "./css",
       "id": "package_exports_css"
@@ -194,7 +207,7 @@
       "source_file": "package.json",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "main",
       "id": "package_main"
@@ -205,7 +218,7 @@
       "source_file": "package.json",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "module",
       "id": "package_module"
@@ -216,7 +229,7 @@
       "source_file": "package.json",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "types",
       "id": "package_types"
@@ -227,7 +240,7 @@
       "source_file": "package.json",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "files",
       "id": "package_files"
@@ -238,7 +251,7 @@
       "source_file": "package.json",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "dist",
       "id": "package_json_ref_dist"
@@ -249,7 +262,7 @@
       "source_file": "package.json",
       "source_location": "L21",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "repository",
       "id": "package_repository"
@@ -260,7 +273,7 @@
       "source_file": "package.json",
       "source_location": "L22",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "type",
       "id": "package_repository_type"
@@ -271,7 +284,7 @@
       "source_file": "package.json",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "url",
       "id": "package_repository_url"
@@ -282,7 +295,7 @@
       "source_file": "package.json",
       "source_location": "L25",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "publishconfig",
       "id": "package_publishconfig"
@@ -293,7 +306,7 @@
       "source_file": "package.json",
       "source_location": "L26",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "registry",
       "id": "package_publishconfig_registry"
@@ -304,7 +317,7 @@
       "source_file": "package.json",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "access",
       "id": "package_publishconfig_access"
@@ -315,7 +328,7 @@
       "source_file": "package.json",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "scripts",
       "id": "package_scripts"
@@ -326,7 +339,7 @@
       "source_file": "package.json",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "dev",
       "id": "package_scripts_dev"
@@ -337,7 +350,7 @@
       "source_file": "package.json",
       "source_location": "L31",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "build",
       "id": "package_scripts_build"
@@ -348,7 +361,7 @@
       "source_file": "package.json",
       "source_location": "L32",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "build:storybook",
       "id": "package_scripts_build_storybook"
@@ -359,7 +372,7 @@
       "source_file": "package.json",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "preview",
       "id": "package_scripts_preview"
@@ -370,7 +383,7 @@
       "source_file": "package.json",
       "source_location": "L34",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "type-check",
       "id": "package_scripts_type_check"
@@ -381,7 +394,7 @@
       "source_file": "package.json",
       "source_location": "L35",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "test:unit",
       "id": "package_scripts_test_unit"
@@ -392,7 +405,7 @@
       "source_file": "package.json",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "test:ui",
       "id": "package_scripts_test_ui"
@@ -403,7 +416,7 @@
       "source_file": "package.json",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "lint",
       "id": "package_scripts_lint"
@@ -414,7 +427,7 @@
       "source_file": "package.json",
       "source_location": "L38",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "format",
       "id": "package_scripts_format"
@@ -425,7 +438,7 @@
       "source_file": "package.json",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "prepare",
       "id": "package_scripts_prepare"
@@ -436,7 +449,7 @@
       "source_file": "package.json",
       "source_location": "L40",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "Package Scripts",
       "norm_label": "prepublishonly",
       "id": "package_scripts_prepublishonly"
@@ -447,7 +460,7 @@
       "source_file": "package.json",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "keywords",
       "id": "package_keywords"
@@ -458,7 +471,7 @@
       "source_file": "package.json",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "components",
       "id": "ref_components"
@@ -469,7 +482,7 @@
       "source_file": "package.json",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "ui",
       "id": "ref_ui"
@@ -480,7 +493,7 @@
       "source_file": "package.json",
       "source_location": "L47",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "author",
       "id": "package_author"
@@ -491,7 +504,7 @@
       "source_file": "package.json",
       "source_location": "L48",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "license",
       "id": "package_license"
@@ -502,7 +515,7 @@
       "source_file": "package.json",
       "source_location": "L49",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "peerdependencies",
       "id": "package_peerdependencies"
@@ -513,7 +526,7 @@
       "source_file": "package.json",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "react",
       "id": "package_peerdependencies_react"
@@ -524,7 +537,7 @@
       "source_file": "package.json",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "react",
       "id": "react"
@@ -535,7 +548,7 @@
       "source_file": "package.json",
       "source_location": "L51",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "react-dom",
       "id": "package_peerdependencies_react_dom"
@@ -546,7 +559,7 @@
       "source_file": "package.json",
       "source_location": "L51",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "react-dom",
       "id": "react_dom"
@@ -557,7 +570,7 @@
       "source_file": "package.json",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Dev Tooling Dependencies",
       "norm_label": "devdependencies",
       "id": "package_devdependencies"
@@ -832,7 +845,7 @@
       "source_file": "package.json",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Dev Tooling Dependencies",
       "norm_label": "@typescript-eslint/parser",
       "id": "package_devdependencies_typescript_eslint_parser"
@@ -843,7 +856,7 @@
       "source_file": "package.json",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Dev Tooling Dependencies",
       "norm_label": "@typescript-eslint/parser",
       "id": "typescript_eslint_parser"
@@ -898,7 +911,7 @@
       "source_file": "package.json",
       "source_location": "L69",
       "_origin": "ast",
-      "community": 15,
+      "community": 8,
       "community_name": "eslint Dependency",
       "norm_label": "eslint",
       "id": "package_devdependencies_eslint"
@@ -909,7 +922,7 @@
       "source_file": "package.json",
       "source_location": "L69",
       "_origin": "ast",
-      "community": 15,
+      "community": 8,
       "community_name": "eslint Dependency",
       "norm_label": "eslint",
       "id": "eslint"
@@ -920,7 +933,7 @@
       "source_file": "package.json",
       "source_location": "L70",
       "_origin": "ast",
-      "community": 9,
+      "community": 15,
       "community_name": "eslint-config-prettier Dependency",
       "norm_label": "eslint-config-prettier",
       "id": "package_devdependencies_eslint_config_prettier"
@@ -931,7 +944,7 @@
       "source_file": "package.json",
       "source_location": "L70",
       "_origin": "ast",
-      "community": 9,
+      "community": 15,
       "community_name": "eslint-config-prettier Dependency",
       "norm_label": "eslint-config-prettier",
       "id": "eslint_config_prettier"
@@ -1118,7 +1131,7 @@
       "source_file": "package.json",
       "source_location": "L79",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Dev Tooling Dependencies",
       "norm_label": "vite",
       "id": "package_devdependencies_vite"
@@ -1129,7 +1142,7 @@
       "source_file": "package.json",
       "source_location": "L79",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Dev Tooling Dependencies",
       "norm_label": "vite",
       "id": "vite"
@@ -1162,7 +1175,7 @@
       "source_file": "package.json",
       "source_location": "L81",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Dev Tooling Dependencies",
       "norm_label": "vitest-axe",
       "id": "package_devdependencies_vitest_axe"
@@ -1173,7 +1186,7 @@
       "source_file": "package.json",
       "source_location": "L81",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "community_name": "Dev Tooling Dependencies",
       "norm_label": "vitest-axe",
       "id": "vitest_axe"
@@ -1184,7 +1197,7 @@
       "source_file": "package.json",
       "source_location": "L83",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "dependencies",
       "id": "package_dependencies"
@@ -1195,7 +1208,7 @@
       "source_file": "package.json",
       "source_location": "L84",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "framer-motion",
       "id": "package_dependencies_framer_motion"
@@ -1206,7 +1219,7 @@
       "source_file": "package.json",
       "source_location": "L84",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "framer-motion",
       "id": "framer_motion"
@@ -1217,7 +1230,7 @@
       "source_file": "package.json",
       "source_location": "L85",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "lucide-react",
       "id": "package_dependencies_lucide_react"
@@ -1228,7 +1241,7 @@
       "source_file": "package.json",
       "source_location": "L85",
       "_origin": "ast",
-      "community": 1,
+      "community": 0,
       "community_name": "Runtime Dependencies",
       "norm_label": "lucide-react",
       "id": "lucide_react"
@@ -1239,7 +1252,7 @@
       "source_file": "src/components/AccordionItem.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "accordionitem.stories.tsx",
       "id": "src_components_accordionitem_stories"
@@ -1252,7 +1265,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "story",
       "id": "src_components_accordionitem_stories_story"
@@ -1263,7 +1276,7 @@
       "source_file": "src/components/AccordionItem.stories.tsx",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 4,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "default",
       "id": "src_components_accordionitem_stories_default"
@@ -1274,7 +1287,7 @@
       "source_file": "src/components/AccordionItem.stories.tsx",
       "source_location": "L40",
       "_origin": "ast",
-      "community": 4,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "multipleopenatonce",
       "id": "src_components_accordionitem_stories_multipleopenatonce"
@@ -1285,7 +1298,7 @@
       "source_file": "src/components/AccordionItem.stories.tsx",
       "source_location": "L78",
       "_origin": "ast",
-      "community": 4,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "oneopenatatime",
       "id": "src_components_accordionitem_stories_oneopenatatime"
@@ -1307,7 +1320,7 @@
       "source_file": "src/components/AccordionItem.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "accordionitem.tsx",
       "id": "src_components_accordionitem"
@@ -1320,7 +1333,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "accordionitemprops",
       "id": "src_components_accordionitem_accordionitemprops"
@@ -1332,7 +1345,7 @@
       "source_location": "L50",
       "_callable": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "accordionitem()",
       "id": "src_components_accordionitem_accordionitem"
@@ -1343,7 +1356,7 @@
       "source_file": "src/components/Logo.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
+      "community": 10,
       "community_name": "Logo Component",
       "norm_label": "logo.stories.tsx",
       "id": "src_components_logo_stories"
@@ -1356,7 +1369,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 10,
       "community_name": "Logo Component",
       "norm_label": "story",
       "id": "src_components_logo_stories_story"
@@ -1367,7 +1380,7 @@
       "source_file": "src/components/Logo.stories.tsx",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 6,
+      "community": 10,
       "community_name": "Logo Component",
       "norm_label": "default",
       "id": "src_components_logo_stories_default"
@@ -1378,7 +1391,7 @@
       "source_file": "src/components/Logo.stories.tsx",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 6,
+      "community": 10,
       "community_name": "Logo Component",
       "norm_label": "monowhite",
       "id": "src_components_logo_stories_monowhite"
@@ -1389,7 +1402,7 @@
       "source_file": "src/components/Logo.stories.tsx",
       "source_location": "L43",
       "_origin": "ast",
-      "community": 6,
+      "community": 10,
       "community_name": "Logo Component",
       "norm_label": "monoblack",
       "id": "src_components_logo_stories_monoblack"
@@ -1400,7 +1413,7 @@
       "source_file": "src/components/Logo.stories.tsx",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 6,
+      "community": 10,
       "community_name": "Logo Component",
       "norm_label": "darkbackground",
       "id": "src_components_logo_stories_darkbackground"
@@ -1411,7 +1424,7 @@
       "source_file": "src/components/Logo.stories.tsx",
       "source_location": "L60",
       "_origin": "ast",
-      "community": 6,
+      "community": 10,
       "community_name": "Logo Component",
       "norm_label": "lightbackground",
       "id": "src_components_logo_stories_lightbackground"
@@ -1422,7 +1435,7 @@
       "source_file": "src/components/Logo.stories.tsx",
       "source_location": "L67",
       "_origin": "ast",
-      "community": 6,
+      "community": 10,
       "community_name": "Logo Component",
       "norm_label": "customcolors",
       "id": "src_components_logo_stories_customcolors"
@@ -1444,7 +1457,7 @@
       "source_file": "src/components/Logo.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
+      "community": 4,
       "community_name": "Logo Component",
       "norm_label": "logo.tsx",
       "id": "src_components_logo"
@@ -1457,7 +1470,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 4,
       "community_name": "Logo Component",
       "norm_label": "logocolor",
       "id": "src_components_logo_logocolor"
@@ -1470,7 +1483,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 4,
       "community_name": "Logo Component",
       "norm_label": "logobackground",
       "id": "src_components_logo_logobackground"
@@ -1483,7 +1496,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 4,
       "community_name": "Logo Component",
       "norm_label": "logoprops",
       "id": "src_components_logo_logoprops"
@@ -1494,7 +1507,7 @@
       "source_file": "src/components/Logo.tsx",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 6,
+      "community": 4,
       "community_name": "Logo Component",
       "norm_label": "branded",
       "id": "src_components_logo_branded"
@@ -1506,7 +1519,7 @@
       "source_location": "L40",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 4,
       "community_name": "Logo Component",
       "norm_label": "resolvecolor()",
       "id": "src_components_logo_resolvecolor"
@@ -1518,7 +1531,7 @@
       "source_location": "L53",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 4,
       "community_name": "Logo Component",
       "norm_label": "resolvebackground()",
       "id": "src_components_logo_resolvebackground"
@@ -1530,7 +1543,7 @@
       "source_location": "L64",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
+      "community": 4,
       "community_name": "Logo Component",
       "norm_label": "logo()",
       "id": "src_components_logo_logo"
@@ -1541,7 +1554,7 @@
       "source_file": "src/components/PageTransition.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 9,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "pagetransition.stories.tsx",
       "id": "src_components_pagetransition_stories"
@@ -1554,7 +1567,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 9,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "story",
       "id": "src_components_pagetransition_stories_story"
@@ -1566,7 +1579,7 @@
       "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 9,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "demodecorator()",
       "id": "src_components_pagetransition_stories_demodecorator"
@@ -1577,7 +1590,7 @@
       "source_file": "src/components/PageTransition.stories.tsx",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 2,
+      "community": 9,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "default",
       "id": "src_components_pagetransition_stories_default"
@@ -1588,7 +1601,7 @@
       "source_file": "src/components/PageTransition.stories.tsx",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 2,
+      "community": 9,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "unstyled",
       "id": "src_components_pagetransition_stories_unstyled"
@@ -1599,7 +1612,7 @@
       "source_file": "src/components/PageTransition.test.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 9,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "pagetransition.test.tsx",
       "id": "src_components_pagetransition_test"
@@ -1610,7 +1623,7 @@
       "source_file": "src/components/PageTransition.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 9,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "pagetransition.tsx",
       "id": "src_components_pagetransition"
@@ -1623,7 +1636,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 9,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "pagetransitionprops",
       "id": "src_components_pagetransition_pagetransitionprops"
@@ -1635,7 +1648,7 @@
       "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 9,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "pagetransition()",
       "id": "src_components_pagetransition_pagetransition"
@@ -1646,7 +1659,7 @@
       "source_file": "src/components/SectionHeading.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
+      "community": 12,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "sectionheading.stories.tsx",
       "id": "src_components_sectionheading_stories"
@@ -1659,7 +1672,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 12,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "story",
       "id": "src_components_sectionheading_stories_story"
@@ -1671,7 +1684,7 @@
       "source_location": "L29",
       "_callable": true,
       "_origin": "ast",
-      "community": 4,
+      "community": 12,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "demodecorator()",
       "id": "src_components_sectionheading_stories_demodecorator"
@@ -1682,7 +1695,7 @@
       "source_file": "src/components/SectionHeading.stories.tsx",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 4,
+      "community": 12,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "plain",
       "id": "src_components_sectionheading_stories_plain"
@@ -1693,7 +1706,7 @@
       "source_file": "src/components/SectionHeading.stories.tsx",
       "source_location": "L45",
       "_origin": "ast",
-      "community": 4,
+      "community": 12,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "withanchor",
       "id": "src_components_sectionheading_stories_withanchor"
@@ -1704,7 +1717,7 @@
       "source_file": "src/components/SectionHeading.stories.tsx",
       "source_location": "L58",
       "_origin": "ast",
-      "community": 4,
+      "community": 12,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "alllevels",
       "id": "src_components_sectionheading_stories_alllevels"
@@ -1715,7 +1728,7 @@
       "source_file": "src/components/SectionHeading.stories.tsx",
       "source_location": "L89",
       "_origin": "ast",
-      "community": 4,
+      "community": 12,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "unstyled",
       "id": "src_components_sectionheading_stories_unstyled"
@@ -1786,7 +1799,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 10,
+      "community": 11,
       "community_name": "Logo Component",
       "norm_label": "sectionnav.stories.tsx",
       "id": "src_components_sectionnav_stories"
@@ -1799,7 +1812,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 10,
+      "community": 11,
       "community_name": "Logo Component",
       "norm_label": "story",
       "id": "src_components_sectionnav_stories_story"
@@ -1811,7 +1824,7 @@
       "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
-      "community": 10,
+      "community": 11,
       "community_name": "Logo Component",
       "norm_label": "demodecorator()",
       "id": "src_components_sectionnav_stories_demodecorator"
@@ -1822,7 +1835,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 10,
+      "community": 11,
       "community_name": "Logo Component",
       "norm_label": "default",
       "id": "src_components_sectionnav_stories_default"
@@ -1833,7 +1846,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L41",
       "_origin": "ast",
-      "community": 10,
+      "community": 11,
       "community_name": "Logo Component",
       "norm_label": "manysections",
       "id": "src_components_sectionnav_stories_manysections"
@@ -1844,7 +1857,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 10,
+      "community": 11,
       "community_name": "Logo Component",
       "norm_label": "scrollintoviewonnarrowviewport",
       "id": "src_components_sectionnav_stories_scrollintoviewonnarrowviewport"
@@ -1855,7 +1868,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L108",
       "_origin": "ast",
-      "community": 10,
+      "community": 11,
       "community_name": "Logo Component",
       "norm_label": "unstyled",
       "id": "src_components_sectionnav_stories_unstyled"
@@ -1866,7 +1879,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L126",
       "_origin": "ast",
-      "community": 10,
+      "community": 11,
       "community_name": "Logo Component",
       "norm_label": "nestedcustom",
       "id": "src_components_sectionnav_stories_nestedcustom"
@@ -1899,7 +1912,7 @@
       "source_file": "src/components/SectionNav.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 4,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "sectionnav.tsx",
       "id": "src_components_sectionnav"
@@ -1912,7 +1925,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 4,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "section",
       "id": "src_components_sectionnav_section"
@@ -1925,7 +1938,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 4,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "sectionnavprops",
       "id": "src_components_sectionnav_sectionnavprops"
@@ -1937,7 +1950,7 @@
       "source_location": "L22",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 4,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "sectionnav()",
       "id": "src_components_sectionnav_sectionnav"
@@ -1948,7 +1961,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
       "community_name": "ValuesCloud Stories",
       "norm_label": "valuescloud.stories.tsx",
       "id": "src_components_valuescloud_stories"
@@ -1961,7 +1974,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
       "community_name": "ValuesCloud Stories",
       "norm_label": "story",
       "id": "src_components_valuescloud_stories_story"
@@ -1972,7 +1985,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
       "community_name": "ValuesCloud Stories",
       "norm_label": "values",
       "id": "src_components_valuescloud_stories_values"
@@ -1983,7 +1996,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
       "community_name": "ValuesCloud Stories",
       "norm_label": "extendedvalues",
       "id": "src_components_valuescloud_stories_extendedvalues"
@@ -1994,7 +2007,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L119",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
       "community_name": "ValuesCloud Stories",
       "norm_label": "default",
       "id": "src_components_valuescloud_stories_default"
@@ -2005,7 +2018,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L133",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
       "community_name": "ValuesCloud Stories",
       "norm_label": "customaccents",
       "id": "src_components_valuescloud_stories_customaccents"
@@ -2016,7 +2029,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L153",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
       "community_name": "ValuesCloud Stories",
       "norm_label": "nowiggle",
       "id": "src_components_valuescloud_stories_nowiggle"
@@ -2027,7 +2040,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L166",
       "_origin": "ast",
-      "community": 11,
+      "community": 1,
       "community_name": "ValuesCloud Stories",
       "norm_label": "manyvalues",
       "id": "src_components_valuescloud_stories_manyvalues"
@@ -2038,7 +2051,7 @@
       "source_file": "src/components/ValuesCloud.test.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "valuescloud.test.tsx",
       "id": "src_components_valuescloud_test"
@@ -2049,7 +2062,7 @@
       "source_file": "src/components/ValuesCloud.test.tsx",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "values",
       "id": "src_components_valuescloud_test_values"
@@ -2060,7 +2073,7 @@
       "source_file": "src/components/ValuesCloud.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "valuescloud.tsx",
       "id": "src_components_valuescloud"
@@ -2073,7 +2086,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 4,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "valueaccent",
       "id": "src_components_valuescloud_valueaccent"
@@ -2086,7 +2099,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "value",
       "id": "src_components_valuescloud_value"
@@ -2099,7 +2112,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 4,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "valuescloudprops",
       "id": "src_components_valuescloud_valuescloudprops"
@@ -2111,7 +2124,7 @@
       "source_location": "L66",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "valuescloud()",
       "id": "src_components_valuescloud_valuescloud"
@@ -2122,7 +2135,7 @@
       "source_file": "src/components/ValuesCloud.unstyled.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "valuescloud.unstyled.stories.tsx",
       "id": "src_components_valuescloud_unstyled_stories"
@@ -2135,7 +2148,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "story",
       "id": "src_components_valuescloud_unstyled_stories_story"
@@ -2146,7 +2159,7 @@
       "source_file": "src/components/ValuesCloud.unstyled.stories.tsx",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "values",
       "id": "src_components_valuescloud_unstyled_stories_values"
@@ -2157,7 +2170,7 @@
       "source_file": "src/components/ValuesCloud.unstyled.stories.tsx",
       "source_location": "L32",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "unstyled",
       "id": "src_components_valuescloud_unstyled_stories_unstyled"
@@ -2168,7 +2181,7 @@
       "source_file": "src/hooks/usePrefersReducedMotion.test.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "useprefersreducedmotion.test.ts",
       "id": "src_hooks_useprefersreducedmotion_test"
@@ -2180,7 +2193,7 @@
       "source_location": "L9",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "mockmatchmedia()",
       "id": "src_hooks_useprefersreducedmotion_test_mockmatchmedia"
@@ -2192,7 +2205,7 @@
       "source_location": "L38",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "mount()",
       "id": "src_hooks_useprefersreducedmotion_test_mount"
@@ -2203,7 +2216,7 @@
       "source_file": "src/hooks/usePrefersReducedMotion.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "useprefersreducedmotion.ts",
       "id": "src_hooks_useprefersreducedmotion"
@@ -2215,7 +2228,7 @@
       "source_location": "L12",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "useprefersreducedmotion()",
       "id": "src_hooks_useprefersreducedmotion_useprefersreducedmotion"
@@ -2226,7 +2239,7 @@
       "source_file": "src/index.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 4,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "index.ts",
       "id": "src_index"
@@ -2237,7 +2250,7 @@
       "source_file": "src/styles.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
+      "community": 1,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "styles.ts",
       "id": "src_styles"
@@ -2879,7 +2892,7 @@
       "source_file": "vite.config.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 49,
+      "community": 52,
       "community_name": "Vite Config",
       "norm_label": "vite.config.ts",
       "id": "vite_config"
@@ -2890,7 +2903,7 @@
       "source_file": "vitest.config.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 50,
+      "community": 53,
       "community_name": "Vitest Config",
       "norm_label": "vitest.config.ts",
       "id": "vitest_config"
@@ -2904,7 +2917,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
+      "community": 2,
       "community_name": "Dependabot & Peer-Dep Policy",
       "norm_label": "dependabot npm ecosystem update",
       "_origin": "ast",
@@ -2919,7 +2932,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 6,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "dependabot github-actions ecosystem update",
       "_origin": "ast",
@@ -2934,7 +2947,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
+      "community": 2,
       "community_name": "Dependabot & Peer-Dep Policy",
       "norm_label": "npm-minor-and-patch update group",
       "_origin": "ast",
@@ -2949,7 +2962,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 6,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "github-actions-minor-and-patch update group",
       "_origin": "ast",
@@ -2965,7 +2978,7 @@
       "author": null,
       "contributor": null,
       "rationale": "react and react-dom are peerDependencies expressing an intentional dual-major support range (^18.2.0 || ^19.0.0), not pinned installs that need patching. Dependabot updates to peer ranges only widen or narrow that compatibility promise, a deliberate maintainer call. Bump peer ranges by hand when a new React major is actually adopted.",
-      "community": 12,
+      "community": 2,
       "community_name": "Dependabot & Peer-Dep Policy",
       "norm_label": "react/react-dom peer dependency ignore rule",
       "_origin": "ast",
@@ -2980,7 +2993,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "ci workflow",
       "_origin": "ast",
@@ -2995,7 +3008,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "lint, format & test job",
       "_origin": "ast",
@@ -3010,7 +3023,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "deploy storybook to github pages job",
       "_origin": "ast",
@@ -3025,7 +3038,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "actions/checkout",
       "_origin": "ast",
@@ -3040,7 +3053,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "actions/setup-node",
       "_origin": "ast",
@@ -3055,7 +3068,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "pnpm/action-setup",
       "_origin": "ast",
@@ -3070,7 +3083,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "actions/cache",
       "_origin": "ast",
@@ -3085,7 +3098,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "actions/upload-pages-artifact",
       "_origin": "ast",
@@ -3100,7 +3113,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "actions/deploy-pages",
       "_origin": "ast",
@@ -3115,7 +3128,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 6,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "codeql workflow",
       "_origin": "ast",
@@ -3130,7 +3143,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 6,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "analyze job",
       "_origin": "ast",
@@ -3145,7 +3158,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 6,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "github/codeql-action/init",
       "_origin": "ast",
@@ -3160,7 +3173,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 6,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "github/codeql-action/analyze",
       "_origin": "ast",
@@ -3175,7 +3188,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 6,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "publish workflow",
       "_origin": "ast",
@@ -3190,7 +3203,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "build & publish to github packages job",
       "_origin": "ast",
@@ -3205,7 +3218,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": ".pre-commit-config.yaml",
       "_origin": "ast",
@@ -3220,7 +3233,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "pre-commit/pre-commit-hooks (trailing-whitespace, end-of-file-fixer, check-yaml, check-added-large-files, check-merge-conflict)",
       "_origin": "ast",
@@ -3235,7 +3248,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "prettier pre-commit hook",
       "_origin": "ast",
@@ -3250,7 +3263,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "eslint pre-commit hook",
       "_origin": "ast",
@@ -3265,7 +3278,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "vitest pre-commit hook",
       "_origin": "ast",
@@ -3276,7 +3289,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L3-L9",
-      "community": 8,
+      "community": 7,
       "community_name": "Tech Stack Note",
       "norm_label": "tech stack",
       "_origin": "ast",
@@ -3292,7 +3305,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Repo pins Node via .nvmrc; always run `nvm use` before any commands to activate the correct version rather than hardcoding version paths or manipulating $PATH manually.",
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "node version policy (nvm use)",
       "_origin": "ast",
@@ -3303,7 +3316,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L19-L45",
-      "community": 8,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "development commands",
       "_origin": "ast",
@@ -3319,7 +3332,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Agents/CI must avoid commands that block indefinitely: use `pnpm test:unit --run` (omitting --run starts watch mode), `pnpm build:storybook` instead of `pnpm dev`, and `pnpm install --frozen-lockfile` to prevent interactive prompts.",
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "non-interactive tool guidance",
       "_origin": "ast",
@@ -3334,7 +3347,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "pre-commit hooks section",
       "_origin": "ast",
@@ -3350,7 +3363,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Components live flat under src/components/ (no per-component subdirectories), colocated with .test.tsx and .stories.tsx; everything public is exported through src/index.ts; no default exports, to keep the public API surface explicit and discoverable.",
-      "community": 8,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "component authorship convention",
       "_origin": "ast",
@@ -3366,7 +3379,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Components must be unstyled or accept className so consumers theme them; site-level theming is the consumer's job (see website/CLAUDE.md). Exception: ValuesCloud, SectionHeading, AccordionItem ship real structural CSS via a separate `./css` export subpath (registered in src/styles.ts) because their layout/spacing can't reasonably be left to every consumer; colours/fonts still read from --bl-* custom properties with fallbacks so it stays themable, and no Tailwind syntax is used since the package has no Tailwind pipeline.",
-      "community": 8,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "styling convention (unstyled-by-default, structural css exception)",
       "_origin": "ast",
@@ -3382,7 +3395,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Use semantic HTML, add ARIA only where semantics are insufficient, and ensure all interactive elements are keyboard-navigable.",
-      "community": 8,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "accessibility convention",
       "_origin": "ast",
@@ -3398,7 +3411,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Strict mode, no `any`; prop types named ComponentNameProps and exported alongside the component for a consistent, type-safe public API.",
-      "community": 8,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "typescript convention (strict, no any)",
       "_origin": "ast",
@@ -3413,7 +3426,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 6,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "publishing / release flow",
       "_origin": "ast",
@@ -3458,7 +3471,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "setup",
       "_origin": "ast",
@@ -3473,7 +3486,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "checks ci runs on every pr",
       "_origin": "ast",
@@ -3488,7 +3501,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "pre-commit hooks (contributing)",
       "_origin": "ast",
@@ -3503,7 +3516,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 8,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "component conventions (contributing)",
       "_origin": "ast",
@@ -3518,7 +3531,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 6,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "publishing (contributing)",
       "_origin": "ast",
@@ -3533,7 +3546,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 44,
+      "community": 47,
       "community_name": "README Install",
       "norm_label": "install section",
       "_origin": "ast",
@@ -3548,7 +3561,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
+      "community": 2,
       "community_name": "Dependabot & Peer-Dep Policy",
       "norm_label": "peer dependencies (react, react-dom >= 18)",
       "_origin": "ast",
@@ -3563,7 +3576,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 46,
+      "community": 49,
       "community_name": "README Usage",
       "norm_label": "usage example (logo, sectionheading)",
       "_origin": "ast",
@@ -3578,7 +3591,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 8,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "css export subpath (@branchleft/components/css)",
       "_origin": "ast",
@@ -3593,7 +3606,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 8,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "development section",
       "_origin": "ast",
@@ -3623,7 +3636,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 6,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "release section",
       "_origin": "ast",
@@ -3638,7 +3651,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 45,
+      "community": 48,
       "community_name": "README License",
       "norm_label": "license (mit)",
       "_origin": "ast",
@@ -3653,7 +3666,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 12,
+      "community": 2,
       "community_name": "Dependabot & Peer-Dep Policy",
       "norm_label": "allowbuilds: esbuild false",
       "_origin": "ast",
@@ -3663,7 +3676,7 @@
       "label": "Components Directory",
       "file_type": "code",
       "source_file": "src/components/",
-      "community": 48,
+      "community": 51,
       "norm_label": "components directory",
       "_origin": "semantic",
       "id": "src_components"
@@ -3672,7 +3685,7 @@
       "label": "Release Process",
       "file_type": "document",
       "source_file": "RELEASING.md",
-      "community": 47,
+      "community": 50,
       "norm_label": "release process",
       "_origin": "semantic",
       "id": "releasing_process"
@@ -3681,7 +3694,7 @@
       "label": "Knowledge Graph Output",
       "file_type": "document",
       "source_file": "graphify-out/",
-      "community": 43,
+      "community": 46,
       "norm_label": "knowledge graph output",
       "_origin": "semantic",
       "id": "graphify_out"
@@ -3695,7 +3708,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 42,
+      "community": 44,
       "norm_label": "graphify workflow",
       "_origin": "semantic",
       "id": "github_workflows_graphify_workflow"
@@ -3709,9 +3722,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "pre_commit_hooks_repo",
-      "community": 0,
-      "norm_label": "pre-commit-hooks"
+      "community": 2,
+      "norm_label": "pre-commit-hooks",
+      "_origin": "semantic",
+      "id": "pre_commit_hooks_repo"
     },
     {
       "label": "prettier",
@@ -3722,9 +3736,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "prettier_hook",
-      "community": 0,
-      "norm_label": "prettier"
+      "community": 2,
+      "norm_label": "prettier",
+      "_origin": "semantic",
+      "id": "prettier_hook"
     },
     {
       "label": "eslint",
@@ -3735,9 +3750,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "eslint_hook",
-      "community": 0,
-      "norm_label": "eslint"
+      "community": 2,
+      "norm_label": "eslint",
+      "_origin": "semantic",
+      "id": "eslint_hook"
     },
     {
       "label": "vitest",
@@ -3748,9 +3764,65 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "vitest_hook",
-      "community": 0,
-      "norm_label": "vitest"
+      "community": 2,
+      "norm_label": "vitest",
+      "_origin": "semantic",
+      "id": "vitest_hook"
+    },
+    {
+      "label": "CI Job",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 42,
+      "norm_label": "ci job",
+      "_origin": "semantic",
+      "id": "github_workflows_ci_ci"
+    },
+    {
+      "label": "Deploy Storybook Job",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 43,
+      "norm_label": "deploy storybook job",
+      "_origin": "semantic",
+      "id": "github_workflows_ci_deploy_storybook"
+    },
+    {
+      "label": "Publish Job",
+      "file_type": "code",
+      "source_file": ".github/workflows/publish.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 45,
+      "norm_label": "publish job",
+      "_origin": "semantic",
+      "id": "github_workflows_publish_publish"
+    },
+    {
+      "label": "actions/checkout",
+      "file_type": "code",
+      "source_file": ".github/workflows/codeql.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "actions_checkout",
+      "community": 6,
+      "norm_label": "actions/checkout"
     }
   ],
   "links": [
@@ -7765,11 +7837,11 @@
       "target": "_github_workflows_ci_actions_cache"
     },
     {
-      "relation": "implements",
+      "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": ".github/workflows/codeql.yml",
-      "source_location": "L11-L40",
+      "source_location": null,
       "weight": 1.0,
       "_origin": "ast",
       "source": "_github_workflows_codeql_workflow",
@@ -7780,7 +7852,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": ".github/workflows/codeql.yml",
-      "source_location": "L38",
+      "source_location": null,
       "weight": 1.0,
       "_origin": "ast",
       "source": "_github_workflows_codeql_analyze_job",
@@ -7791,11 +7863,21 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": ".github/workflows/codeql.yml",
-      "source_location": "L32",
+      "source_location": null,
       "weight": 1.0,
       "_origin": "ast",
       "source": "_github_workflows_codeql_analyze_job",
       "target": "_github_workflows_codeql_codeql_action_init"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/codeql.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "_github_workflows_codeql_analyze_job",
+      "target": "actions_checkout"
     },
     {
       "relation": "conceptually_related_to",
@@ -7900,6 +7982,50 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "semantic",
+      "source": "_pre_commit_config",
+      "target": "eslint_hook"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "semantic",
+      "source": "_pre_commit_config",
+      "target": "pre_commit_hooks_repo"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "semantic",
+      "source": "_pre_commit_config",
+      "target": "prettier_hook"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".pre-commit-config.yaml",
+      "source_location": null,
+      "weight": 1.0,
+      "_origin": "semantic",
+      "source": "_pre_commit_config",
+      "target": "vitest_hook"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
       "source_file": "CLAUDE.md",
       "source_location": "L59",
       "weight": 1.0,
@@ -7917,46 +8043,6 @@
       "_origin": "ast",
       "source": "contributing_pre_commit_hooks",
       "target": "_pre_commit_config"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": ".pre-commit-config.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "_pre_commit_config",
-      "target": "eslint_hook"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": ".pre-commit-config.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "_pre_commit_config",
-      "target": "pre_commit_hooks_repo"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": ".pre-commit-config.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "_pre_commit_config",
-      "target": "prettier_hook"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": ".pre-commit-config.yaml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "_pre_commit_config",
-      "target": "vitest_hook"
     },
     {
       "relation": "references",
@@ -8135,6 +8221,32 @@
   ],
   "hyperedges": [
     {
+      "id": "codeql_static_analysis_flow",
+      "label": "CodeQL Static Analysis Flow",
+      "nodes": [
+        "_github_workflows_codeql_codeql_action_init",
+        "_github_workflows_codeql_codeql_action_analyze",
+        "_github_workflows_codeql_analyze_job"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/codeql.yml"
+    },
+    {
+      "id": "ci_cd_pipeline",
+      "label": "CI/CD Pipeline",
+      "nodes": [
+        "github_workflows_ci_ci",
+        "github_workflows_ci_deploy_storybook",
+        "github_workflows_publish_publish"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml"
+    },
+    {
       "id": "pre_commit_pipeline",
       "label": "Pre-commit Quality Pipeline",
       "nodes": [
@@ -8146,19 +8258,6 @@
       "confidence": "INFERRED",
       "confidence_score": 0.9,
       "source_file": ".pre-commit-config.yaml"
-    },
-    {
-      "id": "ci_quality_gate",
-      "label": "Local and CI Quality Gate (Format, Lint, Test)",
-      "nodes": [
-        "_pre_commit_config",
-        "_github_workflows_ci_ci_job",
-        "contributing_ci_checks"
-      ],
-      "relation": "form",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": ".github/workflows/ci.yml"
     },
     {
       "id": "dependabot_grouping_strategy",
@@ -8174,5 +8273,5 @@
       "source_file": ".github/dependabot.yml"
     }
   ],
-  "built_at_commit": "8f16692deb62ee6e1e87b6270582c4b10cb49573"
+  "built_at_commit": "e7c3b36f336cbae46fd00cfbac184da2f292bbd4"
 }
