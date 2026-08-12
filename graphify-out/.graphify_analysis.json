@@ -1,43 +1,6 @@
 {
   "communities": {
     "0": [
-      "_github_dependabot_github_actions_ecosystem_update",
-      "_github_dependabot_github_actions_minor_and_patch_group",
-      "_github_workflows_ci_actions_cache",
-      "_github_workflows_ci_actions_checkout",
-      "_github_workflows_ci_actions_deploy_pages",
-      "_github_workflows_ci_actions_setup_node",
-      "_github_workflows_ci_actions_upload_pages_artifact",
-      "_github_workflows_ci_ci_job",
-      "_github_workflows_ci_deploy_storybook_job",
-      "_github_workflows_ci_pnpm_action_setup",
-      "_github_workflows_ci_workflow",
-      "_github_workflows_codeql_analyze_job",
-      "_github_workflows_codeql_codeql_action_analyze",
-      "_github_workflows_codeql_codeql_action_init",
-      "_github_workflows_codeql_workflow",
-      "_github_workflows_publish_publish_job",
-      "_github_workflows_publish_workflow",
-      "_pre_commit_config",
-      "_pre_commit_config_eslint_hook",
-      "_pre_commit_config_pre_commit_hooks_repo",
-      "_pre_commit_config_prettier_hook",
-      "_pre_commit_config_vitest_hook",
-      "claude_node_version_policy",
-      "claude_non_interactive_tool_guidance",
-      "claude_pre_commit_hooks_section",
-      "claude_publishing_release_flow",
-      "contributing_ci_checks",
-      "contributing_pre_commit_hooks",
-      "contributing_publishing",
-      "contributing_setup",
-      "eslint_hook",
-      "pre_commit_hooks_repo",
-      "prettier_hook",
-      "readme_release",
-      "vitest_hook"
-    ],
-    "1": [
       "framer_motion",
       "lucide_react",
       "package",
@@ -64,6 +27,18 @@
       "package_repository",
       "package_repository_type",
       "package_repository_url",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_build_storybook",
+      "package_scripts_dev",
+      "package_scripts_format",
+      "package_scripts_lint",
+      "package_scripts_prepare",
+      "package_scripts_prepublishonly",
+      "package_scripts_preview",
+      "package_scripts_test_ui",
+      "package_scripts_test_unit",
+      "package_scripts_type_check",
       "package_type",
       "package_types",
       "package_version",
@@ -71,23 +46,26 @@
       "ref_components",
       "ref_ui"
     ],
-    "2": [
+    "1": [
       "package_peerdependencies_react",
       "react",
-      "src_components_pagetransition",
-      "src_components_pagetransition_pagetransition",
-      "src_components_pagetransition_pagetransitionprops",
-      "src_components_pagetransition_stories",
-      "src_components_pagetransition_stories_default",
-      "src_components_pagetransition_stories_demodecorator",
-      "src_components_pagetransition_stories_story",
-      "src_components_pagetransition_stories_unstyled",
-      "src_components_pagetransition_test",
-      "src_components_sectionnav",
-      "src_components_sectionnav_section",
-      "src_components_sectionnav_sectionnav",
-      "src_components_sectionnav_sectionnavprops",
+      "src_components_accordionitem",
+      "src_components_accordionitem_accordionitem",
+      "src_components_accordionitem_accordionitemprops",
+      "src_components_accordionitem_stories",
+      "src_components_accordionitem_stories_default",
+      "src_components_accordionitem_stories_multipleopenatonce",
+      "src_components_accordionitem_stories_oneopenatatime",
+      "src_components_accordionitem_stories_story",
       "src_components_valuescloud",
+      "src_components_valuescloud_stories",
+      "src_components_valuescloud_stories_customaccents",
+      "src_components_valuescloud_stories_default",
+      "src_components_valuescloud_stories_extendedvalues",
+      "src_components_valuescloud_stories_manyvalues",
+      "src_components_valuescloud_stories_nowiggle",
+      "src_components_valuescloud_stories_story",
+      "src_components_valuescloud_stories_values",
       "src_components_valuescloud_test",
       "src_components_valuescloud_test_values",
       "src_components_valuescloud_unstyled_stories",
@@ -95,15 +73,45 @@
       "src_components_valuescloud_unstyled_stories_unstyled",
       "src_components_valuescloud_unstyled_stories_values",
       "src_components_valuescloud_value",
-      "src_components_valuescloud_valueaccent",
       "src_components_valuescloud_valuescloud",
-      "src_components_valuescloud_valuescloudprops",
       "src_hooks_useprefersreducedmotion",
       "src_hooks_useprefersreducedmotion_test",
       "src_hooks_useprefersreducedmotion_test_mockmatchmedia",
       "src_hooks_useprefersreducedmotion_test_mount",
       "src_hooks_useprefersreducedmotion_useprefersreducedmotion",
-      "src_index"
+      "src_styles"
+    ],
+    "2": [
+      "_github_dependabot_npm_ecosystem_update",
+      "_github_dependabot_npm_minor_and_patch_group",
+      "_github_dependabot_react_peer_dependency_exclusion",
+      "_github_workflows_ci_actions_cache",
+      "_github_workflows_ci_actions_checkout",
+      "_github_workflows_ci_actions_deploy_pages",
+      "_github_workflows_ci_actions_setup_node",
+      "_github_workflows_ci_actions_upload_pages_artifact",
+      "_github_workflows_ci_ci_job",
+      "_github_workflows_ci_deploy_storybook_job",
+      "_github_workflows_ci_pnpm_action_setup",
+      "_github_workflows_ci_workflow",
+      "_github_workflows_publish_publish_job",
+      "_pre_commit_config",
+      "_pre_commit_config_eslint_hook",
+      "_pre_commit_config_pre_commit_hooks_repo",
+      "_pre_commit_config_prettier_hook",
+      "_pre_commit_config_vitest_hook",
+      "claude_node_version_policy",
+      "claude_non_interactive_tool_guidance",
+      "claude_pre_commit_hooks_section",
+      "contributing_ci_checks",
+      "contributing_pre_commit_hooks",
+      "contributing_setup",
+      "eslint_hook",
+      "pnpm_workspace_allow_builds_esbuild_false",
+      "pre_commit_hooks_repo",
+      "prettier_hook",
+      "readme_peer_deps",
+      "vitest_hook"
     ],
     "3": [
       "ref_dom",
@@ -136,31 +144,30 @@
       "tsconfig_compileroptions_usedefineforclassfields"
     ],
     "4": [
-      "src_components_accordionitem",
-      "src_components_accordionitem_accordionitem",
-      "src_components_accordionitem_accordionitemprops",
-      "src_components_accordionitem_stories",
-      "src_components_accordionitem_stories_default",
-      "src_components_accordionitem_stories_multipleopenatonce",
-      "src_components_accordionitem_stories_oneopenatatime",
-      "src_components_accordionitem_stories_story",
       "src_components_accordionitem_test",
+      "src_components_logo",
+      "src_components_logo_branded",
+      "src_components_logo_logo",
+      "src_components_logo_logobackground",
+      "src_components_logo_logocolor",
+      "src_components_logo_logoprops",
+      "src_components_logo_resolvebackground",
+      "src_components_logo_resolvecolor",
       "src_components_logo_test",
       "src_components_sectionheading",
       "src_components_sectionheading_sectionheading",
       "src_components_sectionheading_sectionheadinglevel",
       "src_components_sectionheading_sectionheadingprops",
-      "src_components_sectionheading_stories",
-      "src_components_sectionheading_stories_alllevels",
-      "src_components_sectionheading_stories_demodecorator",
-      "src_components_sectionheading_stories_plain",
-      "src_components_sectionheading_stories_story",
-      "src_components_sectionheading_stories_unstyled",
-      "src_components_sectionheading_stories_withanchor",
       "src_components_sectionheading_test",
+      "src_components_sectionnav",
+      "src_components_sectionnav_section",
+      "src_components_sectionnav_sectionnav",
+      "src_components_sectionnav_sectionnavprops",
       "src_components_sectionnav_test",
       "src_components_sectionnav_test_sections",
-      "src_styles",
+      "src_components_valuescloud_valueaccent",
+      "src_components_valuescloud_valuescloudprops",
+      "src_index",
       "src_test_axe",
       "src_test_axe_axe"
     ],
@@ -190,38 +197,19 @@
       "tsconfig_json_ref_src"
     ],
     "6": [
-      "src_components_logo",
-      "src_components_logo_branded",
-      "src_components_logo_logo",
-      "src_components_logo_logobackground",
-      "src_components_logo_logocolor",
-      "src_components_logo_logoprops",
-      "src_components_logo_resolvebackground",
-      "src_components_logo_resolvecolor",
-      "src_components_logo_stories",
-      "src_components_logo_stories_customcolors",
-      "src_components_logo_stories_darkbackground",
-      "src_components_logo_stories_default",
-      "src_components_logo_stories_lightbackground",
-      "src_components_logo_stories_monoblack",
-      "src_components_logo_stories_monowhite",
-      "src_components_logo_stories_story"
+      "_github_dependabot_github_actions_ecosystem_update",
+      "_github_dependabot_github_actions_minor_and_patch_group",
+      "_github_workflows_codeql_analyze_job",
+      "_github_workflows_codeql_codeql_action_analyze",
+      "_github_workflows_codeql_codeql_action_init",
+      "_github_workflows_codeql_workflow",
+      "_github_workflows_publish_workflow",
+      "actions_checkout",
+      "claude_publishing_release_flow",
+      "contributing_publishing",
+      "readme_release"
     ],
     "7": [
-      "package_scripts",
-      "package_scripts_build",
-      "package_scripts_build_storybook",
-      "package_scripts_dev",
-      "package_scripts_format",
-      "package_scripts_lint",
-      "package_scripts_prepare",
-      "package_scripts_prepublishonly",
-      "package_scripts_preview",
-      "package_scripts_test_ui",
-      "package_scripts_test_unit",
-      "package_scripts_type_check"
-    ],
-    "8": [
       "claude_accessibility_convention",
       "claude_commands",
       "claude_component_authorship_convention",
@@ -232,10 +220,10 @@
       "readme_css_export",
       "readme_development"
     ],
-    "9": [
-      "eslint_config_prettier",
+    "8": [
+      "eslint",
       "package_devdependencies",
-      "package_devdependencies_eslint_config_prettier",
+      "package_devdependencies_eslint",
       "package_devdependencies_typescript_eslint_parser",
       "package_devdependencies_vite",
       "package_devdependencies_vitest_axe",
@@ -243,7 +231,28 @@
       "vite",
       "vitest_axe"
     ],
+    "9": [
+      "src_components_pagetransition",
+      "src_components_pagetransition_pagetransition",
+      "src_components_pagetransition_pagetransitionprops",
+      "src_components_pagetransition_stories",
+      "src_components_pagetransition_stories_default",
+      "src_components_pagetransition_stories_demodecorator",
+      "src_components_pagetransition_stories_story",
+      "src_components_pagetransition_stories_unstyled",
+      "src_components_pagetransition_test"
+    ],
     "10": [
+      "src_components_logo_stories",
+      "src_components_logo_stories_customcolors",
+      "src_components_logo_stories_darkbackground",
+      "src_components_logo_stories_default",
+      "src_components_logo_stories_lightbackground",
+      "src_components_logo_stories_monoblack",
+      "src_components_logo_stories_monowhite",
+      "src_components_logo_stories_story"
+    ],
+    "11": [
       "src_components_sectionnav_stories",
       "src_components_sectionnav_stories_default",
       "src_components_sectionnav_stories_demodecorator",
@@ -253,22 +262,14 @@
       "src_components_sectionnav_stories_story",
       "src_components_sectionnav_stories_unstyled"
     ],
-    "11": [
-      "src_components_valuescloud_stories",
-      "src_components_valuescloud_stories_customaccents",
-      "src_components_valuescloud_stories_default",
-      "src_components_valuescloud_stories_extendedvalues",
-      "src_components_valuescloud_stories_manyvalues",
-      "src_components_valuescloud_stories_nowiggle",
-      "src_components_valuescloud_stories_story",
-      "src_components_valuescloud_stories_values"
-    ],
     "12": [
-      "_github_dependabot_npm_ecosystem_update",
-      "_github_dependabot_npm_minor_and_patch_group",
-      "_github_dependabot_react_peer_dependency_exclusion",
-      "pnpm_workspace_allow_builds_esbuild_false",
-      "readme_peer_deps"
+      "src_components_sectionheading_stories",
+      "src_components_sectionheading_stories_alllevels",
+      "src_components_sectionheading_stories_demodecorator",
+      "src_components_sectionheading_stories_plain",
+      "src_components_sectionheading_stories_story",
+      "src_components_sectionheading_stories_unstyled",
+      "src_components_sectionheading_stories_withanchor"
     ],
     "13": [
       "src_test_axe_setup",
@@ -282,8 +283,8 @@
       "readme_contributing"
     ],
     "15": [
-      "eslint",
-      "package_devdependencies_eslint"
+      "eslint_config_prettier",
+      "package_devdependencies_eslint_config_prettier"
     ],
     "16": [
       "eslint_js",
@@ -389,47 +390,56 @@
       "eslint_config"
     ],
     "42": [
-      "github_workflows_graphify_workflow"
+      "github_workflows_ci_ci"
     ],
     "43": [
-      "graphify_out"
+      "github_workflows_ci_deploy_storybook"
     ],
     "44": [
-      "readme_install"
+      "github_workflows_graphify_workflow"
     ],
     "45": [
-      "readme_license"
+      "github_workflows_publish_publish"
     ],
     "46": [
-      "readme_usage"
+      "graphify_out"
     ],
     "47": [
-      "releasing_process"
+      "readme_install"
     ],
     "48": [
-      "src_components"
+      "readme_license"
     ],
     "49": [
-      "vite_config"
+      "readme_usage"
     ],
     "50": [
+      "releasing_process"
+    ],
+    "51": [
+      "src_components"
+    ],
+    "52": [
+      "vite_config"
+    ],
+    "53": [
       "vitest_config"
     ]
   },
   "cohesion": {
-    "0": 0.08571428571428572,
-    "1": 0.0625,
-    "2": 0.12701612903225806,
+    "0": 0.045454545454545456,
+    "1": 0.09848484848484848,
+    "2": 0.09655172413793103,
     "3": 0.07142857142857142,
-    "4": 0.09971509971509972,
+    "4": 0.14153846153846153,
     "5": 0.08695652173913043,
-    "6": 0.15,
-    "7": 0.16666666666666666,
-    "8": 0.25,
-    "9": 0.2222222222222222,
+    "6": 0.21818181818181817,
+    "7": 0.25,
+    "8": 0.2222222222222222,
+    "9": 0.2777777777777778,
     "10": 0.25,
     "11": 0.25,
-    "12": 0.4,
+    "12": 0.2857142857142857,
     "13": 0.5,
     "14": 0.6666666666666666,
     "15": 1.0,
@@ -467,7 +477,10 @@
     "47": 1.0,
     "48": 1.0,
     "49": 1.0,
-    "50": 1.0
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0
   },
   "gods": [
     {
@@ -534,17 +547,6 @@
       "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; semantically similar concepts with no structural link"
     },
     {
-      "source": "allowBuilds: esbuild false",
-      "target": "CI Workflow",
-      "source_files": [
-        "pnpm-workspace.yaml",
-        ".github/workflows/ci.yml"
-      ],
-      "confidence": "INFERRED",
-      "relation": "conceptually_related_to",
-      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `allowBuilds: esbuild false` unexpectedly reaches hub `CI Workflow`"
-    },
-    {
       "source": "Non-Interactive Tool Guidance",
       "target": "Setup",
       "source_files": [
@@ -567,6 +569,17 @@
       "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `Non-Interactive Tool Guidance` unexpectedly reaches hub `CI Workflow`"
     },
     {
+      "source": "allowBuilds: esbuild false",
+      "target": "CI Workflow",
+      "source_files": [
+        "pnpm-workspace.yaml",
+        ".github/workflows/ci.yml"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `allowBuilds: esbuild false` unexpectedly reaches hub `CI Workflow`"
+    },
+    {
       "source": "Development Commands",
       "target": "Lint, Format & Test Job",
       "source_files": [
@@ -579,7 +592,7 @@
     }
   ],
   "tokens": {
-    "input": 1129,
-    "output": 980
+    "input": 1195,
+    "output": 701
   }
 }
