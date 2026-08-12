@@ -3820,9 +3820,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "actions_checkout",
       "community": 6,
-      "norm_label": "actions/checkout"
+      "norm_label": "actions/checkout",
+      "_origin": "semantic",
+      "id": "actions_checkout"
     }
   ],
   "links": [
@@ -7876,6 +7877,7 @@
       "source_file": ".github/workflows/codeql.yml",
       "source_location": null,
       "weight": 1.0,
+      "_origin": "semantic",
       "source": "_github_workflows_codeql_analyze_job",
       "target": "actions_checkout"
     },
@@ -8273,5 +8275,5 @@
       "source_file": ".github/dependabot.yml"
     }
   ],
-  "built_at_commit": "e7c3b36f336cbae46fd00cfbac184da2f292bbd4"
+  "built_at_commit": "41eb70e1b844bcfe394d90a561719120a485b0b1"
 }
