@@ -73,12 +73,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Release
 
-Bump `version` in `package.json`, commit, push to `main`, then tag — CI publishes automatically:
-
-```sh
-git tag v$(node -p "require('./package.json').version")
-git push origin v$(node -p "require('./package.json').version")
-```
+Bump `version` in `package.json`, commit, push to `main`, then tag once CI is green — CI publishes automatically. See [RELEASING.md](RELEASING.md) for the exact commands.
 
 ## License
 
