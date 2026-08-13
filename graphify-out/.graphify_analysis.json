@@ -1,0 +1,598 @@
+{
+  "communities": {
+    "0": [
+      "framer_motion",
+      "lucide_react",
+      "package",
+      "package_author",
+      "package_dependencies",
+      "package_dependencies_framer_motion",
+      "package_dependencies_lucide_react",
+      "package_description",
+      "package_exports",
+      "package_exports_css",
+      "package_files",
+      "package_json_ref_dist",
+      "package_keywords",
+      "package_license",
+      "package_main",
+      "package_module",
+      "package_name",
+      "package_packagemanager",
+      "package_peerdependencies",
+      "package_peerdependencies_react_dom",
+      "package_publishconfig",
+      "package_publishconfig_access",
+      "package_publishconfig_registry",
+      "package_repository",
+      "package_repository_type",
+      "package_repository_url",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_build_storybook",
+      "package_scripts_dev",
+      "package_scripts_format",
+      "package_scripts_lint",
+      "package_scripts_prepare",
+      "package_scripts_prepublishonly",
+      "package_scripts_preview",
+      "package_scripts_test_ui",
+      "package_scripts_test_unit",
+      "package_scripts_type_check",
+      "package_type",
+      "package_types",
+      "package_version",
+      "react_dom",
+      "ref_components",
+      "ref_ui"
+    ],
+    "1": [
+      "package_peerdependencies_react",
+      "react",
+      "src_components_accordionitem",
+      "src_components_accordionitem_accordionitem",
+      "src_components_accordionitem_accordionitemprops",
+      "src_components_accordionitem_stories",
+      "src_components_accordionitem_stories_default",
+      "src_components_accordionitem_stories_multipleopenatonce",
+      "src_components_accordionitem_stories_oneopenatatime",
+      "src_components_accordionitem_stories_story",
+      "src_components_valuescloud",
+      "src_components_valuescloud_stories",
+      "src_components_valuescloud_stories_customaccents",
+      "src_components_valuescloud_stories_default",
+      "src_components_valuescloud_stories_extendedvalues",
+      "src_components_valuescloud_stories_manyvalues",
+      "src_components_valuescloud_stories_nowiggle",
+      "src_components_valuescloud_stories_story",
+      "src_components_valuescloud_stories_values",
+      "src_components_valuescloud_test",
+      "src_components_valuescloud_test_values",
+      "src_components_valuescloud_unstyled_stories",
+      "src_components_valuescloud_unstyled_stories_story",
+      "src_components_valuescloud_unstyled_stories_unstyled",
+      "src_components_valuescloud_unstyled_stories_values",
+      "src_components_valuescloud_value",
+      "src_components_valuescloud_valuescloud",
+      "src_hooks_useprefersreducedmotion",
+      "src_hooks_useprefersreducedmotion_test",
+      "src_hooks_useprefersreducedmotion_test_mockmatchmedia",
+      "src_hooks_useprefersreducedmotion_test_mount",
+      "src_hooks_useprefersreducedmotion_useprefersreducedmotion",
+      "src_styles"
+    ],
+    "2": [
+      "_github_dependabot_npm_ecosystem_update",
+      "_github_dependabot_npm_minor_and_patch_group",
+      "_github_dependabot_react_peer_dependency_exclusion",
+      "_github_workflows_ci_actions_cache",
+      "_github_workflows_ci_actions_checkout",
+      "_github_workflows_ci_actions_deploy_pages",
+      "_github_workflows_ci_actions_setup_node",
+      "_github_workflows_ci_actions_upload_pages_artifact",
+      "_github_workflows_ci_ci_job",
+      "_github_workflows_ci_deploy_storybook_job",
+      "_github_workflows_ci_pnpm_action_setup",
+      "_github_workflows_ci_workflow",
+      "_github_workflows_publish_publish_job",
+      "_pre_commit_config",
+      "_pre_commit_config_eslint_hook",
+      "_pre_commit_config_pre_commit_hooks_repo",
+      "_pre_commit_config_prettier_hook",
+      "_pre_commit_config_vitest_hook",
+      "claude_node_version_policy",
+      "claude_non_interactive_tool_guidance",
+      "claude_pre_commit_hooks_section",
+      "contributing_ci_checks",
+      "contributing_pre_commit_hooks",
+      "contributing_setup",
+      "eslint_hook",
+      "pnpm_workspace_allow_builds_esbuild_false",
+      "pre_commit_hooks_repo",
+      "prettier_hook",
+      "readme_peer_deps",
+      "vitest_hook"
+    ],
+    "3": [
+      "ref_dom",
+      "ref_dom_iterable",
+      "ref_es2020",
+      "ref_vite_client",
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_allowjs",
+      "tsconfig_compileroptions_allowsyntheticdefaultimports",
+      "tsconfig_compileroptions_declaration",
+      "tsconfig_compileroptions_declarationmap",
+      "tsconfig_compileroptions_esmoduleinterop",
+      "tsconfig_compileroptions_jsx",
+      "tsconfig_compileroptions_lib",
+      "tsconfig_compileroptions_module",
+      "tsconfig_compileroptions_moduleresolution",
+      "tsconfig_compileroptions_nofallthroughcasesinswitch",
+      "tsconfig_compileroptions_noimplicitany",
+      "tsconfig_compileroptions_noimplicitreturns",
+      "tsconfig_compileroptions_nounusedlocals",
+      "tsconfig_compileroptions_nounusedparameters",
+      "tsconfig_compileroptions_resolvejsonmodule",
+      "tsconfig_compileroptions_skiplibcheck",
+      "tsconfig_compileroptions_sourcemap",
+      "tsconfig_compileroptions_strict",
+      "tsconfig_compileroptions_strictfunctiontypes",
+      "tsconfig_compileroptions_strictnullchecks",
+      "tsconfig_compileroptions_target",
+      "tsconfig_compileroptions_types",
+      "tsconfig_compileroptions_usedefineforclassfields"
+    ],
+    "4": [
+      "src_components_accordionitem_test",
+      "src_components_logo",
+      "src_components_logo_branded",
+      "src_components_logo_logo",
+      "src_components_logo_logobackground",
+      "src_components_logo_logocolor",
+      "src_components_logo_logoprops",
+      "src_components_logo_resolvebackground",
+      "src_components_logo_resolvecolor",
+      "src_components_logo_test",
+      "src_components_sectionheading",
+      "src_components_sectionheading_sectionheading",
+      "src_components_sectionheading_sectionheadinglevel",
+      "src_components_sectionheading_sectionheadingprops",
+      "src_components_sectionheading_test",
+      "src_components_sectionnav",
+      "src_components_sectionnav_section",
+      "src_components_sectionnav_sectionnav",
+      "src_components_sectionnav_sectionnavprops",
+      "src_components_sectionnav_test",
+      "src_components_sectionnav_test_sections",
+      "src_components_valuescloud_valueaccent",
+      "src_components_valuescloud_valuescloudprops",
+      "src_index",
+      "src_test_axe",
+      "src_test_axe_axe"
+    ],
+    "5": [
+      "ref_src_test",
+      "ref_stories_ts",
+      "ref_stories_tsx",
+      "ref_test_ts",
+      "ref_test_tsx",
+      "ref_tsconfig_json",
+      "tsconfig",
+      "tsconfig_build",
+      "tsconfig_build_compileroptions",
+      "tsconfig_build_compileroptions_emitdeclarationonly",
+      "tsconfig_build_compileroptions_noemit",
+      "tsconfig_build_compileroptions_outdir",
+      "tsconfig_build_compileroptions_rootdir",
+      "tsconfig_build_exclude",
+      "tsconfig_build_extends",
+      "tsconfig_build_include",
+      "tsconfig_build_json_ref_dist",
+      "tsconfig_build_json_ref_src",
+      "tsconfig_exclude",
+      "tsconfig_include",
+      "tsconfig_json_ref_dist",
+      "tsconfig_json_ref_node_modules",
+      "tsconfig_json_ref_src"
+    ],
+    "6": [
+      "_github_dependabot_github_actions_ecosystem_update",
+      "_github_dependabot_github_actions_minor_and_patch_group",
+      "_github_workflows_codeql_analyze_job",
+      "_github_workflows_codeql_codeql_action_analyze",
+      "_github_workflows_codeql_codeql_action_init",
+      "_github_workflows_codeql_workflow",
+      "_github_workflows_publish_workflow",
+      "actions_checkout",
+      "claude_publishing_release_flow",
+      "contributing_publishing",
+      "readme_release"
+    ],
+    "7": [
+      "claude_accessibility_convention",
+      "claude_commands",
+      "claude_component_authorship_convention",
+      "claude_stack",
+      "claude_styling_convention",
+      "claude_typescript_convention",
+      "contributing_component_conventions",
+      "readme_css_export",
+      "readme_development"
+    ],
+    "8": [
+      "eslint",
+      "package_devdependencies",
+      "package_devdependencies_eslint",
+      "package_devdependencies_typescript_eslint_parser",
+      "package_devdependencies_vite",
+      "package_devdependencies_vitest_axe",
+      "typescript_eslint_parser",
+      "vite",
+      "vitest_axe"
+    ],
+    "9": [
+      "src_components_pagetransition",
+      "src_components_pagetransition_pagetransition",
+      "src_components_pagetransition_pagetransitionprops",
+      "src_components_pagetransition_stories",
+      "src_components_pagetransition_stories_default",
+      "src_components_pagetransition_stories_demodecorator",
+      "src_components_pagetransition_stories_story",
+      "src_components_pagetransition_stories_unstyled",
+      "src_components_pagetransition_test"
+    ],
+    "10": [
+      "src_components_logo_stories",
+      "src_components_logo_stories_customcolors",
+      "src_components_logo_stories_darkbackground",
+      "src_components_logo_stories_default",
+      "src_components_logo_stories_lightbackground",
+      "src_components_logo_stories_monoblack",
+      "src_components_logo_stories_monowhite",
+      "src_components_logo_stories_story"
+    ],
+    "11": [
+      "src_components_sectionnav_stories",
+      "src_components_sectionnav_stories_default",
+      "src_components_sectionnav_stories_demodecorator",
+      "src_components_sectionnav_stories_manysections",
+      "src_components_sectionnav_stories_nestedcustom",
+      "src_components_sectionnav_stories_scrollintoviewonnarrowviewport",
+      "src_components_sectionnav_stories_story",
+      "src_components_sectionnav_stories_unstyled"
+    ],
+    "12": [
+      "src_components_sectionheading_stories",
+      "src_components_sectionheading_stories_alllevels",
+      "src_components_sectionheading_stories_demodecorator",
+      "src_components_sectionheading_stories_plain",
+      "src_components_sectionheading_stories_story",
+      "src_components_sectionheading_stories_unstyled",
+      "src_components_sectionheading_stories_withanchor"
+    ],
+    "13": [
+      "src_test_axe_setup",
+      "src_test_axe_setup_assertion",
+      "src_test_axe_setup_asymmetricmatcherscontaining",
+      "src_test_axe_setup_vitest"
+    ],
+    "14": [
+      "contributing_org_wide_contribution_guide",
+      "contributing_prerequisites",
+      "readme_contributing"
+    ],
+    "15": [
+      "eslint_config_prettier",
+      "package_devdependencies_eslint_config_prettier"
+    ],
+    "16": [
+      "eslint_js",
+      "package_devdependencies_eslint_js"
+    ],
+    "17": [
+      "eslint_plugin_react",
+      "package_devdependencies_eslint_plugin_react"
+    ],
+    "18": [
+      "eslint_plugin_react_hooks",
+      "package_devdependencies_eslint_plugin_react_hooks"
+    ],
+    "19": [
+      "globals",
+      "package_devdependencies_globals"
+    ],
+    "20": [
+      "jsdom",
+      "package_devdependencies_jsdom"
+    ],
+    "21": [
+      "package_devdependencies_prettier",
+      "prettier"
+    ],
+    "22": [
+      "package_devdependencies_storybook",
+      "storybook"
+    ],
+    "23": [
+      "package_devdependencies_storybook_addon_a11y",
+      "storybook_addon_a11y"
+    ],
+    "24": [
+      "package_devdependencies_storybook_addon_essentials",
+      "storybook_addon_essentials"
+    ],
+    "25": [
+      "package_devdependencies_storybook_addon_interactions",
+      "storybook_addon_interactions"
+    ],
+    "26": [
+      "package_devdependencies_storybook_addon_links",
+      "storybook_addon_links"
+    ],
+    "27": [
+      "package_devdependencies_storybook_blocks",
+      "storybook_blocks"
+    ],
+    "28": [
+      "package_devdependencies_storybook_react",
+      "storybook_react"
+    ],
+    "29": [
+      "package_devdependencies_storybook_react_vite",
+      "storybook_react_vite"
+    ],
+    "30": [
+      "package_devdependencies_types_node",
+      "types_node"
+    ],
+    "31": [
+      "package_devdependencies_types_react",
+      "types_react"
+    ],
+    "32": [
+      "package_devdependencies_types_react_dom",
+      "types_react_dom"
+    ],
+    "33": [
+      "package_devdependencies_typescript",
+      "typescript"
+    ],
+    "34": [
+      "package_devdependencies_typescript_eslint",
+      "typescript_eslint"
+    ],
+    "35": [
+      "package_devdependencies_typescript_eslint_eslint_plugin",
+      "typescript_eslint_eslint_plugin"
+    ],
+    "36": [
+      "package_devdependencies_vitejs_plugin_react",
+      "vitejs_plugin_react"
+    ],
+    "37": [
+      "package_devdependencies_vitest",
+      "vitest"
+    ],
+    "38": [
+      "package_devdependencies_vitest_ui",
+      "vitest_ui"
+    ],
+    "39": [
+      "storybook_main",
+      "storybook_main_config"
+    ],
+    "40": [
+      "storybook_preview",
+      "storybook_preview_preview"
+    ],
+    "41": [
+      "eslint_config"
+    ],
+    "42": [
+      "github_workflows_ci_ci"
+    ],
+    "43": [
+      "github_workflows_ci_deploy_storybook"
+    ],
+    "44": [
+      "github_workflows_graphify_workflow"
+    ],
+    "45": [
+      "github_workflows_publish_publish"
+    ],
+    "46": [
+      "graphify_out"
+    ],
+    "47": [
+      "readme_install"
+    ],
+    "48": [
+      "readme_license"
+    ],
+    "49": [
+      "readme_usage"
+    ],
+    "50": [
+      "releasing_process"
+    ],
+    "51": [
+      "src_components"
+    ],
+    "52": [
+      "vite_config"
+    ],
+    "53": [
+      "vitest_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.045454545454545456,
+    "1": 0.09848484848484848,
+    "2": 0.09655172413793103,
+    "3": 0.07142857142857142,
+    "4": 0.14153846153846153,
+    "5": 0.08695652173913043,
+    "6": 0.21818181818181817,
+    "7": 0.25,
+    "8": 0.2222222222222222,
+    "9": 0.2777777777777778,
+    "10": 0.25,
+    "11": 0.25,
+    "12": 0.2857142857142857,
+    "13": 0.5,
+    "14": 0.6666666666666666,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0
+  },
+  "gods": [
+    {
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 24
+    },
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 12
+    },
+    {
+      "id": "react",
+      "label": "react",
+      "degree": 11
+    },
+    {
+      "id": "_github_workflows_ci_ci_job",
+      "label": "Lint, Format & Test Job",
+      "degree": 10
+    },
+    {
+      "id": "src_hooks_useprefersreducedmotion_useprefersreducedmotion",
+      "label": "usePrefersReducedMotion()",
+      "degree": 9
+    },
+    {
+      "id": "tsconfig_build_exclude",
+      "label": "exclude",
+      "degree": 8
+    },
+    {
+      "id": "src_components_valuescloud_valuescloud",
+      "label": "ValuesCloud()",
+      "degree": 7
+    },
+    {
+      "id": "_github_workflows_ci_deploy_storybook_job",
+      "label": "Deploy Storybook to GitHub Pages Job",
+      "degree": 7
+    },
+    {
+      "id": "package_peerdependencies_react",
+      "label": "react",
+      "degree": 6
+    },
+    {
+      "id": "src_components_logo_logo",
+      "label": "Logo()",
+      "degree": 6
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Peer Dependencies (react, react-dom >= 18)",
+      "target": "React/React-DOM Peer Dependency Ignore Rule",
+      "source_files": [
+        "README.md",
+        ".github/dependabot.yml"
+      ],
+      "confidence": "INFERRED",
+      "relation": "semantically_similar_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; semantically similar concepts with no structural link"
+    },
+    {
+      "source": "Non-Interactive Tool Guidance",
+      "target": "Setup",
+      "source_files": [
+        "CLAUDE.md",
+        "CONTRIBUTING.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "semantically_similar_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; semantically similar concepts with no structural link"
+    },
+    {
+      "source": "Non-Interactive Tool Guidance",
+      "target": "CI Workflow",
+      "source_files": [
+        "CLAUDE.md",
+        ".github/workflows/ci.yml"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `Non-Interactive Tool Guidance` unexpectedly reaches hub `CI Workflow`"
+    },
+    {
+      "source": "allowBuilds: esbuild false",
+      "target": "CI Workflow",
+      "source_files": [
+        "pnpm-workspace.yaml",
+        ".github/workflows/ci.yml"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `allowBuilds: esbuild false` unexpectedly reaches hub `CI Workflow`"
+    },
+    {
+      "source": "Development Commands",
+      "target": "Lint, Format & Test Job",
+      "source_files": [
+        "CLAUDE.md",
+        ".github/workflows/ci.yml"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    }
+  ],
+  "tokens": {
+    "input": 1195,
+    "output": 701
+  }
+}
