@@ -10,14 +10,86 @@ jobs:
     name: Build & Publish to GitHub Packages
     runs-on: ubuntu-latest
     permissions:
+      contents: read
+      checks: read
       packages: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # A lightweight tag can carry a merge commit's GitHub-verified web-flow
+      # signature without the tag itself ever being signed by anyone — GitHub
+      # checks the commit's signature, not the tag object's. Reading the tag
+      # object's own verification status from the API is the only way to tell
+      # the two apart, so it runs first, before anything is built against it.
+      - name: Assert the tag is annotated and signed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          type=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" -q '.object.type')
+          if [ "$type" != "tag" ]; then
+            echo "::error::$TAG is a lightweight tag. RELEASING.md requires a signed annotated tag (git tag -s)."
+            exit 1
+          fi
+
+          sha=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" -q '.object.sha')
+          verified=$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$sha" -q '.verification.verified')
+          if [ "$verified" != "true" ]; then
+            reason=$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$sha" -q '.verification.reason')
+            echo "::error::$TAG's own signature did not verify ($reason)."
+            exit 1
+          fi
+
+      # This workflow triggers on the tag push, a separate event from the `ci`
+      # run against the same commit on main, so there's no job to `needs:`
+      # across them — the only link is the commit SHA, queried here directly.
+      # Matched by job name rather than the workflow run's overall conclusion,
+      # so an unrelated Storybook deploy failure can't block a publish that CI
+      # itself passed. Fails fast rather than waiting: the release flow tags
+      # only after watching CI go green on main, so by the time a tag lands
+      # here the run should already be complete — if it isn't, re-running this
+      # job after CI finishes is cheaper than a runner sitting in a poll loop.
+      - name: Require a green CI run for the tagged commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          result=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/check-runs" \
+            -q '[.check_runs[] | select(.name == "Lint, Format & Test")] | sort_by(.id) | last
+                | [(.status // "missing"), (.conclusion // "missing")] | @tsv')
+          status=$(printf '%s' "$result" | cut -f1)
+          conclusion=$(printf '%s' "$result" | cut -f2)
+          if [ "$status" = "missing" ]; then
+            echo "::error::No CI run found for $SHA."
+            exit 1
+          fi
+          if [ "$status" != "completed" ]; then
+            echo "::error::CI for $SHA is still $status. Wait for it to finish, then re-run this job."
+            exit 1
+          fi
+          if [ "$conclusion" != "success" ]; then
+            echo "::error::CI for $SHA did not pass (conclusion: $conclusion)."
+            exit 1
+          fi
+
+      - name: Assert the tag matches package.json
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          want="${TAG#v}"
+          got=$(node -p "require('./package.json').version")
+          if [ "$got" != "$want" ]; then
+            echo "::error file=package.json::version $got does not match tag $want"
+            exit 1
+          fi
+
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
           registry-url: https://npm.pkg.github.com
