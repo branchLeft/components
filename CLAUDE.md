@@ -60,19 +60,12 @@ Publishing is handled by CI — do not run `pnpm publish` locally.
 
 ### Release flow
 
-1. Bump `version` in `package.json`, commit, and push to `main`.
-2. Create and push a semver tag — CI publishes automatically:
+Bump `version` in `package.json`, commit, and push to `main`; once CI is green on that commit, create and push the tag. See [RELEASING.md](RELEASING.md) for the exact commands.
 
-```bash
-git tag v1.2.3
-git push origin v1.2.3
-```
-
-The `.github/workflows/publish.yml` workflow triggers on tags matching `v[0-9]+.[0-9]+.[0-9]+`, builds the package via `prepublishOnly`, and publishes to GitHub Packages using `GITHUB_TOKEN`.
+The `.github/workflows/publish.yml` workflow triggers on tags matching `v[0-9]+.[0-9]+.[0-9]+`. Before it builds or publishes anything, it asserts the tag is signed, that CI passed for the tagged commit, and that the tag's version matches `package.json` — then builds the package via `prepublishOnly` and publishes to GitHub Packages using `GITHUB_TOKEN`.
 
 ### Notes
 
-- The tag version must match `version` in `package.json` — there is no automated check, so bump the version before tagging.
 - Pre-release tags (e.g. `v1.0.0-beta.1`) do **not** trigger the workflow. Stable semver only.
 
 ## graphify
