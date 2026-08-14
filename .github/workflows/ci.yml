@@ -52,8 +52,11 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Through the script, not a bare `prettier --check .`: the ignore set is
+      # three --ignore-path files, and an invocation that omits them checks
+      # generated output and the lockfile.
       - name: Check formatting
-        run: pnpm prettier --check .
+        run: pnpm format:check
 
       - name: Lint
         run: pnpm eslint src --ext .ts,.tsx
