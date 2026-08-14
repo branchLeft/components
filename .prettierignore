@@ -1,27 +1,10 @@
-# Prettier 3 does not read .gitignore, so everything ignored there has to be
-# repeated here. The paths are unanchored on purpose: .gitignore anchors its
-# entries to the repo root with a leading slash, which does not reach the same
-# directories inside a nested checkout.
-
-node_modules/
-dist/
-storybook-static/
-
-# Test and coverage output
-coverage/
-
-# Generated knowledge graph, rebuilt and committed by CI.
-graphify-out/
-
-# Agent worktrees are full checkouts of this repo living inside it. The
-# pre-commit hook runs `pnpm format` (prettier --write .) with
-# pass_filenames: false, so without these a commit here reformats files inside
-# a sibling branch's checkout.
-.claude/
-.worktrees/
-
-# Lockfiles are pnpm's format, not ours.
-pnpm-lock.yaml
-
-*.min.js
-*.min.css
+# Repo-specific ignores. Everything this file used to list — node_modules,
+# dist, storybook-static, coverage, graphify-out, sibling worktrees, the
+# lockfile, minified assets — is in the shared set at
+# node_modules/@branchleft/prettier-config/prettierignore, which the format
+# scripts pass as a third --ignore-path. Nothing here is repo-specific today.
+#
+# The file is kept rather than deleted because the scripts name it explicitly,
+# and Prettier tolerates a missing --ignore-path silently — so deleting it
+# would work now and fail quietly the day someone adds an entry expecting it to
+# be read.

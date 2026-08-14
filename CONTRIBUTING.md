@@ -21,8 +21,9 @@ This package has no dependency on any other `@branchleft`-scoped package, so a p
 These are exactly what [.github/workflows/ci.yml](.github/workflows/ci.yml) runs:
 
 ```bash
-pnpm prettier --check .
+pnpm format:check
 pnpm eslint src --ext .ts,.tsx
+pnpm type-check
 pnpm test:unit
 ```
 

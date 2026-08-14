@@ -4,20 +4,15 @@
   // loader and reach for `node` types and `__dirname`, while the library source
   // is browser-targeted and typed against `vite/client`. One program cannot
   // hold both without giving the library access to the Node API surface.
+  //
+  // No stack preset applies: react-app is browser-targeted and pulumi pins
+  // NodeNext resolution, which Vite's config loader does not use.
+  "extends": "@branchleft/tsconfig/strict-1.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "types": ["node"],
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "noEmit": true
+    "lib": ["ES2022"],
+    "types": ["node"]
   },
   "include": [".storybook/**/*.ts", "vite.config.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]
