@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [main]
 
+# `packages: read` is what lets pnpm fetch @branchleft/tsconfig and
+# @branchleft/prettier-config. The registry rejects anonymous requests even for
+# a public package, so the run's own GITHUB_TOKEN is passed as NODE_AUTH_TOKEN
+# below.
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   ci:
     name: Lint, Format & Test
@@ -19,6 +27,8 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
+          registry-url: https://npm.pkg.github.com
+          scope: '@branchleft'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
@@ -39,6 +49,8 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check formatting
         run: pnpm prettier --check .
@@ -62,7 +74,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ci]
     if: github.ref == 'refs/heads/main'
+    # Job-level permissions replace the workflow-level block entirely, so
+    # `packages: read` is restated alongside the scopes actually being added.
     permissions:
+      contents: read
+      packages: read
       pages: write
       id-token: write
     environment:
@@ -77,6 +93,8 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
+          registry-url: https://npm.pkg.github.com
+          scope: '@branchleft'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
@@ -97,6 +115,8 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Storybook
         run: pnpm build:storybook
