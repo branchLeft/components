@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import * as React from 'react';
 import { createRoot, type Root } from 'react-dom/client';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { act } from 'react';
 import { PageTransition } from './PageTransition';
 
@@ -37,24 +38,35 @@ function mockMatchMedia(matches: boolean) {
   }) as unknown as typeof window.matchMedia;
 }
 
-let container: HTMLDivElement;
-let root: Root;
+let mounted: { container: HTMLDivElement; root: Root } | undefined;
 
 afterEach(() => {
-  act(() => root.unmount());
-  container.remove();
+  if (mounted) {
+    act(() => mounted!.root.unmount());
+    mounted.container.remove();
+    mounted = undefined;
+  }
   capturedTransition = undefined;
 });
 
 function mount(children: React.ReactNode): HTMLDivElement {
-  container = document.createElement('div');
+  const container = document.createElement('div');
   document.body.appendChild(container);
-  root = createRoot(container);
+  const root = createRoot(container);
   act(() => root.render(React.createElement(PageTransition, null, children)));
+  mounted = { container, root };
   return container;
 }
 
 describe('PageTransition', () => {
+  it('server-renders without touching matchMedia (SSR has no window preference to read)', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(PageTransition, null, React.createElement('p', null, 'Page content'))
+    );
+    expect(html).toContain('bl-page-transition');
+    expect(html).toContain('Page content');
+  });
+
   it('renders children inside the bl-page-transition class hook', () => {
     mockMatchMedia(false);
     const rendered = mount(React.createElement('p', null, 'Page content'));
