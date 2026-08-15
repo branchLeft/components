@@ -52,14 +52,22 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Through the script, not a bare `prettier --check .`: the ignore set is
-      # three --ignore-path files, and an invocation that omits them checks
-      # generated output and the lockfile.
-      - name: Check formatting
-        run: pnpm format:check
+      - name: Setup Python (for pre-commit)
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.x'
 
-      - name: Lint
-        run: pnpm eslint src --ext .ts,.tsx
+      # Re-runs the same hooks .pre-commit-config.yaml defines, so a commit
+      # made with --no-verify is still caught here. This is the sole format
+      # and lint check now — the local prettier/eslint hooks run the same
+      # `pnpm format`/`pnpm lint` scripts pre-commit would invoke anyway (only
+      # --write/--fix vs. --check, same file scope), so separate steps for
+      # those would just duplicate this one. Vitest is skipped: the dedicated
+      # step below already covers it.
+      - name: Run pre-commit hooks
+        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
+        env:
+          SKIP: vitest
 
       - name: Type check
         run: pnpm type-check
