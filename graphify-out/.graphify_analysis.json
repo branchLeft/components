@@ -1,49 +1,6 @@
 {
   "communities": {
     "0": [
-      "package_keywords",
-      "package_peerdependencies",
-      "package_peerdependencies_react",
-      "package_peerdependencies_react_dom",
-      "react",
-      "react_dom",
-      "ref_components",
-      "ref_ui",
-      "src_components_accordionitem",
-      "src_components_accordionitem_accordionitem",
-      "src_components_accordionitem_accordionitemprops",
-      "src_components_accordionitem_stories",
-      "src_components_accordionitem_stories_default",
-      "src_components_accordionitem_stories_multipleopenatonce",
-      "src_components_accordionitem_stories_oneopenatatime",
-      "src_components_accordionitem_stories_story",
-      "src_components_accordionitem_test",
-      "src_components_logo",
-      "src_components_logo_branded",
-      "src_components_logo_logo",
-      "src_components_logo_logobackground",
-      "src_components_logo_logocolor",
-      "src_components_logo_logoprops",
-      "src_components_logo_resolvebackground",
-      "src_components_logo_resolvecolor",
-      "src_components_logo_test",
-      "src_components_sectionheading",
-      "src_components_sectionheading_sectionheading",
-      "src_components_sectionheading_sectionheadinglevel",
-      "src_components_sectionheading_sectionheadingprops",
-      "src_components_sectionheading_test",
-      "src_components_sectionnav",
-      "src_components_sectionnav_section",
-      "src_components_sectionnav_sectionnav",
-      "src_components_sectionnav_sectionnavprops",
-      "src_components_sectionnav_test",
-      "src_components_sectionnav_test_sections",
-      "src_index",
-      "src_styles",
-      "src_test_axe",
-      "src_test_axe_axe"
-    ],
-    "1": [
       "framer_motion",
       "lucide_react",
       "package",
@@ -84,6 +41,45 @@
       "package_type",
       "package_types",
       "package_version"
+    ],
+    "1": [
+      "package_keywords",
+      "react",
+      "ref_components",
+      "ref_ui",
+      "src_components_accordionitem",
+      "src_components_accordionitem_accordionitem",
+      "src_components_accordionitem_accordionitemprops",
+      "src_components_accordionitem_stories",
+      "src_components_accordionitem_stories_default",
+      "src_components_accordionitem_stories_multipleopenatonce",
+      "src_components_accordionitem_stories_oneopenatatime",
+      "src_components_accordionitem_stories_story",
+      "src_components_accordionitem_test",
+      "src_components_logo",
+      "src_components_logo_branded",
+      "src_components_logo_logo",
+      "src_components_logo_logobackground",
+      "src_components_logo_logocolor",
+      "src_components_logo_logoprops",
+      "src_components_logo_resolvebackground",
+      "src_components_logo_resolvecolor",
+      "src_components_logo_test",
+      "src_components_sectionheading",
+      "src_components_sectionheading_sectionheading",
+      "src_components_sectionheading_sectionheadinglevel",
+      "src_components_sectionheading_sectionheadingprops",
+      "src_components_sectionheading_test",
+      "src_components_sectionnav",
+      "src_components_sectionnav_section",
+      "src_components_sectionnav_sectionnav",
+      "src_components_sectionnav_sectionnavprops",
+      "src_components_sectionnav_test",
+      "src_components_sectionnav_test_sections",
+      "src_index",
+      "src_styles",
+      "src_test_axe",
+      "src_test_axe_axe"
     ],
     "2": [
       "_github_dependabot_github_actions_ecosystem_update",
@@ -151,6 +147,28 @@
       "tsconfig_node_json_ref_dist"
     ],
     "4": [
+      "package_peerdependencies",
+      "package_peerdependencies_react",
+      "package_peerdependencies_react_dom",
+      "react_dom",
+      "src_components_pagetransition",
+      "src_components_pagetransition_pagetransition",
+      "src_components_pagetransition_pagetransitionprops",
+      "src_components_pagetransition_stories",
+      "src_components_pagetransition_stories_default",
+      "src_components_pagetransition_stories_demodecorator",
+      "src_components_pagetransition_stories_story",
+      "src_components_pagetransition_stories_unstyled",
+      "src_components_pagetransition_test",
+      "src_components_pagetransition_test_mount",
+      "src_hooks_useprefersreducedmotion",
+      "src_hooks_useprefersreducedmotion_test",
+      "src_hooks_useprefersreducedmotion_test_mount",
+      "src_hooks_useprefersreducedmotion_useprefersreducedmotion",
+      "src_test_mockmatchmedia",
+      "src_test_mockmatchmedia_mockmatchmedia"
+    ],
+    "5": [
       "src_components_valuescloud",
       "src_components_valuescloud_stories",
       "src_components_valuescloud_stories_customaccents",
@@ -171,7 +189,7 @@
       "src_components_valuescloud_valuescloud",
       "src_components_valuescloud_valuescloudprops"
     ],
-    "5": [
+    "6": [
       "ref_src_test",
       "ref_stories_ts",
       "ref_stories_tsx",
@@ -190,34 +208,16 @@
       "tsconfig_build_json_ref_dist",
       "tsconfig_build_json_ref_src"
     ],
-    "6": [
-      "src_components_pagetransition",
-      "src_components_pagetransition_pagetransition",
-      "src_components_pagetransition_pagetransitionprops",
-      "src_components_pagetransition_stories",
-      "src_components_pagetransition_stories_default",
-      "src_components_pagetransition_stories_demodecorator",
-      "src_components_pagetransition_stories_story",
-      "src_components_pagetransition_stories_unstyled",
-      "src_components_pagetransition_test",
-      "src_components_pagetransition_test_mount",
-      "src_hooks_useprefersreducedmotion",
-      "src_hooks_useprefersreducedmotion_test",
-      "src_hooks_useprefersreducedmotion_test_mount",
-      "src_hooks_useprefersreducedmotion_useprefersreducedmotion",
-      "src_test_mockmatchmedia",
-      "src_test_mockmatchmedia_mockmatchmedia"
-    ],
     "7": [
+      "branchleft_prettier_config",
       "package_devdependencies",
-      "package_devdependencies_storybook",
-      "package_devdependencies_storybook_addon_a11y",
+      "package_devdependencies_branchleft_prettier_config",
+      "package_devdependencies_types_react",
       "package_devdependencies_vite",
-      "package_devdependencies_vitest_ui",
-      "storybook",
-      "storybook_addon_a11y",
+      "package_devdependencies_vitest",
+      "types_react",
       "vite",
-      "vitest_ui"
+      "vitest"
     ],
     "8": [
       "claude_accessibility_convention",
@@ -259,14 +259,6 @@
       "src_components_sectionheading_stories_withanchor"
     ],
     "12": [
-      "branchleft_prettier_config",
-      "branchleft_tsconfig",
-      "github_workflows_ci_yml_ci",
-      "github_workflows_ci_yml_deploy_storybook",
-      "package_devdependencies_branchleft_prettier_config",
-      "package_devdependencies_branchleft_tsconfig"
-    ],
-    "13": [
       "pre_commit_config_check_added_large_files",
       "pre_commit_config_check_merge_conflict",
       "pre_commit_config_check_yaml",
@@ -274,27 +266,31 @@
       "pre_commit_config_pre_commit_hooks",
       "pre_commit_config_trailing_whitespace"
     ],
-    "14": [
+    "13": [
       "_github_dependabot_npm_ecosystem_update",
       "_github_dependabot_npm_minor_and_patch_group",
       "_github_dependabot_react_peer_dependency_exclusion",
       "pnpm_workspace_allow_builds_esbuild_false",
       "readme_peer_deps"
     ],
-    "15": [
+    "14": [
       "src_test_axe_setup",
       "src_test_axe_setup_assertion",
       "src_test_axe_setup_asymmetricmatcherscontaining",
       "src_test_axe_setup_vitest"
     ],
-    "16": [
+    "15": [
       "contributing_org_wide_contribution_guide",
       "contributing_prerequisites",
       "readme_contributing"
     ],
-    "17": [
+    "16": [
       "branchleft_github_workflows_docs_lint_yml",
       "github_workflows_docs_lint_yml_docs_lint"
+    ],
+    "17": [
+      "branchleft_tsconfig",
+      "package_devdependencies_branchleft_tsconfig"
     ],
     "18": [
       "eslint",
@@ -321,162 +317,170 @@
       "readme"
     ],
     "24": [
+      "github_workflows_ci_ci",
+      "github_workflows_ci_deploy_storybook"
+    ],
+    "25": [
       "globals",
       "package_devdependencies_globals"
     ],
-    "25": [
+    "26": [
       "jsdom",
       "package_devdependencies_jsdom"
     ],
-    "26": [
+    "27": [
       "package_devdependencies_prettier",
       "prettier"
     ],
-    "27": [
+    "28": [
+      "package_devdependencies_storybook",
+      "storybook"
+    ],
+    "29": [
+      "package_devdependencies_storybook_addon_a11y",
+      "storybook_addon_a11y"
+    ],
+    "30": [
       "package_devdependencies_storybook_addon_essentials",
       "storybook_addon_essentials"
     ],
-    "28": [
+    "31": [
       "package_devdependencies_storybook_addon_interactions",
       "storybook_addon_interactions"
     ],
-    "29": [
+    "32": [
       "package_devdependencies_storybook_addon_links",
       "storybook_addon_links"
     ],
-    "30": [
+    "33": [
       "package_devdependencies_storybook_blocks",
       "storybook_blocks"
     ],
-    "31": [
+    "34": [
       "package_devdependencies_storybook_react",
       "storybook_react"
     ],
-    "32": [
+    "35": [
       "package_devdependencies_storybook_react_vite",
       "storybook_react_vite"
     ],
-    "33": [
+    "36": [
       "package_devdependencies_types_node",
       "types_node"
     ],
-    "34": [
-      "package_devdependencies_types_react",
-      "types_react"
-    ],
-    "35": [
+    "37": [
       "package_devdependencies_types_react_dom",
       "types_react_dom"
     ],
-    "36": [
+    "38": [
       "package_devdependencies_typescript",
       "typescript"
     ],
-    "37": [
+    "39": [
       "package_devdependencies_typescript_eslint",
       "typescript_eslint"
     ],
-    "38": [
+    "40": [
       "package_devdependencies_typescript_eslint_eslint_plugin",
       "typescript_eslint_eslint_plugin"
     ],
-    "39": [
+    "41": [
       "package_devdependencies_typescript_eslint_parser",
       "typescript_eslint_parser"
     ],
-    "40": [
+    "42": [
       "package_devdependencies_vitejs_plugin_react",
       "vitejs_plugin_react"
     ],
-    "41": [
-      "package_devdependencies_vitest",
-      "vitest"
-    ],
-    "42": [
+    "43": [
       "package_devdependencies_vitest_axe",
       "vitest_axe"
     ],
-    "43": [
+    "44": [
+      "package_devdependencies_vitest_ui",
+      "vitest_ui"
+    ],
+    "45": [
       "storybook_main",
       "storybook_main_config"
     ],
-    "44": [
+    "46": [
       "storybook_preview",
       "storybook_preview_preview"
     ],
-    "45": [
+    "47": [
       "branchleft_standards_standards_yml"
     ],
-    "46": [
+    "48": [
       "claude"
     ],
-    "47": [
+    "49": [
       "claude_stack"
     ],
-    "48": [
+    "50": [
       "eslint_config"
     ],
-    "49": [
+    "51": [
       "github_workflows_graphify_workflow"
     ],
-    "50": [
+    "52": [
       "github_workflows_standards_workflow"
     ],
-    "51": [
+    "53": [
       "graphify_out"
     ],
-    "52": [
+    "54": [
       "pnpm_workspace"
     ],
-    "53": [
+    "55": [
       "pre_commit_config_eslint"
     ],
-    "54": [
+    "56": [
       "pre_commit_config_prettier"
     ],
-    "55": [
+    "57": [
       "pre_commit_config_vitest"
     ],
-    "56": [
+    "58": [
       "readme_install"
     ],
-    "57": [
+    "59": [
       "readme_license"
     ],
-    "58": [
+    "60": [
       "readme_usage"
     ],
-    "59": [
+    "61": [
       "releasing_process"
     ],
-    "60": [
+    "62": [
       "src_components"
     ],
-    "61": [
+    "63": [
       "vite_config"
     ],
-    "62": [
+    "64": [
       "vitest_config"
     ]
   },
   "cohesion": {
-    "0": 0.08780487804878048,
-    "1": 0.05,
+    "0": 0.05,
+    "1": 0.1006006006006006,
     "2": 0.0946969696969697,
     "3": 0.07407407407407407,
-    "4": 0.14035087719298245,
-    "5": 0.11764705882352941,
-    "6": 0.20833333333333334,
+    "4": 0.15263157894736842,
+    "5": 0.14035087719298245,
+    "6": 0.11764705882352941,
     "7": 0.2222222222222222,
     "8": 0.2857142857142857,
     "9": 0.25,
     "10": 0.25,
     "11": 0.2857142857142857,
     "12": 0.3333333333333333,
-    "13": 0.3333333333333333,
-    "14": 0.4,
-    "15": 0.5,
-    "16": 0.6666666666666666,
+    "13": 0.4,
+    "14": 0.5,
+    "15": 0.6666666666666666,
+    "16": 1.0,
     "17": 1.0,
     "18": 1.0,
     "19": 1.0,
@@ -522,7 +526,9 @@
     "59": 1.0,
     "60": 1.0,
     "61": 1.0,
-    "62": 1.0
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0
   },
   "gods": [
     {
@@ -634,7 +640,7 @@
     }
   ],
   "tokens": {
-    "input": 0,
-    "output": 0
+    "input": 2467,
+    "output": 1141
   }
 }
