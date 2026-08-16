@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch: {}
 
 # `packages: read` is what lets pnpm fetch @branchleft/tsconfig and
 # @branchleft/prettier-config. The registry rejects anonymous requests even for
