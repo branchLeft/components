@@ -4,6 +4,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { act } from 'react';
 import { PageTransition } from './PageTransition';
+import { mockMatchMedia } from '../test/mockMatchMedia';
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -29,14 +30,7 @@ vi.mock('framer-motion', () => ({
   },
 }));
 
-function mockMatchMedia(matches: boolean) {
-  window.matchMedia = vi.fn().mockReturnValue({
-    matches,
-    media: '(prefers-reduced-motion: reduce)',
-    addEventListener: () => {},
-    removeEventListener: () => {},
-  }) as unknown as typeof window.matchMedia;
-}
+const originalMatchMedia = window.matchMedia;
 
 let mounted: { container: HTMLDivElement; root: Root } | undefined;
 
@@ -47,6 +41,7 @@ afterEach(() => {
     mounted = undefined;
   }
   capturedTransition = undefined;
+  window.matchMedia = originalMatchMedia;
 });
 
 function mount(children: React.ReactNode): HTMLDivElement {
