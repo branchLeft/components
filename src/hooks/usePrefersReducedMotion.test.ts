@@ -1,31 +1,11 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import * as React from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { act } from 'react';
 import { usePrefersReducedMotion } from './usePrefersReducedMotion';
+import { mockMatchMedia } from '../test/mockMatchMedia';
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
-
-function mockMatchMedia(matches: boolean) {
-  const listeners = new Set<() => void>();
-  const mql = {
-    matches,
-    media: '(prefers-reduced-motion: reduce)',
-    addEventListener: (_type: 'change', listener: () => void) => {
-      listeners.add(listener);
-    },
-    removeEventListener: (_type: 'change', listener: () => void) => {
-      listeners.delete(listener);
-    },
-  };
-  window.matchMedia = vi.fn().mockReturnValue(mql) as unknown as typeof window.matchMedia;
-  return {
-    fire(next: boolean) {
-      mql.matches = next;
-      for (const listener of listeners) listener();
-    },
-  };
-}
 
 let container: HTMLDivElement;
 let root: Root;
