@@ -4,6 +4,19 @@
   "graph": {
     "hyperedges": [
       {
+        "id": "ci_cd_pipeline",
+        "label": "CI/CD Pipeline",
+        "nodes": [
+          "github_workflows_ci_ci",
+          "github_workflows_ci_deploy_storybook",
+          "github_workflows_publish_publish"
+        ],
+        "relation": "participate_in",
+        "confidence": "INFERRED",
+        "confidence_score": 0.9,
+        "source_file": ".github/workflows/ci.yml"
+      },
+      {
         "id": "ci_cd_automation_suite",
         "label": "CI/CD Automation Suite",
         "nodes": [
@@ -52,7 +65,7 @@
       "source_file": ".storybook/main.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 46,
+      "community": 43,
       "community_name": "Storybook Main Config",
       "norm_label": "main.ts",
       "id": "storybook_main"
@@ -63,7 +76,7 @@
       "source_file": ".storybook/main.ts",
       "source_location": "L3",
       "_origin": "ast",
-      "community": 46,
+      "community": 43,
       "community_name": "Storybook Main Config",
       "norm_label": "config",
       "id": "storybook_main_config"
@@ -74,7 +87,7 @@
       "source_file": ".storybook/preview.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 47,
+      "community": 44,
       "community_name": "Storybook Preview Config",
       "norm_label": "preview.ts",
       "id": "storybook_preview"
@@ -85,7 +98,7 @@
       "source_file": ".storybook/preview.ts",
       "source_location": "L3",
       "_origin": "ast",
-      "community": 47,
+      "community": 44,
       "community_name": "Storybook Preview Config",
       "norm_label": "preview",
       "id": "storybook_preview_preview"
@@ -96,7 +109,7 @@
       "source_file": "eslint.config.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 52,
+      "community": 49,
       "community_name": "ESLint Config",
       "norm_label": "eslint.config.js",
       "id": "eslint_config"
@@ -409,7 +422,7 @@
       "source_file": "src/components/PageTransition.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "pagetransition.stories.tsx",
       "id": "src_components_pagetransition_stories"
@@ -422,7 +435,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "story",
       "id": "src_components_pagetransition_stories_story"
@@ -434,7 +447,7 @@
       "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "demodecorator()",
       "id": "src_components_pagetransition_stories_demodecorator"
@@ -445,7 +458,7 @@
       "source_file": "src/components/PageTransition.stories.tsx",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "default",
       "id": "src_components_pagetransition_stories_default"
@@ -456,7 +469,7 @@
       "source_file": "src/components/PageTransition.stories.tsx",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "unstyled",
       "id": "src_components_pagetransition_stories_unstyled"
@@ -492,7 +505,7 @@
       "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "community_name": "AccordionItem Component & React Peer Dep",
       "norm_label": "pagetransition()",
       "id": "src_components_pagetransition_pagetransition"
@@ -503,7 +516,7 @@
       "source_file": "src/components/SectionHeading.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 0,
+      "community": 10,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "sectionheading.stories.tsx",
       "id": "src_components_sectionheading_stories"
@@ -516,7 +529,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 0,
+      "community": 10,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "story",
       "id": "src_components_sectionheading_stories_story"
@@ -528,7 +541,7 @@
       "source_location": "L29",
       "_callable": true,
       "_origin": "ast",
-      "community": 0,
+      "community": 10,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "demodecorator()",
       "id": "src_components_sectionheading_stories_demodecorator"
@@ -539,7 +552,7 @@
       "source_file": "src/components/SectionHeading.stories.tsx",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 0,
+      "community": 10,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "plain",
       "id": "src_components_sectionheading_stories_plain"
@@ -550,7 +563,7 @@
       "source_file": "src/components/SectionHeading.stories.tsx",
       "source_location": "L45",
       "_origin": "ast",
-      "community": 0,
+      "community": 10,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "withanchor",
       "id": "src_components_sectionheading_stories_withanchor"
@@ -561,7 +574,7 @@
       "source_file": "src/components/SectionHeading.stories.tsx",
       "source_location": "L58",
       "_origin": "ast",
-      "community": 0,
+      "community": 10,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "alllevels",
       "id": "src_components_sectionheading_stories_alllevels"
@@ -572,7 +585,7 @@
       "source_file": "src/components/SectionHeading.stories.tsx",
       "source_location": "L89",
       "_origin": "ast",
-      "community": 0,
+      "community": 10,
       "community_name": "SectionHeading & Component Tests",
       "norm_label": "unstyled",
       "id": "src_components_sectionheading_stories_unstyled"
@@ -643,7 +656,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 10,
+      "community": 8,
       "community_name": "Logo Component",
       "norm_label": "sectionnav.stories.tsx",
       "id": "src_components_sectionnav_stories"
@@ -656,7 +669,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 10,
+      "community": 8,
       "community_name": "Logo Component",
       "norm_label": "story",
       "id": "src_components_sectionnav_stories_story"
@@ -668,7 +681,7 @@
       "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
-      "community": 10,
+      "community": 8,
       "community_name": "Logo Component",
       "norm_label": "demodecorator()",
       "id": "src_components_sectionnav_stories_demodecorator"
@@ -679,7 +692,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 10,
+      "community": 8,
       "community_name": "Logo Component",
       "norm_label": "default",
       "id": "src_components_sectionnav_stories_default"
@@ -690,7 +703,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L41",
       "_origin": "ast",
-      "community": 10,
+      "community": 8,
       "community_name": "Logo Component",
       "norm_label": "manysections",
       "id": "src_components_sectionnav_stories_manysections"
@@ -701,7 +714,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 10,
+      "community": 8,
       "community_name": "Logo Component",
       "norm_label": "scrollintoviewonnarrowviewport",
       "id": "src_components_sectionnav_stories_scrollintoviewonnarrowviewport"
@@ -712,7 +725,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L108",
       "_origin": "ast",
-      "community": 10,
+      "community": 8,
       "community_name": "Logo Component",
       "norm_label": "unstyled",
       "id": "src_components_sectionnav_stories_unstyled"
@@ -723,7 +736,7 @@
       "source_file": "src/components/SectionNav.stories.tsx",
       "source_location": "L126",
       "_origin": "ast",
-      "community": 10,
+      "community": 8,
       "community_name": "Logo Component",
       "norm_label": "nestedcustom",
       "id": "src_components_sectionnav_stories_nestedcustom"
@@ -805,7 +818,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 0,
+      "community": 9,
       "community_name": "ValuesCloud Stories",
       "norm_label": "valuescloud.stories.tsx",
       "id": "src_components_valuescloud_stories"
@@ -818,7 +831,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 0,
+      "community": 9,
       "community_name": "ValuesCloud Stories",
       "norm_label": "story",
       "id": "src_components_valuescloud_stories_story"
@@ -829,7 +842,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 0,
+      "community": 9,
       "community_name": "ValuesCloud Stories",
       "norm_label": "values",
       "id": "src_components_valuescloud_stories_values"
@@ -840,7 +853,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 0,
+      "community": 9,
       "community_name": "ValuesCloud Stories",
       "norm_label": "extendedvalues",
       "id": "src_components_valuescloud_stories_extendedvalues"
@@ -851,7 +864,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L119",
       "_origin": "ast",
-      "community": 0,
+      "community": 9,
       "community_name": "ValuesCloud Stories",
       "norm_label": "default",
       "id": "src_components_valuescloud_stories_default"
@@ -862,7 +875,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L133",
       "_origin": "ast",
-      "community": 0,
+      "community": 9,
       "community_name": "ValuesCloud Stories",
       "norm_label": "customaccents",
       "id": "src_components_valuescloud_stories_customaccents"
@@ -873,7 +886,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L153",
       "_origin": "ast",
-      "community": 0,
+      "community": 9,
       "community_name": "ValuesCloud Stories",
       "norm_label": "nowiggle",
       "id": "src_components_valuescloud_stories_nowiggle"
@@ -884,7 +897,7 @@
       "source_file": "src/components/ValuesCloud.stories.tsx",
       "source_location": "L166",
       "_origin": "ast",
-      "community": 0,
+      "community": 9,
       "community_name": "ValuesCloud Stories",
       "norm_label": "manyvalues",
       "id": "src_components_valuescloud_stories_manyvalues"
@@ -1070,7 +1083,7 @@
       "source_file": "src/test/axe-setup.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 13,
+      "community": 14,
       "community_name": "Axe A11y Test Setup",
       "norm_label": "axe-setup.ts",
       "id": "src_test_axe_setup"
@@ -1081,7 +1094,7 @@
       "source_file": "src/test/axe-setup.ts",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 13,
+      "community": 14,
       "community_name": "Axe A11y Test Setup",
       "norm_label": "vitest",
       "id": "src_test_axe_setup_vitest"
@@ -1094,7 +1107,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 13,
+      "community": 14,
       "community_name": "Axe A11y Test Setup",
       "norm_label": "assertion",
       "id": "src_test_axe_setup_assertion"
@@ -1107,7 +1120,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 13,
+      "community": 14,
       "community_name": "Axe A11y Test Setup",
       "norm_label": "asymmetricmatcherscontaining",
       "id": "src_test_axe_setup_asymmetricmatcherscontaining"
@@ -1327,7 +1340,7 @@
       "source_file": "vite.config.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "community_name": "Vite Config",
       "norm_label": "vite.config.ts",
       "id": "vite_config"
@@ -1338,7 +1351,7 @@
       "source_file": "vitest.config.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "community_name": "Vitest Config",
       "norm_label": "vitest.config.ts",
       "id": "vitest_config"
@@ -1367,7 +1380,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "dependabot github-actions ecosystem update",
       "_origin": "ast",
@@ -1397,7 +1410,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "github-actions-minor-and-patch update group",
       "_origin": "ast",
@@ -1428,7 +1441,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "ci workflow",
       "_origin": "ast",
@@ -1443,7 +1456,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "lint, format & test job",
       "_origin": "ast",
@@ -1458,7 +1471,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "deploy storybook to github pages job",
       "_origin": "ast",
@@ -1473,7 +1486,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "actions/checkout",
       "_origin": "ast",
@@ -1488,7 +1501,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "actions/setup-node",
       "_origin": "ast",
@@ -1503,7 +1516,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "pnpm/action-setup",
       "_origin": "ast",
@@ -1518,7 +1531,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "actions/cache",
       "_origin": "ast",
@@ -1533,7 +1546,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "actions/upload-pages-artifact",
       "_origin": "ast",
@@ -1548,7 +1561,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "actions/deploy-pages",
       "_origin": "ast",
@@ -1563,7 +1576,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "codeql workflow",
       "_origin": "ast",
@@ -1578,7 +1591,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "analyze job",
       "_origin": "ast",
@@ -1593,7 +1606,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "github/codeql-action/init",
       "_origin": "ast",
@@ -1608,7 +1621,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "github/codeql-action/analyze",
       "_origin": "ast",
@@ -1623,7 +1636,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "publish workflow",
       "_origin": "ast",
@@ -1638,7 +1651,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "build & publish to github packages job",
       "_origin": "ast",
@@ -1653,7 +1666,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": ".pre-commit-config.yaml",
       "_origin": "ast",
@@ -1668,7 +1681,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "pre-commit/pre-commit-hooks (trailing-whitespace, end-of-file-fixer, check-yaml, check-added-large-files, check-merge-conflict)",
       "_origin": "ast",
@@ -1683,7 +1696,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "prettier pre-commit hook",
       "_origin": "ast",
@@ -1698,7 +1711,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "eslint pre-commit hook",
       "_origin": "ast",
@@ -1713,7 +1726,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "vitest pre-commit hook",
       "_origin": "ast",
@@ -1724,7 +1737,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L3-L9",
-      "community": 51,
+      "community": 48,
       "community_name": "Tech Stack Note",
       "norm_label": "tech stack",
       "_origin": "ast",
@@ -1740,7 +1753,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Repo pins Node via .nvmrc; always run `nvm use` before any commands to activate the correct version rather than hardcoding version paths or manipulating $PATH manually.",
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "node version policy (nvm use)",
       "_origin": "ast",
@@ -1751,7 +1764,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L19-L45",
-      "community": 9,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "development commands",
       "_origin": "ast",
@@ -1767,7 +1780,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Agents/CI must avoid commands that block indefinitely: use `pnpm test:unit --run` (omitting --run starts watch mode), `pnpm build:storybook` instead of `pnpm dev`, and `pnpm install --frozen-lockfile` to prevent interactive prompts.",
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "non-interactive tool guidance",
       "_origin": "ast",
@@ -1782,7 +1795,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "pre-commit hooks section",
       "_origin": "ast",
@@ -1798,7 +1811,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Components live flat under src/components/ (no per-component subdirectories), colocated with .test.tsx and .stories.tsx; everything public is exported through src/index.ts; no default exports, to keep the public API surface explicit and discoverable.",
-      "community": 9,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "component authorship convention",
       "_origin": "ast",
@@ -1814,7 +1827,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Components must be unstyled or accept className so consumers theme them; site-level theming is the consumer's job (see website/CLAUDE.md). Exception: ValuesCloud, SectionHeading, AccordionItem ship real structural CSS via a separate `./css` export subpath (registered in src/styles.ts) because their layout/spacing can't reasonably be left to every consumer; colours/fonts still read from --bl-* custom properties with fallbacks so it stays themable, and no Tailwind syntax is used since the package has no Tailwind pipeline.",
-      "community": 9,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "styling convention (unstyled-by-default, structural css exception)",
       "_origin": "ast",
@@ -1830,7 +1843,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Use semantic HTML, add ARIA only where semantics are insufficient, and ensure all interactive elements are keyboard-navigable.",
-      "community": 9,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "accessibility convention",
       "_origin": "ast",
@@ -1846,7 +1859,7 @@
       "author": null,
       "contributor": null,
       "rationale": "Strict mode, no `any`; prop types named ComponentNameProps and exported alongside the component for a consistent, type-safe public API.",
-      "community": 9,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "typescript convention (strict, no any)",
       "_origin": "ast",
@@ -1861,7 +1874,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "publishing / release flow",
       "_origin": "ast",
@@ -1876,7 +1889,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 14,
+      "community": 15,
       "community_name": "Contributing Guide",
       "norm_label": "org-wide contribution guide (branchleft/.github)",
       "_origin": "ast",
@@ -1891,7 +1904,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 14,
+      "community": 15,
       "community_name": "Contributing Guide",
       "norm_label": "prerequisites",
       "_origin": "ast",
@@ -1906,7 +1919,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "setup",
       "_origin": "ast",
@@ -1921,7 +1934,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "checks ci runs on every pr",
       "_origin": "ast",
@@ -1936,7 +1949,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "pre-commit hooks (contributing)",
       "_origin": "ast",
@@ -1951,7 +1964,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 9,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "component conventions (contributing)",
       "_origin": "ast",
@@ -1966,7 +1979,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "publishing (contributing)",
       "_origin": "ast",
@@ -1981,7 +1994,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 58,
+      "community": 59,
       "community_name": "README Install",
       "norm_label": "install section",
       "_origin": "ast",
@@ -2011,7 +2024,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 60,
+      "community": 61,
       "community_name": "README Usage",
       "norm_label": "usage example (logo, sectionheading)",
       "_origin": "ast",
@@ -2026,7 +2039,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 9,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "css export subpath (@branchleft/components/css)",
       "_origin": "ast",
@@ -2041,7 +2054,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 9,
+      "community": 7,
       "community_name": "CLAUDE.md Component Conventions",
       "norm_label": "development section",
       "_origin": "ast",
@@ -2056,7 +2069,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 14,
+      "community": 15,
       "community_name": "Contributing Guide",
       "norm_label": "contributing section (readme pointer)",
       "_origin": "ast",
@@ -2071,7 +2084,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 1,
+      "community": 2,
       "community_name": "CI/CD Workflow Actions",
       "norm_label": "release section",
       "_origin": "ast",
@@ -2086,7 +2099,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 59,
+      "community": 60,
       "community_name": "README License",
       "norm_label": "license (mit)",
       "_origin": "ast",
@@ -2111,7 +2124,7 @@
       "label": "Components Directory",
       "file_type": "code",
       "source_file": "src/components/",
-      "community": 62,
+      "community": 63,
       "norm_label": "components directory",
       "_origin": "semantic",
       "id": "src_components"
@@ -2120,7 +2133,7 @@
       "label": "Release Process",
       "file_type": "document",
       "source_file": "RELEASING.md",
-      "community": 61,
+      "community": 62,
       "norm_label": "release process",
       "_origin": "semantic",
       "id": "releasing_process"
@@ -2129,7 +2142,7 @@
       "label": "Knowledge Graph Output",
       "file_type": "document",
       "source_file": "graphify-out/",
-      "community": 53,
+      "community": 54,
       "norm_label": "knowledge graph output",
       "_origin": "semantic",
       "id": "graphify_out"
@@ -2227,7 +2240,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 56,
+      "community": 57,
       "norm_label": "prettier",
       "_origin": "semantic",
       "id": "pre_commit_config_prettier"
@@ -2241,7 +2254,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 55,
+      "community": 56,
       "norm_label": "eslint",
       "_origin": "semantic",
       "id": "pre_commit_config_eslint"
@@ -2255,7 +2268,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 57,
+      "community": 58,
       "norm_label": "vitest",
       "_origin": "semantic",
       "id": "pre_commit_config_vitest"
@@ -2264,7 +2277,7 @@
       "label": "Storybook",
       "file_type": "concept",
       "source_file": "CLAUDE.md",
-      "community": 30,
+      "community": 26,
       "norm_label": "storybook",
       "_origin": "semantic",
       "id": "storybook"
@@ -2273,7 +2286,7 @@
       "label": "CLAUDE.md",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "community": 50,
+      "community": 47,
       "norm_label": "claude.md",
       "_origin": "semantic",
       "id": "claude"
@@ -2282,7 +2295,7 @@
       "label": "README.md",
       "file_type": "document",
       "source_file": "README.md",
-      "community": 25,
+      "community": 22,
       "norm_label": "readme.md",
       "_origin": "semantic",
       "id": "readme"
@@ -2291,7 +2304,7 @@
       "label": "GitHub Packages",
       "file_type": "concept",
       "source_file": "README.md",
-      "community": 25,
+      "community": 22,
       "norm_label": "github packages",
       "_origin": "semantic",
       "id": "github_packages"
@@ -2305,7 +2318,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 48,
+      "community": 45,
       "norm_label": "branchleft/github-workflows/.github/workflows/docs-lint.yml@v1.0.6",
       "_origin": "semantic",
       "id": "branchleft_github_workflows_docs_lint_yml"
@@ -2319,7 +2332,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 49,
+      "community": 46,
       "norm_label": "branchleft/standards/.github/workflows/standards.yml@v0.3.1",
       "_origin": "semantic",
       "id": "branchleft_standards_standards_yml"
@@ -2330,7 +2343,7 @@
       "source_file": "package.json",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "package.json",
       "id": "package"
     },
@@ -2340,7 +2353,7 @@
       "source_file": "package.json",
       "source_location": "L2",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "name",
       "id": "package_name"
     },
@@ -2350,7 +2363,7 @@
       "source_file": "package.json",
       "source_location": "L3",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "version",
       "id": "package_version"
     },
@@ -2360,7 +2373,7 @@
       "source_file": "package.json",
       "source_location": "L4",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "prettier",
       "id": "package_prettier"
     },
@@ -2370,7 +2383,7 @@
       "source_file": "package.json",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "packagemanager",
       "id": "package_packagemanager"
     },
@@ -2380,7 +2393,7 @@
       "source_file": "package.json",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "description",
       "id": "package_description"
     },
@@ -2390,7 +2403,7 @@
       "source_file": "package.json",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "type",
       "id": "package_type"
     },
@@ -2400,7 +2413,7 @@
       "source_file": "package.json",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "exports",
       "id": "package_exports"
     },
@@ -2410,7 +2423,7 @@
       "source_file": "package.json",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "./css",
       "id": "package_exports_css"
     },
@@ -2420,7 +2433,7 @@
       "source_file": "package.json",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "main",
       "id": "package_main"
     },
@@ -2430,7 +2443,7 @@
       "source_file": "package.json",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "module",
       "id": "package_module"
     },
@@ -2440,7 +2453,7 @@
       "source_file": "package.json",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "types",
       "id": "package_types"
     },
@@ -2450,7 +2463,7 @@
       "source_file": "package.json",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "files",
       "id": "package_files"
     },
@@ -2460,7 +2473,7 @@
       "source_file": "package.json",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "dist",
       "id": "package_json_ref_dist"
     },
@@ -2470,7 +2483,7 @@
       "source_file": "package.json",
       "source_location": "L22",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "repository",
       "id": "package_repository"
     },
@@ -2480,7 +2493,7 @@
       "source_file": "package.json",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "type",
       "id": "package_repository_type"
     },
@@ -2490,7 +2503,7 @@
       "source_file": "package.json",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "url",
       "id": "package_repository_url"
     },
@@ -2500,7 +2513,7 @@
       "source_file": "package.json",
       "source_location": "L26",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "publishconfig",
       "id": "package_publishconfig"
     },
@@ -2510,7 +2523,7 @@
       "source_file": "package.json",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "registry",
       "id": "package_publishconfig_registry"
     },
@@ -2520,7 +2533,7 @@
       "source_file": "package.json",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "access",
       "id": "package_publishconfig_access"
     },
@@ -2530,7 +2543,7 @@
       "source_file": "package.json",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "scripts",
       "id": "package_scripts"
     },
@@ -2540,7 +2553,7 @@
       "source_file": "package.json",
       "source_location": "L31",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "dev",
       "id": "package_scripts_dev"
     },
@@ -2550,7 +2563,7 @@
       "source_file": "package.json",
       "source_location": "L32",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "build",
       "id": "package_scripts_build"
     },
@@ -2560,7 +2573,7 @@
       "source_file": "package.json",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "build:storybook",
       "id": "package_scripts_build_storybook"
     },
@@ -2570,7 +2583,7 @@
       "source_file": "package.json",
       "source_location": "L34",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "preview",
       "id": "package_scripts_preview"
     },
@@ -2580,7 +2593,7 @@
       "source_file": "package.json",
       "source_location": "L35",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "type-check",
       "id": "package_scripts_type_check"
     },
@@ -2590,7 +2603,7 @@
       "source_file": "package.json",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "test:unit",
       "id": "package_scripts_test_unit"
     },
@@ -2600,7 +2613,7 @@
       "source_file": "package.json",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "test:ui",
       "id": "package_scripts_test_ui"
     },
@@ -2610,7 +2623,7 @@
       "source_file": "package.json",
       "source_location": "L38",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "lint",
       "id": "package_scripts_lint"
     },
@@ -2620,7 +2633,7 @@
       "source_file": "package.json",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "format",
       "id": "package_scripts_format"
     },
@@ -2630,7 +2643,7 @@
       "source_file": "package.json",
       "source_location": "L40",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "format:check",
       "id": "package_scripts_format_check"
     },
@@ -2640,7 +2653,7 @@
       "source_file": "package.json",
       "source_location": "L41",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "prepare",
       "id": "package_scripts_prepare"
     },
@@ -2650,7 +2663,7 @@
       "source_file": "package.json",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 6,
+      "community": 1,
       "norm_label": "prepublishonly",
       "id": "package_scripts_prepublishonly"
     },
@@ -2660,7 +2673,7 @@
       "source_file": "package.json",
       "source_location": "L44",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "keywords",
       "id": "package_keywords"
     },
@@ -2670,7 +2683,7 @@
       "source_file": "package.json",
       "source_location": "L44",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "components",
       "id": "ref_components"
     },
@@ -2680,7 +2693,7 @@
       "source_file": "package.json",
       "source_location": "L44",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "ui",
       "id": "ref_ui"
     },
@@ -2690,7 +2703,7 @@
       "source_file": "package.json",
       "source_location": "L49",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "author",
       "id": "package_author"
     },
@@ -2700,7 +2713,7 @@
       "source_file": "package.json",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "license",
       "id": "package_license"
     },
@@ -2710,7 +2723,7 @@
       "source_file": "package.json",
       "source_location": "L51",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "peerdependencies",
       "id": "package_peerdependencies"
     },
@@ -2740,7 +2753,7 @@
       "source_file": "package.json",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "react-dom",
       "id": "package_peerdependencies_react_dom"
     },
@@ -2750,7 +2763,7 @@
       "source_file": "package.json",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "react-dom",
       "id": "react_dom"
     },
@@ -2760,7 +2773,7 @@
       "source_file": "package.json",
       "source_location": "L55",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "devdependencies",
       "id": "package_devdependencies"
     },
@@ -2770,7 +2783,7 @@
       "source_file": "package.json",
       "source_location": "L56",
       "_origin": "ast",
-      "community": 17,
+      "community": 16,
       "norm_label": "@branchleft/prettier-config",
       "id": "package_devdependencies_branchleft_prettier_config"
     },
@@ -2783,7 +2796,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 17,
+      "community": 16,
       "norm_label": "@branchleft/prettier-config",
       "_origin": "semantic",
       "id": "branchleft_prettier_config"
@@ -2794,7 +2807,7 @@
       "source_file": "package.json",
       "source_location": "L57",
       "_origin": "ast",
-      "community": 19,
+      "community": 17,
       "norm_label": "@branchleft/tsconfig",
       "id": "package_devdependencies_branchleft_tsconfig"
     },
@@ -2807,7 +2820,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 19,
+      "community": 17,
       "norm_label": "@branchleft/tsconfig",
       "_origin": "semantic",
       "id": "branchleft_tsconfig"
@@ -2818,7 +2831,7 @@
       "source_file": "package.json",
       "source_location": "L58",
       "_origin": "ast",
-      "community": 22,
+      "community": 20,
       "norm_label": "@eslint/js",
       "id": "package_devdependencies_eslint_js"
     },
@@ -2828,7 +2841,7 @@
       "source_file": "package.json",
       "source_location": "L58",
       "_origin": "ast",
-      "community": 22,
+      "community": 20,
       "norm_label": "@eslint/js",
       "id": "eslint_js"
     },
@@ -2838,7 +2851,7 @@
       "source_file": "package.json",
       "source_location": "L59",
       "_origin": "ast",
-      "community": 31,
+      "community": 27,
       "norm_label": "@storybook/addon-a11y",
       "id": "package_devdependencies_storybook_addon_a11y"
     },
@@ -2848,7 +2861,7 @@
       "source_file": "package.json",
       "source_location": "L59",
       "_origin": "ast",
-      "community": 31,
+      "community": 27,
       "norm_label": "@storybook/addon-a11y",
       "id": "storybook_addon_a11y"
     },
@@ -2858,7 +2871,7 @@
       "source_file": "package.json",
       "source_location": "L60",
       "_origin": "ast",
-      "community": 8,
+      "community": 28,
       "norm_label": "@storybook/addon-essentials",
       "id": "package_devdependencies_storybook_addon_essentials"
     },
@@ -2868,7 +2881,7 @@
       "source_file": "package.json",
       "source_location": "L60",
       "_origin": "ast",
-      "community": 8,
+      "community": 28,
       "norm_label": "@storybook/addon-essentials",
       "id": "storybook_addon_essentials"
     },
@@ -2878,7 +2891,7 @@
       "source_file": "package.json",
       "source_location": "L61",
       "_origin": "ast",
-      "community": 32,
+      "community": 29,
       "norm_label": "@storybook/addon-interactions",
       "id": "package_devdependencies_storybook_addon_interactions"
     },
@@ -2888,7 +2901,7 @@
       "source_file": "package.json",
       "source_location": "L61",
       "_origin": "ast",
-      "community": 32,
+      "community": 29,
       "norm_label": "@storybook/addon-interactions",
       "id": "storybook_addon_interactions"
     },
@@ -2898,7 +2911,7 @@
       "source_file": "package.json",
       "source_location": "L62",
       "_origin": "ast",
-      "community": 33,
+      "community": 30,
       "norm_label": "@storybook/addon-links",
       "id": "package_devdependencies_storybook_addon_links"
     },
@@ -2908,7 +2921,7 @@
       "source_file": "package.json",
       "source_location": "L62",
       "_origin": "ast",
-      "community": 33,
+      "community": 30,
       "norm_label": "@storybook/addon-links",
       "id": "storybook_addon_links"
     },
@@ -2918,7 +2931,7 @@
       "source_file": "package.json",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 34,
+      "community": 31,
       "norm_label": "@storybook/blocks",
       "id": "package_devdependencies_storybook_blocks"
     },
@@ -2928,7 +2941,7 @@
       "source_file": "package.json",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 34,
+      "community": 31,
       "norm_label": "@storybook/blocks",
       "id": "storybook_blocks"
     },
@@ -2938,7 +2951,7 @@
       "source_file": "package.json",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 35,
+      "community": 32,
       "norm_label": "@storybook/react",
       "id": "package_devdependencies_storybook_react"
     },
@@ -2948,7 +2961,7 @@
       "source_file": "package.json",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 35,
+      "community": 32,
       "norm_label": "@storybook/react",
       "id": "storybook_react"
     },
@@ -2958,7 +2971,7 @@
       "source_file": "package.json",
       "source_location": "L65",
       "_origin": "ast",
-      "community": 36,
+      "community": 33,
       "norm_label": "@storybook/react-vite",
       "id": "package_devdependencies_storybook_react_vite"
     },
@@ -2968,7 +2981,7 @@
       "source_file": "package.json",
       "source_location": "L65",
       "_origin": "ast",
-      "community": 36,
+      "community": 33,
       "norm_label": "@storybook/react-vite",
       "id": "storybook_react_vite"
     },
@@ -2978,7 +2991,7 @@
       "source_file": "package.json",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 37,
+      "community": 34,
       "norm_label": "@types/node",
       "id": "package_devdependencies_types_node"
     },
@@ -2988,7 +3001,7 @@
       "source_file": "package.json",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 37,
+      "community": 34,
       "norm_label": "@types/node",
       "id": "types_node"
     },
@@ -2998,7 +3011,7 @@
       "source_file": "package.json",
       "source_location": "L67",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "@types/react",
       "id": "package_devdependencies_types_react"
     },
@@ -3008,7 +3021,7 @@
       "source_file": "package.json",
       "source_location": "L67",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "@types/react",
       "id": "types_react"
     },
@@ -3018,7 +3031,7 @@
       "source_file": "package.json",
       "source_location": "L68",
       "_origin": "ast",
-      "community": 38,
+      "community": 35,
       "norm_label": "@types/react-dom",
       "id": "package_devdependencies_types_react_dom"
     },
@@ -3028,7 +3041,7 @@
       "source_file": "package.json",
       "source_location": "L68",
       "_origin": "ast",
-      "community": 38,
+      "community": 35,
       "norm_label": "@types/react-dom",
       "id": "types_react_dom"
     },
@@ -3038,7 +3051,7 @@
       "source_file": "package.json",
       "source_location": "L69",
       "_origin": "ast",
-      "community": 41,
+      "community": 38,
       "norm_label": "@typescript-eslint/eslint-plugin",
       "id": "package_devdependencies_typescript_eslint_eslint_plugin"
     },
@@ -3048,7 +3061,7 @@
       "source_file": "package.json",
       "source_location": "L69",
       "_origin": "ast",
-      "community": 41,
+      "community": 38,
       "norm_label": "@typescript-eslint/eslint-plugin",
       "id": "typescript_eslint_eslint_plugin"
     },
@@ -3058,7 +3071,7 @@
       "source_file": "package.json",
       "source_location": "L70",
       "_origin": "ast",
-      "community": 42,
+      "community": 39,
       "norm_label": "@typescript-eslint/parser",
       "id": "package_devdependencies_typescript_eslint_parser"
     },
@@ -3068,7 +3081,7 @@
       "source_file": "package.json",
       "source_location": "L70",
       "_origin": "ast",
-      "community": 42,
+      "community": 39,
       "norm_label": "@typescript-eslint/parser",
       "id": "typescript_eslint_parser"
     },
@@ -3078,7 +3091,7 @@
       "source_file": "package.json",
       "source_location": "L71",
       "_origin": "ast",
-      "community": 43,
+      "community": 40,
       "norm_label": "@vitejs/plugin-react",
       "id": "package_devdependencies_vitejs_plugin_react"
     },
@@ -3088,7 +3101,7 @@
       "source_file": "package.json",
       "source_location": "L71",
       "_origin": "ast",
-      "community": 43,
+      "community": 40,
       "norm_label": "@vitejs/plugin-react",
       "id": "vitejs_plugin_react"
     },
@@ -3098,7 +3111,7 @@
       "source_file": "package.json",
       "source_location": "L72",
       "_origin": "ast",
-      "community": 45,
+      "community": 42,
       "norm_label": "@vitest/ui",
       "id": "package_devdependencies_vitest_ui"
     },
@@ -3108,7 +3121,7 @@
       "source_file": "package.json",
       "source_location": "L72",
       "_origin": "ast",
-      "community": 45,
+      "community": 42,
       "norm_label": "@vitest/ui",
       "id": "vitest_ui"
     },
@@ -3118,7 +3131,7 @@
       "source_file": "package.json",
       "source_location": "L73",
       "_origin": "ast",
-      "community": 20,
+      "community": 18,
       "norm_label": "eslint",
       "id": "package_devdependencies_eslint"
     },
@@ -3128,7 +3141,7 @@
       "source_file": "package.json",
       "source_location": "L73",
       "_origin": "ast",
-      "community": 20,
+      "community": 18,
       "norm_label": "eslint",
       "id": "eslint"
     },
@@ -3138,7 +3151,7 @@
       "source_file": "package.json",
       "source_location": "L74",
       "_origin": "ast",
-      "community": 21,
+      "community": 19,
       "norm_label": "eslint-config-prettier",
       "id": "package_devdependencies_eslint_config_prettier"
     },
@@ -3148,7 +3161,7 @@
       "source_file": "package.json",
       "source_location": "L74",
       "_origin": "ast",
-      "community": 21,
+      "community": 19,
       "norm_label": "eslint-config-prettier",
       "id": "eslint_config_prettier"
     },
@@ -3158,7 +3171,7 @@
       "source_file": "package.json",
       "source_location": "L75",
       "_origin": "ast",
-      "community": 23,
+      "community": 6,
       "norm_label": "eslint-plugin-react",
       "id": "package_devdependencies_eslint_plugin_react"
     },
@@ -3168,7 +3181,7 @@
       "source_file": "package.json",
       "source_location": "L75",
       "_origin": "ast",
-      "community": 23,
+      "community": 6,
       "norm_label": "eslint-plugin-react",
       "id": "eslint_plugin_react"
     },
@@ -3178,7 +3191,7 @@
       "source_file": "package.json",
       "source_location": "L76",
       "_origin": "ast",
-      "community": 24,
+      "community": 21,
       "norm_label": "eslint-plugin-react-hooks",
       "id": "package_devdependencies_eslint_plugin_react_hooks"
     },
@@ -3188,7 +3201,7 @@
       "source_file": "package.json",
       "source_location": "L76",
       "_origin": "ast",
-      "community": 24,
+      "community": 21,
       "norm_label": "eslint-plugin-react-hooks",
       "id": "eslint_plugin_react_hooks"
     },
@@ -3198,7 +3211,7 @@
       "source_file": "package.json",
       "source_location": "L77",
       "_origin": "ast",
-      "community": 27,
+      "community": 23,
       "norm_label": "globals",
       "id": "package_devdependencies_globals"
     },
@@ -3208,7 +3221,7 @@
       "source_file": "package.json",
       "source_location": "L77",
       "_origin": "ast",
-      "community": 27,
+      "community": 23,
       "norm_label": "globals",
       "id": "globals"
     },
@@ -3218,7 +3231,7 @@
       "source_file": "package.json",
       "source_location": "L78",
       "_origin": "ast",
-      "community": 28,
+      "community": 24,
       "norm_label": "jsdom",
       "id": "package_devdependencies_jsdom"
     },
@@ -3228,7 +3241,7 @@
       "source_file": "package.json",
       "source_location": "L78",
       "_origin": "ast",
-      "community": 28,
+      "community": 24,
       "norm_label": "jsdom",
       "id": "jsdom"
     },
@@ -3238,7 +3251,7 @@
       "source_file": "package.json",
       "source_location": "L79",
       "_origin": "ast",
-      "community": 29,
+      "community": 25,
       "norm_label": "prettier",
       "id": "package_devdependencies_prettier"
     },
@@ -3248,7 +3261,7 @@
       "source_file": "package.json",
       "source_location": "L79",
       "_origin": "ast",
-      "community": 29,
+      "community": 25,
       "norm_label": "prettier",
       "id": "prettier"
     },
@@ -3258,7 +3271,7 @@
       "source_file": "package.json",
       "source_location": "L80",
       "_origin": "ast",
-      "community": 30,
+      "community": 26,
       "norm_label": "storybook",
       "id": "package_devdependencies_storybook"
     },
@@ -3268,7 +3281,7 @@
       "source_file": "package.json",
       "source_location": "L81",
       "_origin": "ast",
-      "community": 39,
+      "community": 36,
       "norm_label": "typescript",
       "id": "package_devdependencies_typescript"
     },
@@ -3278,7 +3291,7 @@
       "source_file": "package.json",
       "source_location": "L81",
       "_origin": "ast",
-      "community": 39,
+      "community": 36,
       "norm_label": "typescript",
       "id": "typescript"
     },
@@ -3288,7 +3301,7 @@
       "source_file": "package.json",
       "source_location": "L82",
       "_origin": "ast",
-      "community": 40,
+      "community": 37,
       "norm_label": "typescript-eslint",
       "id": "package_devdependencies_typescript_eslint"
     },
@@ -3298,7 +3311,7 @@
       "source_file": "package.json",
       "source_location": "L82",
       "_origin": "ast",
-      "community": 40,
+      "community": 37,
       "norm_label": "typescript-eslint",
       "id": "typescript_eslint"
     },
@@ -3308,7 +3321,7 @@
       "source_file": "package.json",
       "source_location": "L83",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "vite",
       "id": "package_devdependencies_vite"
     },
@@ -3318,7 +3331,7 @@
       "source_file": "package.json",
       "source_location": "L83",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "vite",
       "id": "vite"
     },
@@ -3328,7 +3341,7 @@
       "source_file": "package.json",
       "source_location": "L84",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "vitest",
       "id": "package_devdependencies_vitest"
     },
@@ -3338,7 +3351,7 @@
       "source_file": "package.json",
       "source_location": "L84",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "vitest",
       "id": "vitest"
     },
@@ -3348,7 +3361,7 @@
       "source_file": "package.json",
       "source_location": "L85",
       "_origin": "ast",
-      "community": 44,
+      "community": 41,
       "norm_label": "vitest-axe",
       "id": "package_devdependencies_vitest_axe"
     },
@@ -3358,7 +3371,7 @@
       "source_file": "package.json",
       "source_location": "L85",
       "_origin": "ast",
-      "community": 44,
+      "community": 41,
       "norm_label": "vitest-axe",
       "id": "vitest_axe"
     },
@@ -3368,7 +3381,7 @@
       "source_file": "package.json",
       "source_location": "L87",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "dependencies",
       "id": "package_dependencies"
     },
@@ -3378,7 +3391,7 @@
       "source_file": "package.json",
       "source_location": "L88",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "framer-motion",
       "id": "package_dependencies_framer_motion"
     },
@@ -3388,7 +3401,7 @@
       "source_file": "package.json",
       "source_location": "L88",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "framer-motion",
       "id": "framer_motion"
     },
@@ -3398,7 +3411,7 @@
       "source_file": "package.json",
       "source_location": "L89",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "lucide-react",
       "id": "package_dependencies_lucide_react"
     },
@@ -3408,7 +3421,7 @@
       "source_file": "package.json",
       "source_location": "L89",
       "_origin": "ast",
-      "community": 2,
+      "community": 1,
       "norm_label": "lucide-react",
       "id": "lucide_react"
     },
@@ -3696,7 +3709,7 @@
       "label": "Contributing Guide",
       "file_type": "document",
       "source_file": "CONTRIBUTING.md",
-      "community": 1,
+      "community": 2,
       "norm_label": "contributing guide",
       "_origin": "semantic",
       "id": "contributing"
@@ -3706,7 +3719,7 @@
       "file_type": "code",
       "source_file": "pnpm-workspace.yaml",
       "verification": "unverified",
-      "community": 54,
+      "community": 55,
       "norm_label": "pnpm workspace configuration",
       "_origin": "semantic",
       "id": "pnpm_workspace"
@@ -3717,7 +3730,7 @@
       "source_file": "src/components/PageTransition.test.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "pagetransition.test.tsx",
       "id": "src_components_pagetransition_test"
     },
@@ -3728,7 +3741,7 @@
       "source_location": "L47",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "mount()",
       "id": "src_components_pagetransition_test_mount"
     },
@@ -3738,7 +3751,7 @@
       "source_file": "src/hooks/usePrefersReducedMotion.test.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "useprefersreducedmotion.test.ts",
       "id": "src_hooks_useprefersreducedmotion_test"
     },
@@ -3749,7 +3762,7 @@
       "source_location": "L18",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "mount()",
       "id": "src_hooks_useprefersreducedmotion_test_mount"
     },
@@ -3759,7 +3772,7 @@
       "source_file": "src/test/mockMatchMedia.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "mockmatchmedia.ts",
       "id": "src_test_mockmatchmedia"
     },
@@ -3770,37 +3783,9 @@
       "source_location": "L9",
       "_callable": true,
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "mockmatchmedia()",
       "id": "src_test_mockmatchmedia_mockmatchmedia"
-    },
-    {
-      "label": "CI Job",
-      "file_type": "code",
-      "source_file": ".github/workflows/ci.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 26,
-      "norm_label": "ci job",
-      "_origin": "semantic",
-      "id": "github_workflows_ci_ci"
-    },
-    {
-      "label": "Deploy Storybook Job",
-      "file_type": "code",
-      "source_file": ".github/workflows/ci.yml",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "community": 26,
-      "norm_label": "deploy storybook job",
-      "_origin": "semantic",
-      "id": "github_workflows_ci_deploy_storybook"
     },
     {
       "label": "Docs Lint Workflow",
@@ -3811,9 +3796,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "github_workflows_docs_lint_docs_lint",
-      "community": 15,
-      "norm_label": "docs lint workflow"
+      "community": 51,
+      "norm_label": "docs lint workflow",
+      "_origin": "semantic",
+      "id": "github_workflows_docs_lint_docs_lint"
     },
     {
       "label": "Graphify Workflow",
@@ -3824,9 +3810,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "github_workflows_graphify_graphify",
-      "community": 16,
-      "norm_label": "graphify workflow"
+      "community": 52,
+      "norm_label": "graphify workflow",
+      "_origin": "semantic",
+      "id": "github_workflows_graphify_graphify"
     },
     {
       "label": "Standards Workflow",
@@ -3837,61 +3824,75 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "github_workflows_standards_standards",
-      "community": 18,
-      "norm_label": "standards workflow"
+      "community": 53,
+      "norm_label": "standards workflow",
+      "_origin": "semantic",
+      "id": "github_workflows_standards_standards"
     },
     {
-      "label": "Reusable Docs Lint",
+      "label": "CI Job",
       "file_type": "code",
-      "source_file": "branchLeft/github-workflows/.github/workflows/docs-lint.yml@v1.0.7",
+      "source_file": ".github/workflows/ci.yml",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "branchleft_github_workflows_docs_lint",
-      "community": 15,
-      "norm_label": "reusable docs lint"
+      "id": "github_workflows_ci_ci",
+      "community": 13,
+      "norm_label": "ci job"
     },
     {
-      "label": "Reusable Graphify",
+      "label": "Deploy Storybook Job",
       "file_type": "code",
-      "source_file": "branchLeft/github-workflows/.github/workflows/graphify.yml@v1.0.7",
+      "source_file": ".github/workflows/ci.yml",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "branchleft_github_workflows_graphify",
-      "community": 16,
-      "norm_label": "reusable graphify"
+      "id": "github_workflows_ci_deploy_storybook",
+      "community": 13,
+      "norm_label": "deploy storybook job"
     },
     {
-      "label": "Reusable Standards",
+      "label": "CodeQL Analyze Job",
       "file_type": "code",
-      "source_file": "branchLeft/standards/.github/workflows/standards.yml@v0.5.0",
+      "source_file": ".github/workflows/codeql.yml",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "branchleft_standards_standards",
-      "community": 18,
-      "norm_label": "reusable standards"
+      "id": "github_workflows_codeql_analyze",
+      "community": 50,
+      "norm_label": "codeql analyze job"
     },
     {
-      "label": "GitHub CodeQL Action",
+      "label": "Publish Job",
       "file_type": "code",
-      "source_file": "github/codeql-action",
+      "source_file": ".github/workflows/publish.yml",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "github_codeql_action",
-      "community": 1,
-      "norm_label": "github codeql action"
+      "id": "github_workflows_publish_publish",
+      "community": 13,
+      "norm_label": "publish job"
+    },
+    {
+      "label": "Storybook Static Directory",
+      "file_type": "code",
+      "source_file": "storybook-static/",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "storybook_static",
+      "community": 13,
+      "norm_label": "storybook static directory"
     }
   ],
   "links": [
@@ -6057,15 +6058,6 @@
       "target": "_github_workflows_ci_deploy_storybook_job"
     },
     {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.9,
-      "source_file": ".github/workflows/publish.yml",
-      "_origin": "semantic",
-      "source": "_github_workflows_publish_workflow",
-      "target": "_github_workflows_ci_workflow"
-    },
-    {
       "relation": "conceptually_related_to",
       "confidence": "INFERRED",
       "confidence_score": 0.75,
@@ -6348,16 +6340,6 @@
       "_origin": "ast",
       "source": "_github_workflows_codeql_workflow",
       "target": "_github_workflows_codeql_analyze_job"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": ".github/workflows/codeql.yml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "_github_workflows_codeql_workflow",
-      "target": "github_codeql_action"
     },
     {
       "relation": "calls",
@@ -8378,42 +8360,44 @@
       "source_file": ".github/workflows/ci.yml",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "github_workflows_ci_deploy_storybook",
       "target": "github_workflows_ci_ci"
     },
     {
-      "relation": "calls",
+      "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": ".github/workflows/docs-lint.yml",
+      "source_file": ".github/workflows/publish.yml",
       "source_location": null,
       "weight": 1.0,
-      "source": "github_workflows_docs_lint_docs_lint",
-      "target": "branchleft_github_workflows_docs_lint"
+      "source": "github_workflows_publish_publish",
+      "target": "github_workflows_ci_ci"
     },
     {
-      "relation": "calls",
+      "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": ".github/workflows/graphify.yml",
+      "source_file": ".github/workflows/ci.yml",
       "source_location": null,
       "weight": 1.0,
-      "source": "github_workflows_graphify_graphify",
-      "target": "branchleft_github_workflows_graphify"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": ".github/workflows/standards.yml",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "github_workflows_standards_standards",
-      "target": "branchleft_standards_standards"
+      "source": "github_workflows_ci_deploy_storybook",
+      "target": "storybook_static"
     }
   ],
   "hyperedges": [
+    {
+      "id": "ci_cd_pipeline",
+      "label": "CI/CD Pipeline",
+      "nodes": [
+        "github_workflows_ci_ci",
+        "github_workflows_ci_deploy_storybook",
+        "github_workflows_publish_publish"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": ".github/workflows/ci.yml"
+    },
     {
       "id": "ci_cd_automation_suite",
       "label": "CI/CD Automation Suite",
@@ -8455,5 +8439,5 @@
       "source_file": ".github/dependabot.yml"
     }
   ],
-  "built_at_commit": "1b4a6835de6b10e9187ee20261eade070e291759"
+  "built_at_commit": "c70af8d5ea8933578eeac70129bdeca1a87302d3"
 }
