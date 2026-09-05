@@ -19,6 +19,8 @@ jobs:
   ci:
     name: Lint, Format & Test
     runs-on: ubuntu-latest
+    # Observed 0.55-1.0min over the last 20 successful runs (p95 0.97min).
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
@@ -96,6 +98,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    # Observed 0.65-0.77min over the last 10 successful runs (p95 0.77min).
+    timeout-minutes: 10
 
     steps:
       - name: Checkout

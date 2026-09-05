@@ -13,6 +13,9 @@ jobs:
       contents: read
       checks: read
       packages: write
+    # Observed 0.37-0.5min over the last 7 successful runs (p95 0.5min) --
+    # small sample, this job only fires on a signed release tag.
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
