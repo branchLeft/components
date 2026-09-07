@@ -1,5 +1,5 @@
 # Repo-specific ignores. Everything this file used to list — node_modules,
-# dist, storybook-static, coverage, graphify-out, sibling worktrees, the
+# dist, storybook-static, coverage, sibling worktrees, the
 # lockfile, minified assets — is in the shared set at
 # node_modules/@branchleft/prettier-config/prettierignore, which the format
 # scripts pass as a third --ignore-path. Nothing here is repo-specific today.
