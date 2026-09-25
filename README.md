@@ -56,6 +56,45 @@ read from `--bl-*` custom properties (with built-in fallbacks) so it stays
 themable — see each component's Storybook docs for the full list of
 customisable properties.
 
+## PublicPress mark
+
+`PublicPressWordmark` and `PublicPressLogo` render the PublicPress mark as SVG
+path outlines (Libre Franklin Bold letters, both Ps the pilcrow P, knocked out
+of a solid colour block) — no web font is loaded.
+
+```tsx
+import { PublicPressWordmark, PublicPressLogo } from '@branchleft/components';
+
+export function Example() {
+  return (
+    <>
+      <PublicPressWordmark color="blue" height={48} />
+      <PublicPressLogo color="pink" height={32} />
+    </>
+  );
+}
+```
+
+- `color`: `'blue' | 'black' | 'pink' | 'yellow'`, default `'blue'`.
+- `height`: a number (px) or any CSS length string; width follows the mark's
+  aspect ratio automatically.
+- `title`: overrides the default accessible name, `"PublicPress"`.
+- `decorative`: renders the mark with `aria-hidden` instead of an accessible
+  name, for use next to visible "PublicPress" text.
+
+The glyph outlines and block geometry are generated from
+[`scripts/publicpress-mark-spec.json`](scripts/publicpress-mark-spec.json) via
+[`scripts/generate-publicpress-mark.mjs`](scripts/generate-publicpress-mark.mjs)
+into `src/components/publicPressMark.generated.ts` — regenerate with
+`node scripts/generate-publicpress-mark.mjs` rather than editing that file by
+hand.
+
+This package's code is MIT licensed, but the PublicPress name and marks
+(the output of `PublicPressWordmark` and `PublicPressLogo`) are trade marks of
+BRANCHLEFT LTD (UK trade mark application UK00004450168) and are not licensed
+under the MIT licence below. Their letterforms derive from Libre Franklin,
+licensed under the SIL Open Font License 1.1.
+
 ## Development
 
 ```sh

@@ -5,6 +5,13 @@ export type { AccordionItemProps } from './components/AccordionItem';
 export { Logo } from './components/Logo';
 export type { LogoColor, LogoBackground, LogoProps } from './components/Logo';
 
+export { PublicPressWordmark } from './components/PublicPressWordmark';
+export type { PublicPressWordmarkProps } from './components/PublicPressWordmark';
+
+export { PublicPressLogo } from './components/PublicPressLogo';
+export type { PublicPressLogoProps } from './components/PublicPressLogo';
+export type { PublicPressColor } from './components/publicPressGeometry';
+
 export { SectionHeading } from './components/SectionHeading';
 export type { SectionHeadingProps, SectionHeadingLevel } from './components/SectionHeading';
 
