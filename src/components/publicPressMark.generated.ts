@@ -75,6 +75,14 @@ export const PUBLIC_PRESS_WORDMARK_SEQUENCE: readonly string[] = [
   's',
 ];
 
+// Keyed `"<left> <right>"` by glyph name, applied between consecutive
+// letters when laying the sequence out (see publicPressGeometry.ts). A
+// negative value pulls the right glyph closer; glyphs with no entry here use
+// their own advance unchanged. Never applied across a GAP.
+export const PUBLIC_PRESS_KERNING: Readonly<Record<string, number>> = {
+  'r e': -17,
+};
+
 export type PublicPressColor = 'blue' | 'black' | 'pink' | 'yellow';
 
 export const PUBLIC_PRESS_INKS: Readonly<

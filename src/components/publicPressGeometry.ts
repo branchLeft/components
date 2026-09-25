@@ -2,6 +2,7 @@ import {
   CAP_HEIGHT,
   PUBLIC_PRESS_BLOCK,
   PUBLIC_PRESS_GLYPHS,
+  PUBLIC_PRESS_KERNING,
   PUBLIC_PRESS_WORDMARK_SEQUENCE,
   type PublicPressGlyph,
 } from './publicPressMark.generated';
@@ -21,20 +22,32 @@ export interface PlacedGlyph {
 
 /**
  * Lays the wordmark sequence out left to right, starting from the block's
- * left inset. `GAP` entries widen the gap without emitting a glyph.
+ * left inset. `GAP` entries widen the gap without emitting a glyph. A
+ * kerning entry between two consecutive letters (never across a `GAP`)
+ * shifts the second glyph's position without changing either glyph's own
+ * advance.
  */
 function layoutSequence(): { placements: PlacedGlyph[]; contentWidth: number } {
   let x = 0;
+  let previousName: string | null = null;
   const placements: PlacedGlyph[] = [];
 
   for (const item of PUBLIC_PRESS_WORDMARK_SEQUENCE) {
     if (item === 'GAP') {
       x += PUBLIC_PRESS_BLOCK.gapAfterC;
+      previousName = null;
       continue;
+    }
+    if (previousName !== null) {
+      const kern = PUBLIC_PRESS_KERNING[`${previousName} ${item}`];
+      if (kern !== undefined) {
+        x += kern;
+      }
     }
     const glyph = PUBLIC_PRESS_GLYPHS[item];
     placements.push({ glyph, x });
     x += glyph.adv;
+    previousName = item;
   }
 
   return { placements, contentWidth: x };

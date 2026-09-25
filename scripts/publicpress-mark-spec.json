@@ -48,6 +48,9 @@
     }
   },
   "sequence": ["pilcrowP", "u", "b", "l", "i", "c", "GAP", "pilcrowP", "r", "e", "s", "s"],
+  "kerning": {
+    "r e": -17
+  },
   "inks": {
     "blue": {
       "block": "#3255A4",

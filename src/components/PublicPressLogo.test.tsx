@@ -61,11 +61,14 @@ describe('PublicPressLogo', () => {
     expect(html).toContain('transform="translate(244.5, 1020) scale(1,-1)"');
   });
 
-  it('is square: viewBox and default width/height are 1340x1340', () => {
+  it('pins the logo viewBox to 1340x1340 — a single glyph, so no kerning applies', () => {
     const html = renderToStaticMarkup(<PublicPressLogo />);
     expect(html).toContain(`viewBox="${EXPECTED_VIEW_BOX}"`);
-    expect(html).toContain('width="1340"');
-    expect(html).toContain('height="1340"');
+  });
+
+  it('defaults height to 32px', () => {
+    const html = renderToStaticMarkup(<PublicPressLogo />);
+    expect(html).toContain('style="height:32px;width:auto"');
   });
 
   it('accepts height as a number (px)', () => {

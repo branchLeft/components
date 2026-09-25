@@ -76,13 +76,17 @@ export function Example() {
 ```
 
 - `color`: `'blue' | 'black' | 'pink' | 'yellow'`, default `'blue'`.
-- `height`: a number (px) or any CSS length string; width follows the mark's
-  aspect ratio automatically.
+- `height`: a number (px) or any CSS length string, default `32`; width
+  follows the mark's aspect ratio automatically. The mark's own coordinate
+  space is thousands of units per em, so a default of "no height" would
+  render at that size — always pick an explicit `height` for anything other
+  than a small inline mark.
 - `title`: overrides the default accessible name, `"PublicPress"`.
 - `decorative`: renders the mark with `aria-hidden` instead of an accessible
   name, for use next to visible "PublicPress" text.
 
-The glyph outlines and block geometry are generated from
+The glyph outlines, block geometry and kerning (the wordmark applies the
+Libre Franklin r-e kern) are generated from
 [`scripts/publicpress-mark-spec.json`](scripts/publicpress-mark-spec.json) via
 [`scripts/generate-publicpress-mark.mjs`](scripts/generate-publicpress-mark.mjs)
 into `src/components/publicPressMark.generated.ts` — regenerate with

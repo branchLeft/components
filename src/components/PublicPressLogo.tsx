@@ -19,6 +19,8 @@ export interface PublicPressLogoProps extends Omit<React.SVGProps<SVGSVGElement>
    * A number is treated as pixels; a string is any CSS length. The logo is
    * square, so width follows height 1:1 via `viewBox` — there is no
    * separate `width` prop.
+   *
+   * @default 32
    */
   height?: number | string;
   /**
@@ -46,7 +48,7 @@ export interface PublicPressLogoProps extends Omit<React.SVGProps<SVGSVGElement>
  */
 export function PublicPressLogo({
   color = 'blue',
-  height,
+  height = 32,
   title,
   decorative = false,
   style,
@@ -58,21 +60,20 @@ export function PublicPressLogo({
     ? { 'aria-hidden': true }
     : { role: 'img', 'aria-label': title ?? PUBLIC_PRESS_ACCESSIBLE_NAME };
 
-  // With no `height`, fall back to the mark's own units as the intrinsic
-  // size (rather than the browser's 300x150 SVG default) — still overridable
-  // via `style`/`width`/`height` passthrough.
-  const sizeProps: Pick<React.SVGProps<SVGSVGElement>, 'width' | 'height' | 'style'> = height ===
-  undefined
-    ? { width: LOGO_SIZE, height: LOGO_SIZE }
-    : { style: { height: typeof height === 'number' ? `${height}px` : height, width: 'auto' } };
+  // The mark's own units (thousands per em) are far too large for a default
+  // pixel size, so `height` always has a value — `width` follows via
+  // `viewBox` rather than being set directly.
+  const sizeStyle: React.CSSProperties = {
+    height: typeof height === 'number' ? `${height}px` : height,
+    width: 'auto',
+  };
 
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox={`0 0 ${LOGO_SIZE} ${LOGO_SIZE}`}
       {...accessibleProps}
-      {...sizeProps}
-      style={{ ...sizeProps.style, ...style }}
+      style={{ ...sizeStyle, ...style }}
       {...svgProps}
     >
       <rect x={0} y={0} width={LOGO_SIZE} height={LOGO_SIZE} fill={ink.block} />

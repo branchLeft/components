@@ -20,6 +20,8 @@ export interface PublicPressWordmarkProps extends Omit<React.SVGProps<SVGSVGElem
    * A number is treated as pixels; a string is any CSS length. Width
    * follows automatically from the mark's aspect ratio (via `viewBox`) —
    * there is no separate `width` prop.
+   *
+   * @default 32
    */
   height?: number | string;
   /**
@@ -48,7 +50,7 @@ export interface PublicPressWordmarkProps extends Omit<React.SVGProps<SVGSVGElem
  */
 export function PublicPressWordmark({
   color = 'blue',
-  height,
+  height = 32,
   title,
   decorative = false,
   style,
@@ -60,21 +62,20 @@ export function PublicPressWordmark({
     ? { 'aria-hidden': true }
     : { role: 'img', 'aria-label': title ?? PUBLIC_PRESS_ACCESSIBLE_NAME };
 
-  // With no `height`, fall back to the mark's own units as the intrinsic
-  // size (rather than the browser's 300x150 SVG default) — still overridable
-  // via `style`/`width`/`height` passthrough.
-  const sizeProps: Pick<React.SVGProps<SVGSVGElement>, 'width' | 'height' | 'style'> = height ===
-  undefined
-    ? { width: WORDMARK_WIDTH, height: WORDMARK_HEIGHT }
-    : { style: { height: typeof height === 'number' ? `${height}px` : height, width: 'auto' } };
+  // The mark's own units (thousands per em) are far too large for a default
+  // pixel size, so `height` always has a value — `width` follows via
+  // `viewBox` rather than being set directly.
+  const sizeStyle: React.CSSProperties = {
+    height: typeof height === 'number' ? `${height}px` : height,
+    width: 'auto',
+  };
 
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox={`0 0 ${WORDMARK_WIDTH} ${WORDMARK_HEIGHT}`}
       {...accessibleProps}
-      {...sizeProps}
-      style={{ ...sizeProps.style, ...style }}
+      style={{ ...sizeStyle, ...style }}
       {...svgProps}
     >
       <rect x={0} y={0} width={WORDMARK_WIDTH} height={WORDMARK_HEIGHT} fill={ink.block} />

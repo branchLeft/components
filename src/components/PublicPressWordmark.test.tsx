@@ -5,10 +5,11 @@ import { PublicPressWordmark } from './PublicPressWordmark';
 import { PUBLIC_PRESS_GLYPHS } from './publicPressMark.generated';
 
 // The wordmark's block: 260-unit side insets + the sequence advances
-// (pilcrowP, u, b, l, i, c, the 60-unit gap, pilcrowP, r, e, s, s) + 260,
-// against a fixed 1340-unit block height. Hardcoded independently of the
-// generated module so a geometry regression there still fails this test.
-const EXPECTED_VIEW_BOX = '0 0 6637 1340';
+// (pilcrowP, u, b, l, i, c, the 60-unit gap, pilcrowP, r, e, s, s, with the
+// r-e pair kerned -17) + 260, against a fixed 1340-unit block height.
+// Hardcoded independently of the generated module so a geometry or kerning
+// regression there still fails this test: 260 + 6100 + 260 = 6620.
+const EXPECTED_VIEW_BOX = '0 0 6620 1340';
 
 const PILCROW_P_D = PUBLIC_PRESS_GLYPHS.pilcrowP.d;
 
@@ -57,11 +58,25 @@ describe('PublicPressWordmark', () => {
     expect(countOccurrences(html, `d="${PILCROW_P_D}"`)).toBe(2);
   });
 
-  it('sizes the block and viewBox to the full wordmark, including the gap after the c', () => {
+  it('pins the wordmark viewBox to 260 + 6100 + 260 = 6620 units wide, 1340 tall', () => {
     const html = renderToStaticMarkup(<PublicPressWordmark />);
     expect(html).toContain(`viewBox="${EXPECTED_VIEW_BOX}"`);
-    expect(html).toContain('width="6637"');
-    expect(html).toContain('height="1340"');
+  });
+
+  it("kerns the r-e pair by -17 units without changing r's own advance", () => {
+    // r lands at 260 (sides) + 851 (pilcrowP) + 592+609+266+265+551 (ublic)
+    // + 60 (gap) + 851 (pilcrowP) = 4305. Without kerning, e would follow at
+    // 4305 + 426 (r's own, unchanged advance) = 4731; the -17 kern pulls it
+    // to 4714.
+    const html = renderToStaticMarkup(<PublicPressWordmark />);
+    expect(html).toContain('translate(4305, 1020) scale(1,-1)');
+    expect(html).toContain('translate(4714, 1020) scale(1,-1)');
+    expect(html).not.toContain('translate(4731, 1020) scale(1,-1)');
+  });
+
+  it('defaults height to 32px', () => {
+    const html = renderToStaticMarkup(<PublicPressWordmark />);
+    expect(html).toContain('style="height:32px;width:auto"');
   });
 
   it('accepts height as a number (px)', () => {
