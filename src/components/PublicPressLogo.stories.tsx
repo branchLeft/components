@@ -38,7 +38,7 @@ export const Black: Story = {
   },
 };
 
-/** Fluorescent pink block, white pilcrow P (Rob's final ruling — not black-on-pink). */
+/** Fluorescent pink block, white pilcrow P — not black-on-pink. */
 export const Pink: Story = {
   args: {
     color: 'pink',

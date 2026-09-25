@@ -38,8 +38,8 @@ export interface PublicPressWordmarkProps extends Omit<React.SVGProps<SVGSVGElem
 /**
  * The PublicPress wordmark: Libre Franklin Bold letters, both Ps the
  * pilcrow P, knocked out of a solid block. The mark's geometry and inks are
- * fixed by Rob's ruling (see the README) — only presentation (`color`,
- * `height`) is configurable.
+ * fixed (see the README) — only presentation (`color`, `height`) is
+ * configurable.
  *
  * @example
  * ```tsx

@@ -36,7 +36,7 @@ describe('PublicPressLogo', () => {
     expect(html).not.toContain('fill="#3255A4"');
   });
 
-  it("renders the pink ink with white (#FAFAF7) letters, per Rob's final ruling", () => {
+  it('renders the pink ink with white (#FAFAF7) letters, not black-on-pink', () => {
     const html = renderToStaticMarkup(<PublicPressLogo color="pink" />);
     expect(html).toContain('fill="#FF48B0"');
     expect(html).toContain('fill="#FAFAF7"');

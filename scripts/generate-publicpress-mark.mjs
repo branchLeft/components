@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Regenerates src/components/publicPressMark.generated.ts from
-// scripts/publicpress-mark-spec.json. The JSON is Rob's ruling on the mark
-// (glyph outlines, block geometry, inks); this script only transcribes it
-// into a typed module so the path data is never retyped by hand.
+// scripts/publicpress-mark-spec.json, the mark's settled design spec (glyph
+// outlines, block geometry, inks). This script only transcribes it into a
+// typed module so the path data is never retyped by hand.
 //
 // Usage: node scripts/generate-publicpress-mark.mjs
 

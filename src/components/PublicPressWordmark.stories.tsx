@@ -38,7 +38,7 @@ export const Black: Story = {
   },
 };
 
-/** Fluorescent pink block, white letters (Rob's final ruling — not black-on-pink). */
+/** Fluorescent pink block, white letters — not black-on-pink. */
 export const Pink: Story = {
   args: {
     color: 'pink',

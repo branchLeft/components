@@ -36,8 +36,8 @@ export interface PublicPressLogoProps extends Omit<React.SVGProps<SVGSVGElement>
 
 /**
  * The PublicPress logo: the pilcrow P alone, centred in a square block. The
- * mark's geometry and inks are fixed by Rob's ruling (see the README) — only
- * presentation (`color`, `height`) is configurable.
+ * mark's geometry and inks are fixed (see the README) — only presentation
+ * (`color`, `height`) is configurable.
  *
  * @example
  * ```tsx
