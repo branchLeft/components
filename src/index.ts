@@ -26,3 +26,19 @@ export type { Value, ValueAccent, ValuesCloudProps } from './components/ValuesCl
 
 // Hooks
 export { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
+
+// Design tokens
+export { branchLeftTokens, publicPressInks, publicPressTokens } from './tokens';
+export type {
+  ColourTokens,
+  ColourValue,
+  DesignTokens,
+  MotionTokens,
+  RadiusStep,
+  ShadowStep,
+  SpacingStep,
+  TypeFace,
+  TypeFaces,
+  TypeScaleStep,
+  TypeTokens,
+} from './tokens';
