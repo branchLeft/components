@@ -15,12 +15,13 @@ export const publicPressInks = PUBLIC_PRESS_INKS;
 /**
  * PublicPress design tokens.
  *
- * Unlike branchLeft, PublicPress has no settled site-wide theme yet — Rob's
- * brand sketch (referenced in workspace#1436) is in progress and not final,
- * and a search of `ghost-platform-docs` (the `19-try-it-now-design/*`
- * documents and `OPEN-QUESTIONS.md`) turns up product-name/domain rulings
- * (D10: the name "PublicPress", `publicpress.co.uk`) but no colour, type,
- * spacing, radius, shadow or motion decisions.
+ * Unlike branchLeft, PublicPress has no settled site-wide theme yet — the
+ * brand owner's brand sketch (referenced in workspace#1436) is in progress
+ * and not final, and a search of `ghost-platform-docs` (the
+ * `19-try-it-now-design/*` documents and `OPEN-QUESTIONS.md`) turns up
+ * product-name/domain rulings (D10: the name "PublicPress",
+ * `publicpress.co.uk`) but no colour, type, spacing, radius, shadow or
+ * motion decisions.
  *
  * The only settled PublicPress *visual* ruling that exists anywhere is the
  * wordmark/logo mark itself, from `components` PR #92, built against the
@@ -62,8 +63,8 @@ export const publicPressTokens: DesignTokens = {
   type: {
     faces: {
       // No display typeface is ruled for PublicPress product UI (marketing
-      // site, portal). Provisionally reusing branchLeft's until Rob's
-      // brand sketch settles one.
+      // site, portal). Provisionally reusing branchLeft's until the brand
+      // owner's brand sketch settles one.
       display: {
         family: 'Space Grotesk',
         fallbackStack: "'Space Grotesk', ui-sans-serif, system-ui, sans-serif",

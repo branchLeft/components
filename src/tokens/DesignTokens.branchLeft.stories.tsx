@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
  * Entries marked PROVISIONAL are not settled by any written source (most
  * notably: the site is dark-only, so every "light" colour value here is a
  * guess, not a ruling) — see the components PR body's "Open questions for
- * Rob".
+ * the brand owner".
  */
 export const Tokens: Story = {
   args: {

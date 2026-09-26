@@ -3,8 +3,8 @@
  *
  * `provisional: true` on any leaf means the value is not settled by a
  * written source — it is a best-effort placeholder pending a ruling from
- * Rob. See each brand file's top-of-file notes for what's provisional and
- * why.
+ * the brand owner. See each brand file's top-of-file notes for what's
+ * provisional and why.
  */
 
 export interface ColourValue {

@@ -17,8 +17,8 @@ import type { DesignTokens } from './types';
  *
  * Every non-provisional value below is a literal copy of a value written in
  * one of those files. See the top of each provisional entry for why it
- * isn't settled, and the PR body's "Open questions for Rob" for the full
- * list.
+ * isn't settled, and the PR body's "Open questions for the brand owner"
+ * for the full list.
  */
 export const branchLeftTokens: DesignTokens = {
   brand: 'branchLeft',
