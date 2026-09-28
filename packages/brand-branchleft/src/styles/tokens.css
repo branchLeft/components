@@ -1,6 +1,6 @@
 /* ─── branchLeft design tokens ────────────────────────────────────────────
  * Custom properties only — no selectors that paint anything. `elements.css`
- * consumes these inside `@layer branchleft.base`; a consuming app can
+ * consumes these inside `@layer branchleft-base`; a consuming app can
  * override any `--bl-*` property on `:root` (or narrower) without touching
  * that layer at all.
  *

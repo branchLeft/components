@@ -82,33 +82,240 @@ customisable properties.
 `@branchleft/brand-branchleft/css` is a complete, opt-in stylesheet for any
 new branchLeft-branded app — dark-default/light-toggle colour modes, the
 ValuesColours palette, and an explicit default for every HTML element it
-covers, all inside a single `branchleft.base` cascade layer so a consuming
-app can override anything without fighting specificity:
+covers:
 
 ```tsx
 import '@branchleft/brand-branchleft/css';
 ```
+
+It declares itself across two cascade layers, in this order:
+
+```css
+@layer branchleft-base, branchleft-components;
+```
+
+**Flat, hyphenated names — never dotted.** A dotted name like
+`branchleft.base` is CSS Cascade Layers syntax for a SUB-layer (`base`)
+nested inside a single parent layer (`branchleft`) — the parent's position
+among its top-level siblings is fixed by the parent name's own first
+appearance, and no top-level order statement can independently interleave
+its children among other top-level layers. An earlier version of this
+package used dotted names, and no achievable layer order made a component
+class beat a same-priority site element rule while also losing to it
+elsewhere, as required below — confirmed by building this exact stylesheet
+into a real Tailwind v4 app and checking computed styles in a real
+browser: see "Verifying this" below.
+
+- **`branchleft-base`** — plain-element defaults (`html`, `body`, `h1`–`h6`,
+  `p`, `table`, form controls, …). Deliberately the LOWER-priority of the
+  two, so a consuming app's own element rules can outrank it just by
+  living in a later-registered layer — no `!important`, no specificity
+  fights.
+- **`branchleft-components`** — this package's class-based rules
+  (`.bl-wordmark`, `.bl-wordmark--hero`, `.bl-form-error`). Deliberately
+  HIGHER than `branchleft-base`: a component class must beat a same-element
+  generic rule regardless of which layer that generic rule lives in (e.g.
+  a consuming app's own `h1` default competing with `.bl-wordmark--hero` on
+  the same `<h1>`), and cascade layers — not selector specificity — are
+  what decide that once both target the same element.
+
+### Layer order in a Tailwind v4 app
+
+`@import 'tailwindcss'` itself expands to
+`@layer theme, base, components, utilities;` before pulling in Tailwind's
+own rules for each. Slot this package's two layers around those so that
+**the site's own element rules beat `branchleft-base`, while
+`branchleft-components` beats the site's element rules**:
+
+```css
+@layer theme, branchleft-base, base, branchleft-components, components, utilities;
+```
+
+Cascade-layer priority is order of FIRST APPEARANCE in a layer-order
+statement — later-listed layers always win over earlier ones, regardless
+of selector specificity, and an unlayered rule always beats every named
+layer regardless of where it sits. Reading the list above in priority
+order (lowest to highest):
+
+1. `theme` (Tailwind's own token layer) — nothing here should ever need to
+   win against anything.
+2. `branchleft-base` — this package's element defaults.
+3. `base` (Tailwind's preflight, plus wherever the site wraps its own
+   element defaults in `@layer base`, matching Tailwind's own name) — beats
+   `branchleft-base`, so the site's own choice for e.g. `h1` always wins
+   over this package's.
+4. `branchleft-components` — beats both `base` layers above, so
+   `.bl-wordmark--hero` on an `<h1>` wins even though the site's own `h1`
+   rule sits in `base`. This is the fix for the defect where the class lost
+   to the element rule purely because both were registered in the same
+   (lowest) priority layer.
+5. `components` (the site's own component classes, in `@layer components`)
+   — beats `branchleft-components`, so a same-named or overlapping site
+   class still wins if one is ever written.
+6. `utilities` (Tailwind's utility classes) — highest, as in any ordinary
+   Tailwind app: a `text-*`/`font-*` utility on an element still beats
+   every layer below it.
+
+**This order must be declared explicitly — there is no working import-order
+fallback.** A plain `@import` sequence cannot interleave this package's two
+layers between Tailwind's four: whichever side imports first, its layers
+register as a contiguous block, either entirely below or entirely above
+the other side's, never split across it. Measured directly, with no
+explicit `@layer` statement:
+
+- Importing this package's stylesheet BEFORE `@import 'tailwindcss'` puts
+  BOTH of this package's layers below all four of Tailwind's (including
+  `theme`) — `branchleft-components` then loses to the site's own `h1`
+  rule too, so `.bl-wordmark--hero` renders at the site's heading size
+  instead of its own.
+- Importing it AFTER `@import 'tailwindcss'` puts BOTH of this package's
+  layers above `utilities` — the opposite failure: a bare `h1` then reads
+  this package's font instead of the site's, and any Tailwind utility
+  applied directly to a covered element loses to this package's default.
+
+Either direction breaks one half of layer 2's requirement; neither is a
+usable fallback. If your bundler's CSS pipeline
+doesn't reliably preserve an explicit multi-name `@layer` statement across
+its own concatenation pass (this repo hit exactly that with an unrelated
+unlayered override file, historically), treat that as a bundler defect to
+fix, or as a reason to leave this package's own component classes (`.bl-
+wordmark`, etc.) unlayered in your build instead of relying on this order
+— not a reason to fall back to import order, which does not achieve it.
+
+### Verifying this
+
+Layer-priority claims in this file are checked against a real build, not
+asserted from the spec text alone: `packages/brand-branchleft/src/styles/
+branchleft.layers.test.ts` asserts the built CSS uses flat (undotted)
+layer names and that every class-based rule lives in the higher-priority
+one. Proving the FULL claim — that a real Tailwind v4 app's own `h1` rule
+beats this package's element default, while this package's component class
+still beats that same `h1` rule — needs a real Tailwind compile and a real
+browser's computed styles; CSS Cascade Layers priority is not something
+jsdom or a text-only test can evaluate correctly. This package has no
+existing browser-test toolchain and this repo's CI has no sibling app to
+build against, so that full proof is a manual, documented script rather
+than a CI gate — see `packages/brand-branchleft/scripts/verify-layer-order.mjs`
+and its own header comment for how to run it (it needs a Tailwind v4
+install and a Chromium binary, e.g. via a sibling `website/` checkout's
+`node_modules`, exactly as used to produce the measurements in this
+package's PR history).
 
 Fonts (Space Grotesk, Syne, IBM Plex Sans, Roboto Mono) ship as their own
 `dist/fonts/*.woff2` files, referenced by the stylesheet's own `@font-face`
 rules — nothing is base64-inlined, so an unrelated colour/spacing change
 never forces a re-download of unchanged font bytes. If you need to reach a
 font file directly (e.g. `<link rel="preload">`), it's reachable via the
-package's `./fonts/*` export subpath.
+package's `./fonts/*` export subpath. Every family is SIL Open Font License
+1.1 — each family's own `OFL.txt` licence text ships alongside its
+`dist/fonts/<Family>/*.woff2`, separately from this package's own `MIT`
+`license` field in `package.json`, which covers only its code.
+
+### Theme toggle
 
 Dark is the brand default; light is opt-in via `data-theme="light"` on
-`<html>`. `@branchleft/components`'s `ThemeToggle` sets that attribute and
-persists the choice:
+`<html>`. `@branchleft/components`'s `ThemeToggle` renders that switch as a
+real `<form>` around an icon button, so it works with JavaScript disabled.
+It takes the theme ALREADY in effect as a required `theme` prop — your
+server computes this once with `parseThemeCookie` and the same value must
+reach both the server render and the client's first render, so there is
+nothing for either side to guess and no hydration mismatch:
 
 ```tsx
 import { ThemeToggle } from '@branchleft/components';
 
-<ThemeToggle />;
+<ThemeToggle theme={theme} action="/theme" returnTo={currentPath} />;
 ```
 
-For an SSR app, embed `themeInitScript` in the document `<head>` (before
-any stylesheet or hydration) so a returning light-mode visitor's page
-doesn't flash dark on first paint:
+**Without JavaScript**, clicking the button submits the form to `action`
+with `theme=<the mode to switch TO>` and, if you pass `returnTo`, a hidden
+`return` field carrying it — your server reads both, stores the theme
+under `THEME_COOKIE_NAME`, and redirects to a validated same-origin path
+(via the exported `safeReturnPath` helper, never a raw redirect target).
+On the next request, it renders `<html data-theme>` to match, via
+`parseThemeCookie` against the incoming `Cookie` header.
+
+**A form field is attacker-controlled — validate the OUTPUT, not the
+input.** A denylist regex against the raw string can't see normalisation
+the platform's own URL parser does before your code ever runs — e.g.
+WHATWG URL strips ASCII tab/newline from a value before parsing it, and
+normalises `..`/`.`/`%2e` dot segments, either of which can leave a
+same-origin `pathname` that itself starts with `//` (protocol-relative,
+once returned on its own, regardless of which origin it resolved from).
+`safeReturnPath` resolves the value with `new URL(value, origin)`, checks
+that result's origin, then checks the STRING IT IS ABOUT TO RETURN: it
+collapses any leading run of `/`/`\` to one `/`, rejects anything still
+containing a backslash, a control character, or over 2048 characters, and
+finally requires that re-parsing that exact string against `origin` lands
+back on `origin` — the guarantee is on what comes out, checked directly,
+not inferred from what the input looked like going in:
+
+```tsx
+import { THEME_COOKIE_NAME, parseThemeCookie, safeReturnPath } from '@branchleft/components';
+
+// In your server's request handler, e.g. a POST /theme route:
+const body = new URLSearchParams(await request.text());
+const theme = body.get('theme') === 'light' ? 'light' : 'dark';
+const secure = new URL(request.url).protocol === 'https:' ? '; Secure' : '';
+const cookie = `${THEME_COOKIE_NAME}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax${secure}`;
+
+const ownOrigin = new URL(request.url).origin;
+const returnTo = safeReturnPath(body.get('return') ?? request.headers.get('referer'), ownOrigin);
+// set-cookie: <cookie>, then redirect (303) to returnTo
+
+// And on every request, when rendering <html>:
+const theme = parseThemeCookie(request.headers.get('cookie'));
+// <html lang="en" data-theme={theme === 'light' ? 'light' : undefined}>
+```
+
+**With JavaScript**, `ThemeToggle` intercepts that same submit,
+`preventDefault`s the navigation, sets `data-theme` on `<html>` immediately,
+and writes the same cookie itself via `document.cookie` (`Path=/`,
+`SameSite=Lax`, a one-year `Max-Age`, plus `Secure` only when the page
+itself is https — the same rule as the server snippet above, since an
+unconditional `Secure` is silently rejected on a plain-http origin) — so
+the switch feels instant, landing on the exact same state either way.
+After that first render, clicks update its own state independently of the
+`theme` prop — but if `theme` itself later changes (e.g. the app remounts
+the toggle with fresh loader data after a client-side navigation), it
+resyncs to the new value rather than keeping a stale one.
+
+**Behind a TLS-terminating reverse proxy**, `request.url`'s scheme and
+host are the proxy's OWN internal connection to your server (often plain
+`http://`), not what the visitor's browser actually used — read the
+proxy's forwarded headers (`X-Forwarded-Proto`/`X-Forwarded-Host`, or your
+framework's equivalent) for both `Secure` and the `origin` passed to
+`safeReturnPath`, or both quietly fail differently-safe rather than
+correctly: `Secure` is silently dropped from the cookie (the browser still
+accepts it, just without the flag), and `safeReturnPath` rejects every
+absolute-URL `Referer` fallback to `/` (its own origin will never match an
+internal `http://` URL's), though a same-origin relative `return` field
+still works either way.
+
+The button is icon-only (a sun in dark mode, a moon in light mode, via
+`lucide-react`) with no `aria-pressed` — its accessible name states the
+action directly ("Switch to light mode" / "Switch to dark mode"), which a
+static pressed/unpressed state can't convey on its own. Override either
+string:
+
+```tsx
+<ThemeToggle
+  theme={theme}
+  action="/theme"
+  switchToLightLabel="Go light"
+  switchToDarkLabel="Go dark"
+/>
+```
+
+For a **static app with no server** to set a cookie, `THEME_STORAGE_KEY`,
+`themeInitScript` and `themeInitScriptHash` remain available as an
+optional, JS-only fallback path — `ThemeToggle` still writes
+`localStorage` under `THEME_STORAGE_KEY` on every toggle for back-compat
+with this path, but a server-backed app should prefer the cookie above,
+which is also what makes the no-JS form submission actually work. Embed
+`themeInitScript` in the document `<head>` (before any stylesheet or
+hydration) so a returning light-mode visitor's page doesn't flash dark on
+first paint:
 
 ```tsx
 import { themeInitScript } from '@branchleft/components';
@@ -140,8 +347,7 @@ related to those values," not generic UI error states. Colour is never
 the only signal: pair an invalid control with `aria-invalid="true"` and
 visible error text (the `.bl-form-error` class styles that text)
 referenced via `aria-describedby`, so the error reaches assistive tech the
-same way it reaches a sighted user. `--bl-color-danger` is marked
-provisional in `tokens.css` — not yet confirmed by the brand owner.
+same way it reaches a sighted user.
 
 ## PublicPress mark
 

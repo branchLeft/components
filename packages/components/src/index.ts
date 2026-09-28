@@ -17,6 +17,8 @@ export type { Value, ValueAccent, ValuesCloudProps } from './components/ValuesCl
 export {
   ThemeToggle,
   THEME_STORAGE_KEY,
+  THEME_COOKIE_NAME,
+  parseThemeCookie,
   themeInitScript,
   themeInitScriptHash,
 } from './components/ThemeToggle';
@@ -24,6 +26,9 @@ export type { Theme, ThemeToggleProps } from './components/ThemeToggle';
 
 // Hooks
 export { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
+
+// Lib
+export { safeReturnPath } from './lib/safeReturnPath';
 
 // Design tokens
 export type {

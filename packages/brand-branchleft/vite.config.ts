@@ -18,34 +18,31 @@ const FONT_FILES = [
   'IBMPlexSans/IBMPlexSans-SemiBold.woff2',
 ];
 
+// Every family's own SIL OFL 1.1 licence text (`src/styles/fonts/<Family>/
+// OFL.txt`), one per family directory in FONT_FILES (RobotoMono and
+// IBMPlexSans each contribute more than one FONT_FILES entry but only one
+// licence file). Derived from FONT_FILES rather than hand-listed, so a new
+// family can't be added to one list and forgotten in the other.
+const FONT_LICENCE_FILES = Array.from(
+  new Set(FONT_FILES.map((relativePath) => path.dirname(relativePath) + '/OFL.txt'))
+);
+
 /**
  * Emits every font as its own file under `dist/fonts/`, addressed by a
- * plain relative `url()` from `dist/branchleft.css`, instead of Vite's
- * library-mode default.
- *
- * There is no supported config option for this: Vite's own docs for
- * `build.assetsInlineLimit` say plainly "If you specify build.lib,
- * build.assetsInlineLimit will be ignored and assets will always be
- * inlined, regardless of file size" — confirmed by testing `assetsInlineLimit:
- * 0` here directly; it made no difference; `dist/branchleft.css` still came
- * out at 339KB with every font base64-encoded inline (this vite.config.ts
- * used to say otherwise — that comment was simply wrong, per cycle-1
- * review). There is no library-mode "don't inline" switch to reach for.
- *
- * So this plugin works with that default rather than fighting it: it lets
- * Vite inline as it always will in lib mode, then fixes the file it wrote —
- * NOT via `generateBundle` (tried first; logging confirmed `dist/
- * branchleft.css` doesn't exist in the bundle map yet at that point in lib
- * mode — Vite's own CSS-emitting plugin runs its own bundle-mutating hook
- * later), but `writeBundle`, which runs once the real files are already on
- * disk. It reads the written CSS back, finds each
- * `url(data:font/woff2;base64,...)` Vite produced, in declaration order,
- * and replaces it with a real relative path to a font file this plugin
- * copies alongside it. Filenames aren't content-hashed: unlike a JS/CSS
- * chunk, a font's bytes don't change between releases, so there's nothing
- * to bust the cache over — what cycle-1 review flagged is fixed by these
- * simply being separate files: an unrelated colour/spacing tweak now only
- * touches branchleft.css, never forces re-fetching untouched font bytes.
+ * plain relative `url()` from `dist/branchleft.css` — Vite's library mode
+ * always base64-inlines assets regardless of `assetsInlineLimit` (its docs
+ * say so; confirmed by testing `0` directly, which made no difference).
+ * There is no library-mode "don't inline" switch to reach for.
+ */
+
+/**
+ * Runs in `writeBundle` (once the real files exist on disk — NOT
+ * `generateBundle`, where the CSS chunk isn't in the bundle map yet in lib
+ * mode), reading the written CSS back and replacing each inlined font
+ * `url()` with a real relative path, in declaration order, to a font file
+ * copied alongside it. Filenames aren't content-hashed — a font's bytes
+ * never change between releases — so an unrelated colour/spacing tweak
+ * only touches `branchleft.css`, never re-fetches untouched font bytes.
  */
 function extractFontsPlugin(): Plugin {
   const fontsDir = path.resolve(__dirname, 'src/styles/fonts');
@@ -89,6 +86,19 @@ function extractFontsPlugin(): Plugin {
       }
 
       fs.writeFileSync(cssPath, rewritten);
+
+      // Every font family is SIL OFL 1.1 (see fonts.css's header comment) —
+      // its licence text ships alongside the woff2 it covers, in the same
+      // dist/fonts/<Family>/ directory, rather than assuming the package's
+      // own MIT LICENSE file covers font bytes it never granted rights to.
+      // Copied here (not left to package.json's `files: ["dist"]` alone to
+      // discover) so a missing source file fails the build loudly instead
+      // of silently shipping a font with no licence text next to it.
+      for (const relativePath of FONT_LICENCE_FILES) {
+        const destPath = path.join(outDir, 'fonts', relativePath);
+        fs.mkdirSync(path.dirname(destPath), { recursive: true });
+        fs.copyFileSync(path.join(fontsDir, relativePath), destPath);
+      }
     },
   };
 }

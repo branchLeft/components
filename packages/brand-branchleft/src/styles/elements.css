@@ -1,14 +1,35 @@
 /* ─── branchLeft element defaults ─────────────────────────────────────────
- * Every rule lives in `@layer branchleft.base`, a single layer that a
- * consuming app can outrank just by writing an unlayered rule (or its own,
- * later-declared layer) — no `!important`, no specificity games needed to
- * override anything here.
+ * Two layers, in this file's own priority order (a consuming app's other
+ * layers slot in around these — see the README's "Layer order" section for
+ * where): `branchleft-base` holds plain-element defaults, so a consuming
+ * app's own element rules (its `base` layer, in Tailwind v4 terms) can
+ * outrank it just by being declared in a later-registered layer — no
+ * `!important`, no specificity games. `branchleft-components` holds this
+ * package's own class-based rules (`.bl-wordmark*`, `.bl-form-error`) and
+ * must be registered AFTER `branchleft-base` so a component class still
+ * beats a same-element generic rule (e.g. a consuming app's own `h1`
+ * default) regardless of which layer that generic rule lives in, as long
+ * as the app's layer order also places `branchleft-components` above it.
  *
  * Colour, transition and radius always read from a `--bl-*` custom
  * property — never a literal hex — so both modes (and any consumer
  * override of a single token) apply without touching this file.
  */
-@layer branchleft.base {
+@layer branchleft-base, branchleft-components;
+
+@layer branchleft-base {
+  /* Family, size, colour and line-height live here — on the two elements
+   * every other element inherits from — and nowhere else on a bare text
+   * element below. A consumer's convention (this site included) is to size
+   * and colour text by applying a utility class to an ANCESTOR, relying on
+   * ordinary CSS inheritance to reach a bare `<p>`/`<li>`/etc. inside it. An
+   * explicit `font-size`/`color` restated on that bare element — even from
+   * this package's lowest-priority layer — would still win over the
+   * ancestor's inherited value, because cross-layer priority only
+   * arbitrates a property two layers both declare on the SAME element; it
+   * never overrides plain inheritance from a differently-styled ancestor.
+   * That is exactly the defect a computed-style diff against a live
+   * Tailwind consumer found (see the PR body). */
   html,
   body {
     margin: 0;
@@ -18,7 +39,15 @@
     color-scheme: inherit;
     font-family: var(--bl-font-sans);
     font-size: var(--bl-text-body);
-    line-height: var(--bl-leading-body);
+    /* 1.5, not `--bl-leading-body` (1.6): this matches Tailwind v4
+     * preflight's own `html` line-height and the value already live on the
+     * consuming site's `body` today. `--bl-leading-body` (1.6) is instead
+     * restated explicitly on `p`/`ul`/`ol`/`li`/`dl`/etc. below — the
+     * site's own long-standing literal override for running text — so nested
+     * bare text still gets 1.6 by inheriting it from its nearest such
+     * ancestor, while anything with no text-bearing ancestor at all (e.g. a
+     * bare `<address>`) falls back to this 1.5. */
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -65,11 +94,14 @@
   }
 
   /* ── Copy ──────────────────────────────────────────────────────────── */
+  /* No `font-size`/`color` here — see the html/body rule's comment above.
+   * `line-height` is restated (matching `--bl-leading-body`, not the 1.5 on
+   * html/body) because this is the site's own long-standing literal value
+   * for running text; `font-weight`/`margin` aren't sized/coloured
+   * properties, so they carry no such inheritance risk. */
   p {
-    font-size: var(--bl-text-body);
     line-height: var(--bl-leading-body);
     font-weight: 400;
-    color: var(--bl-color-fg);
     margin: 0 0 var(--bl-space-sm);
   }
   p:last-child {
@@ -116,12 +148,13 @@
   }
 
   /* ── Lists ─────────────────────────────────────────────────────────── */
+  /* No `font-size`/`color` — see the html/body rule's comment above. `li`
+   * (below) sets neither either, so it inherits both from whichever
+   * ancestor actually sized/coloured this list, not from here. */
   ul,
   ol {
-    font-size: var(--bl-text-body);
     line-height: var(--bl-leading-body);
     font-weight: 400;
-    color: var(--bl-color-fg);
     margin: 0 0 var(--bl-space-sm);
     padding-inline-start: var(--bl-space-md);
   }
@@ -140,10 +173,9 @@
     margin-block-end: 0;
   }
 
+  /* No `font-size`/`color` — see the html/body rule's comment above. */
   dl {
-    font-size: var(--bl-text-body);
     line-height: var(--bl-leading-body);
-    color: var(--bl-color-fg);
     margin: 0 0 var(--bl-space-sm);
   }
   dt {
@@ -155,11 +187,10 @@
   }
 
   /* ── Quotes and rules ──────────────────────────────────────────────── */
+  /* No `font-size`/`color` — see the html/body rule's comment above. */
   blockquote {
-    font-size: var(--bl-text-body);
     line-height: var(--bl-leading-body);
     font-style: italic;
-    color: var(--bl-color-fg);
     margin: var(--bl-space-md) 0;
     padding-inline-start: var(--bl-space-sm);
     /* A quote's left rule must actually be seen, so it reads from
@@ -215,10 +246,9 @@
   }
 
   /* ── Tables ────────────────────────────────────────────────────────── */
+  /* No `font-size`/`color` — see the html/body rule's comment above. */
   table {
-    font-size: var(--bl-text-body);
     line-height: var(--bl-leading-body);
-    color: var(--bl-color-fg);
     border-collapse: collapse;
     width: 100%;
     margin: 0 0 var(--bl-space-sm);
@@ -279,12 +309,12 @@
     font-family: var(--bl-font-sans);
   }
 
+  /* No `font-size`/`color` — see the html/body rule's comment above. Only
+   * `font-weight: 500` is the owner-accepted deliberate choice here. */
   label {
     display: inline-block;
-    font-size: var(--bl-text-body);
     line-height: var(--bl-leading-body);
     font-weight: 500;
-    color: var(--bl-color-fg);
     margin-block-end: var(--bl-space-xs);
   }
 
@@ -357,18 +387,9 @@
     border-color: var(--bl-color-danger);
   }
 
-  /* Paired text/icon affordance for the state above — reference it from
-   * the invalid control's `aria-describedby` so assistive tech announces
-   * the same message a sighted user reads from its colour and position. */
-  .bl-form-error {
-    display: flex;
-    align-items: center;
-    gap: var(--bl-space-xs);
-    font-size: var(--bl-text-small);
-    line-height: var(--bl-leading-small);
-    color: var(--bl-color-danger);
-    margin-block-start: var(--bl-space-xs);
-  }
+  /* `.bl-form-error`'s own styling lives in the `branchleft-components`
+   * layer below (it's a class-based rule) — this comment is the pointer
+   * the input rules above reference. */
 
   fieldset {
     border: 1px solid var(--bl-color-border);
@@ -399,6 +420,25 @@
     outline-offset: 2px;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    a,
+    button,
+    input,
+    select,
+    textarea {
+      transition: none;
+    }
+  }
+}
+
+/* Component classes — deliberately a SEPARATE, later-registered layer from
+ * `branchleft-base` above (see this file's header comment and the README's
+ * "Layer order" section): a class selector needs to beat a same-element
+ * generic rule regardless of specificity (e.g. a consuming app's own `h1`
+ * default competing with `.bl-wordmark--hero` on the same `<h1>`), and
+ * cascade layers — not selector specificity — are what settles that once
+ * both rules target the same element. */
+@layer branchleft-components {
   .bl-wordmark {
     font-family: var(--bl-font-wordmark);
     font-weight: var(--bl-weight-wordmark);
@@ -409,13 +449,18 @@
     line-height: var(--bl-leading-wordmark-hero);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    a,
-    button,
-    input,
-    select,
-    textarea {
-      transition: none;
-    }
+  /* Paired text/icon affordance for the invalid-control state above —
+   * reference it from the invalid control's `aria-describedby` so
+   * assistive tech announces the same message a sighted user reads from
+   * its colour and position. A class-based rule, so it lives in this layer
+   * too, not `branchleft-base`. */
+  .bl-form-error {
+    display: flex;
+    align-items: center;
+    gap: var(--bl-space-xs);
+    font-size: var(--bl-text-small);
+    line-height: var(--bl-leading-small);
+    color: var(--bl-color-danger);
+    margin-block-start: var(--bl-space-xs);
   }
 }

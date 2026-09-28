@@ -54,3 +54,24 @@ describe('dist/fonts/*.woff2 content matches src/styles/fonts/*.woff2', () => {
     expect(sha256(extractedPath)).toBe(sha256(sourcePath));
   });
 });
+
+// Same family directories as FONT_FILES, one licence file each — every font
+// this package ships is SIL OFL 1.1 (see fonts.css's header comment), and
+// the package's own `license: "MIT"` in package.json covers only its code,
+// never the font bytes. A published tarball with the woff2 files but no
+// OFL.txt beside them would redistribute those fonts under no stated
+// licence at all — this is what closes that gap (see also `pnpm pack`'s
+// tarball contents, checked in the PR body).
+const FONT_FAMILY_DIRS = Array.from(
+  new Set(FONT_FILES.map((relativePath) => path.dirname(relativePath)))
+);
+
+describe('dist/fonts/<Family>/OFL.txt is shipped alongside each family', () => {
+  it.each(FONT_FAMILY_DIRS)('%s/OFL.txt matches its source licence text', (familyDir) => {
+    const sourcePath = path.join(FONTS_SOURCE_DIR, familyDir, 'OFL.txt');
+    const extractedPath = path.join(outDir, 'fonts', familyDir, 'OFL.txt');
+
+    expect(fs.existsSync(extractedPath)).toBe(true);
+    expect(fs.readFileSync(extractedPath, 'utf8')).toBe(fs.readFileSync(sourcePath, 'utf8'));
+  });
+});

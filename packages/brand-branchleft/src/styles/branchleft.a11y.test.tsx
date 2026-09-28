@@ -1,15 +1,11 @@
 // @vitest-environment node
 //
-// Starts in the plain Node environment (this package's vitest.config.ts
-// default is jsdom — this override matters here): `beforeAll` first
-// builds the stylesheet via vite's `build()` (esbuild under the hood),
-// which needs an untouched `TextEncoder`/`Uint8Array` — jsdom's polyfills
-// for those break it (see the sibling `branchleft.*.test.ts` files in this
-// directory) — and only installs jsdom's own globals, via vitest's own
-// jsdom environment setup, once that build step is done. That keeps this
-// one file able to do both: build real CSS AND render real DOM to run axe
-// against, which a pure `@vitest-environment jsdom` file couldn't (no
-// esbuild) and a pure node one couldn't either (no DOM).
+// Starts in the plain Node environment (this package's default is jsdom):
+// `beforeAll` first builds the stylesheet via vite's `build()` (esbuild
+// under the hood needs an untouched `TextEncoder`/`Uint8Array` — jsdom's
+// polyfills break it, see the sibling `branchleft.*.test.ts` files), then
+// installs jsdom's own globals once that build is done. So this one file
+// can do both: build real CSS AND render real DOM to run axe against.
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { builtinEnvironments } from 'vitest/runtime';
 import * as React from 'react';
@@ -73,7 +69,7 @@ describe.each(['dark', 'light'] as const)('branchleft stylesheet a11y — %s mod
       React.createElement(
         React.Fragment,
         null,
-        React.createElement(ThemeToggle),
+        React.createElement(ThemeToggle, { action: '/theme', theme: mode }),
         React.createElement(HtmlElements)
       )
     );

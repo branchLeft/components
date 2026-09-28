@@ -4,7 +4,7 @@ import * as React from 'react';
  * Storybook-only fixture rendering one of every element `elements.css`
  * defines, so a reviewer can eyeball the whole set in both modes (see the
  * "theme" toolbar in `.storybook/preview.tsx`) rather than reading CSS.
- * Not exported from the package's public API — `branchleft.base` applies
+ * Not exported from the package's public API — `branchleft-base` applies
  * to plain markup automatically, so there is nothing for consumers to
  * import here.
  */
