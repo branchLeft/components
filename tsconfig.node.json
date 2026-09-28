@@ -7,13 +7,20 @@
   //
   // No stack preset applies: react-app is browser-targeted and pulumi pins
   // NodeNext resolution, which Vite's config loader does not use.
+  //
+  // `lib` adds DOM on top of the ES2022 baseline every other file here
+  // needs: `.storybook/preview.tsx` is the one file in this program that
+  // actually executes in the browser (Storybook's preview iframe, not
+  // Vite's Node config loader) — it reads `document` to apply the "theme"
+  // toolbar global. Harmless for the Node-executed files alongside it,
+  // which simply never reference a DOM global.
   "extends": "@branchleft/tsconfig/strict-1.json",
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM"],
     "types": ["node"]
   },
-  "include": [".storybook/**/*.ts", "vitest.config.ts", "scripts/**/*.ts"],
+  "include": [".storybook/**/*.ts", ".storybook/**/*.tsx", "vitest.config.ts", "scripts/**/*.ts"],
   "exclude": ["node_modules", "dist", "packages"]
 }
