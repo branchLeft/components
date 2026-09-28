@@ -3,15 +3,16 @@
  * or any other attacker-influenced string) against `origin`, and returns a
  * same-origin `pathname + search + hash` — or `'/'` for anything missing,
  * unparseable, off-origin, or not `http:`/`https:`.
- *
+ */
+
+/**
  * Uses the platform's own `URL` parser to resolve `value`, rather than a
  * denylist regex against the raw string: the WHATWG URL algorithm strips
  * ASCII tab/newline from the input BEFORE parsing, so a value like
  * `"/\t/evil.example"` collapses to the protocol-relative `"//evil.example"`
- * — a regex written against the original string never sees that. Resolving
- * first and then comparing the RESULT's origin catches every such
- * normalisation, by construction, rather than one denylisted character at
- * a time.
+ * — a regex written against the original string never sees that.
+ * Resolving first, then comparing the RESULT's origin, catches every such
+ * normalisation by construction, not one denylisted character at a time.
  */
 export function safeReturnPath(value: string | null | undefined, origin: string): string {
   if (!value) return '/';
