@@ -29,17 +29,15 @@ function isTheme(value: string): value is Theme {
 
 /**
  * Parses a `Theme` out of a raw `Cookie` request header — pure and
- * framework-neutral, so a consumer's server (whatever it's built on) can
- * call it directly on the header string it already has, with no dependency
- * on this package's own cookie-writing code. Defaults to `'dark'`, and
- * folds every failure mode into that same default rather than throwing:
- * a missing header, no cookie of this name, a malformed pair, or a value
- * that isn't exactly `"light"`/`"dark"` (including one with trailing
- * `=`-separated junk, e.g. a naive concatenation/injection attempt) all
- * fall through to dark, matching the brand default `@branchleft/brand-
- * branchleft/css` itself falls back to when no `data-theme` attribute is
- * present at all.
- *
+ * framework-neutral, so a consumer's server can call it directly on the
+ * header string it already has. Defaults to `'dark'`, and folds every
+ * failure mode into that default rather than throwing: a missing header,
+ * no cookie of this name, a malformed pair, or a value that isn't exactly
+ * `"light"`/`"dark"` all fall through to dark, matching the brand default
+ * a stylesheet itself falls back to with no `data-theme` attribute at all.
+ */
+
+/**
  * A `Cookie` header can legally repeat a name (rare, but seen with
  * differently-scoped cookies of the same name from an ancestor path) — the
  * LAST occurrence wins here, mirroring how a repeated `Set-Cookie` would
@@ -107,16 +105,15 @@ function writeThemeCookie(theme: Theme): void {
  * set `data-theme` from a cookie (see `THEME_COOKIE_NAME`/
  * `parseThemeCookie` for the primary, server-backed path — this is the
  * fallback for a consumer that has neither). Embedded before any
- * stylesheet/hydration so a `localStorage`-stored theme applies before
- * first paint — without it, a light-mode visitor would flash dark on every
- * load. Sets `data-theme="light"` only: dark is the brand default with no
- * attribute needed, so a missing/invalid/inaccessible stored value all
- * fall through to it correctly with no `else` branch required.
- *
+ * stylesheet/hydration, so a `localStorage`-stored theme applies before
+ * first paint. Sets `data-theme="light"` only: dark is the default with no
+ * attribute needed, so any other stored value falls through to it.
+ */
+
+/**
  * Deliberately plain, un-minified ES5-shaped JS with no template literals
- * or arrow functions — this string is meant to run unmodified in whatever
- * document head embeds it, including on the small chance a consumer's CSP
- * or a very old browser is involved; it should not depend on this
+ * or arrow functions — meant to run unmodified in whatever document head
+ * embeds it (a consumer's CSP, or a very old browser), independent of this
  * package's own build target.
  */
 export const themeInitScript = `(function () {
@@ -133,19 +130,21 @@ export const themeInitScript = `(function () {
  * `script-src` directive expects for an inline `<script>` — e.g.:
  *
  *   Content-Security-Policy: script-src 'self' 'sha256-eaTM2OdrPnWt18EwafzafEMGqGT6XQixJje4JPQ2gUg='
- *
- * Inlining `themeInitScript` into a document `<head>` needs one of: a
- * `'nonce-…'` the server regenerates per response, `'unsafe-inline'` (a
- * real CSP weakening this package should not ask a consumer to accept), or
- * this hash. A hash-based `script-src` entry only matches the EXACT
- * script text — hence why `themeInitScript` is a literal, un-templated
- * string rather than something assembled per-render, and why this
- * constant is a literal too, not computed from `crypto` at runtime (this
- * package ships to browsers; `node:crypto` isn't there). It's computed
- * once, by `ThemeToggle.hash.test.ts`, which fails if it ever drifts from
- * `themeInitScript`'s actual content — recompute it there (the test's own
- * comment says how) and paste the result back here if `themeInitScript`
- * ever changes.
+ */
+
+/**
+ * Inlining it needs a per-response `nonce`, `'unsafe-inline'` (a real CSP
+ * weakening this package should not ask for), or this hash — which only
+ * matches the EXACT script text, hence `themeInitScript` being a literal,
+ * un-templated string, and this constant a literal too (not computed at
+ * runtime; this package ships to browsers, `node:crypto` isn't there).
+ */
+
+/**
+ * Computed once by `ThemeToggle.hash.test.ts`, which fails if it ever
+ * drifts from `themeInitScript`'s actual content — recompute it there (the
+ * test's own comment says how) and paste the result back here if
+ * `themeInitScript` ever changes.
  */
 export const themeInitScriptHash = 'sha256-eaTM2OdrPnWt18EwafzafEMGqGT6XQixJje4JPQ2gUg=';
 
@@ -187,23 +186,24 @@ export interface ThemeToggleProps {
  * An icon button, wrapped in a real `<form>`, that switches the page
  * between `"dark"` (the default — no `<html data-theme>` attribute needed)
  * and `"light"`.
- *
- * **Without JavaScript**, submitting the form is the entire mechanism: it
+ */
+
+/**
+ * Without JavaScript, submitting the form is the entire mechanism: it
  * posts `theme=<the mode to switch TO>` to `action`, and the consumer's
- * server is responsible for storing that under `THEME_COOKIE_NAME` and
- * redirecting back with `<html data-theme>` (via `parseThemeCookie`
- * against the incoming request) already set to match — the switch works
- * end to end with scripting disabled.
- *
- * **With JavaScript**, this component intercepts that same submit,
+ * server stores that under `THEME_COOKIE_NAME` and redirects back with
+ * `<html data-theme>` (via `parseThemeCookie`) already set to match — the
+ * switch works end to end with scripting disabled.
+ */
+
+/**
+ * With JavaScript, this component intercepts that same submit,
  * `preventDefault`s the navigation, flips `data-theme` on `<html>`
  * immediately, and writes the same cookie itself via `document.cookie` —
- * so the switch feels instant instead of waiting on a round trip, while
- * still landing on the exact same cookie/attribute state either way.
+ * instant instead of a round trip, landing on the same state either way.
  *
  * Brand-neutral: it knows nothing about any brand's colour tokens, only
- * the `data-theme` attribute contract a brand stylesheet (e.g.
- * `@branchleft/brand-branchleft/css`) keys its light-mode selector off.
+ * the `data-theme` attribute contract a brand stylesheet keys off.
  */
 export function ThemeToggle({
   action,
@@ -211,18 +211,11 @@ export function ThemeToggle({
   switchToDarkLabel = 'Switch to dark mode',
   className,
 }: Readonly<ThemeToggleProps>): React.JSX.Element {
-  // Lazy initialiser, not an effect: `readRenderedTheme` returns the exact
-  // same 'dark' assumption on both the server and the client's FIRST render
-  // pass (no `document` exists yet server-side to read), so there's no
-  // server/client markup mismatch to correct after the fact — by the time
-  // this runs on a real page, `document.documentElement.dataset.theme` is
-  // already whatever the consumer's server rendered from the cookie, so a
-  // returning light-mode visitor's very first client render already shows
-  // the right icon/label, with no delayed correction and no flash (the
-  // defect this replaces: see the PR body's cycle-1 finding on the old
-  // `localStorage`-read initialiser, which read a value the server could
-  // never have agreed with, and then never corrected itself before the
-  // next click).
+  // Lazy initialiser, not an effect: both the server and the client's
+  // FIRST render pass agree on 'dark' (no `document` exists server-side),
+  // so there's no markup mismatch to correct afterwards — on a real page,
+  // `document.documentElement.dataset.theme` is already whatever the
+  // consumer's server rendered from the cookie by the time this runs.
   const [theme, setTheme] = React.useState<Theme>(readRenderedTheme);
 
   const next: Theme = theme === 'dark' ? 'light' : 'dark';

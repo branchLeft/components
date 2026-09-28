@@ -23,14 +23,12 @@ export const Default: Story = {};
 
 /**
  * `elements.css` deliberately does NOT set `font-size`/`color` on a bare
- * `<p>`/`<li>`/etc. (only on `html`/`body`) — so a consumer's own
- * convention of sizing/colouring text via an ancestor (a Tailwind text
- * utility, a class, an inline style) is respected by ordinary CSS
- * inheritance, exactly as it would be with no stylesheet loaded at all.
+ * `<p>`/`<li>`/etc. (only on `html`/`body`), so a consumer's own ancestor-
+ * based sizing/colouring inherits through it undisturbed.
+ *
  * This story is that claim made visible: the two paragraphs below have no
- * classes or styling of their own — only their parent's `font-size`/
- * `color` differ, and each paragraph should visibly match its own parent
- * rather than both looking identical.
+ * classes/styling of their own — only their parent's `font-size`/`color`
+ * differ, and each should visibly match its own parent.
  */
 export const InheritsFromAnAncestor: Story = {
   render: () => (
