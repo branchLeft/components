@@ -1,15 +1,11 @@
 import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
 
+// Covers only the workspace-root tooling under scripts/ (the publish
+// selection logic) — each package's own components/tokens are covered by
+// its own vitest.config.ts instead.
 export default defineConfig({
-  plugins: [react()],
   test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./src/test/axe-setup.ts'],
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-    },
+    include: ['scripts/**/*.test.mjs'],
+    environment: 'node',
   },
 });

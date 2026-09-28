@@ -4,23 +4,34 @@ branchLeft-internal: cross-repo standards (Node/nvm, non-interactive commands, p
 
 ## Stack
 
-- **Runtime/Package manager:** Node.js, pnpm
+- **Runtime/Package manager:** Node.js, pnpm workspace (`packages/*`)
 - **Framework:** React 18 + TypeScript
-- **Build:** Vite (library mode) — outputs ESM + CJS to `dist/`
-- **Dev environment:** Storybook 8
+- **Build:** Vite (library mode, per package) — each package outputs ESM + CJS to its own `dist/`
+- **Dev environment:** Storybook 8 — one instance at the repo root covers all three packages
 - **Tests:** Vitest + jsdom
+- **Versioning:** [Changesets](https://github.com/changesets/changesets) — see [RELEASING.md](RELEASING.md)
+
+Three published packages:
+
+- `packages/components` → `@branchleft/components` — brand-neutral components, hooks, and the shared `DesignTokens` types.
+- `packages/brand-branchleft` → `@branchleft/brand-branchleft` — the branchLeft `Logo` and `branchLeftTokens`.
+- `packages/brand-publicpress` → `@branchleft/brand-publicpress` — the PublicPress marks, geometry and `publicPressTokens`.
+
+A brand package may depend on `@branchleft/components` (via `workspace:^`) for the shared token types, and only where it actually needs them. Nothing depends the other way.
 
 ## Commands
 
+Run at the workspace root; each fans out to every package that defines the underlying script:
+
 ```bash
-pnpm build             # compile library to dist/
-pnpm build:storybook   # build static Storybook to storybook-static/
-pnpm type-check        # tsc --noEmit
-pnpm test:unit --run   # single vitest pass
-pnpm lint              # eslint
+pnpm build             # build all three packages' dist/
+pnpm build:storybook   # build the single, cross-package Storybook to storybook-static/
+pnpm type-check        # tsc --noEmit, per package, plus the root tooling files
+pnpm test:unit         # single vitest pass, per package
+pnpm test:scripts      # single vitest pass over scripts/ (the publish-selection logic)
+pnpm lint              # eslint across packages/*/src
 pnpm format            # prettier --write
 pnpm dev               # Storybook dev server on :6006 — async terminal only
-pnpm preview           # Vite preview server — async terminal only
 ```
 
 To verify Storybook output non-interactively, use `pnpm build:storybook` — never run `pnpm dev` synchronously to check it.
@@ -29,19 +40,19 @@ To verify Storybook output non-interactively, use `pnpm build:storybook` — nev
 
 ### Component authorship
 
-- Components live flat under `src/components/` — no per-component subdirectories. Each component is `ComponentName.tsx`, colocated with `ComponentName.test.tsx` and `ComponentName.stories.tsx` (plus `ComponentName.css` for the styled exceptions below).
-- Export everything public through `src/index.ts`.
+- Components live flat under each package's `src/components/` — no per-component subdirectories. Each component is `ComponentName.tsx`, colocated with `ComponentName.test.tsx` and `ComponentName.stories.tsx` (plus `ComponentName.css` for the styled exceptions below).
+- Export everything public through the package's `src/index.ts`.
 - No default exports.
 
 ### Styling
 
 - Components must be unstyled or accept a `className` prop — consumers apply their own styles.
 - Do not import CSS that would leak into the consumer's bundle unless explicitly exported via `dist/index.css`.
-- **Site-level theming is the consumer's job, not this package's.** The `website/` app centralises all visual decisions in `app/theme.css` (tokens, element defaults, component classes) — see `website/CLAUDE.md` → "Styling". Do not mirror those tokens here; keep components style-agnostic so any consumer can theme them.
-- **Exception — components whose layout/spacing can't reasonably be left to every consumer** (currently `ValuesCloud`, `SectionHeading`, and `AccordionItem`) may ship real, structural CSS via the `./css` export subpath:
-  - Source CSS lives colocated as `ComponentName.css` next to the component. Register it in `src/styles.ts` (a CSS-only build entry, kept separate from `src/index.ts` so importing the JS API never pulls in styles as a side effect) — see `vite.config.ts` for how that's wired to `dist/index.css`.
+- **`@branchleft/components` stays style-agnostic** — the brand-neutral package ships no brand's tokens, marks or stylesheet, so any consumer can theme it. **The brand packages are where a brand's own look lives**: `@branchleft/brand-branchleft` carries `branchLeftTokens` and (once written) the branchLeft stylesheet; `@branchleft/brand-publicpress` carries `publicPressTokens`. A component belongs in `@branchleft/components` only if it makes no assumption about which brand is using it.
+- **Exception — components whose layout/spacing can't reasonably be left to every consumer** (currently `ValuesCloud`, `SectionHeading`, and `AccordionItem`, all in `@branchleft/components`) may ship real, structural CSS via that package's `./css` export subpath:
+  - Source CSS lives colocated as `ComponentName.css` next to the component. Register it in `src/styles.ts` (a CSS-only build entry, kept separate from `src/index.ts` so importing the JS API never pulls in styles as a side effect) — see that package's `vite.config.ts` for how that's wired to `dist/index.css`.
   - Every colour/font value must read from a `--bl-*` custom property with a fallback (e.g. `var(--bl-color-bg, #fff)`), never a hardcoded design-system token — this is still meant to be themable, just not layout-agnostic.
-  - No `@apply`/Tailwind syntax — this package has no Tailwind pipeline; write plain CSS.
+  - No `@apply`/Tailwind syntax — no package here has a Tailwind pipeline; write plain CSS.
   - Document the export in the component's Storybook doc comment and in the README.
 
 ### Accessibility
@@ -56,13 +67,11 @@ To verify Storybook output non-interactively, use `pnpm build:storybook` — nev
 
 ## Publishing
 
-Publishing is handled by CI — do not run `pnpm publish` locally.
+Publishing is handled by CI — do not run `pnpm publish`, `pnpm -r publish` or `pnpm release-plan` locally.
 
 ### Release flow
 
-Bump `version` in `package.json`, commit, and push to `main`; once CI is green on that commit, create and push the tag. See [RELEASING.md](RELEASING.md) for the exact commands.
-
-The `.github/workflows/publish.yml` workflow triggers on tags matching `v[0-9]+.[0-9]+.[0-9]+`. Before it builds or publishes anything, it asserts the tag is signed, that CI passed for the tagged commit, and that the tag's version matches `package.json` — then builds the package via `prepublishOnly` and publishes to GitHub Packages using `GITHUB_TOKEN`.
+See [RELEASING.md](RELEASING.md) for the full flow: a Changesets bump per package, then pushing a signed `v*.*.*` tag once CI is green on `main`. `.github/workflows/publish.yml` triggers on that tag and publishes whichever workspace packages' current versions aren't already on the registry — never all three unconditionally.
 
 ### Notes
 

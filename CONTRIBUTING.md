@@ -14,17 +14,17 @@ nvm use
 pnpm install --frozen-lockfile
 ```
 
-This package has no dependency on any other `@branchleft`-scoped package, so a plain install works without any GitHub Packages authentication — fork CI should run cleanly here.
-
 ## Checks CI runs on every PR
 
-These are exactly what [.github/workflows/ci.yml](.github/workflows/ci.yml) runs:
+These are exactly what [.github/workflows/ci.yml](.github/workflows/ci.yml) runs, fanning out across all three packages under `packages/`:
 
 ```bash
 pnpm format:check
-pnpm eslint src --ext .ts,.tsx
+pnpm lint
 pnpm type-check
 pnpm test:unit
+pnpm test:scripts   # the publish-selection logic under scripts/
+pnpm build
 ```
 
 ## Pre-commit hooks

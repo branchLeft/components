@@ -7,7 +7,7 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['dist', 'build', 'node_modules', '.storybook', 'storybook-static'],
+    ignores: ['**/dist', '**/build', '**/node_modules', '.storybook', '**/storybook-static'],
   },
   {
     files: ['**/*.{js,jsx,ts,tsx}'],

@@ -1,0 +1,64 @@
+{
+  "name": "@branchleft/brand-publicpress",
+  "version": "0.1.0",
+  "prettier": "@branchleft/prettier-config",
+  "description": "PublicPress-branded marks and design tokens",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/branchLeft/components.git",
+    "directory": "packages/brand-publicpress"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "type-check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
+    "test:unit": "vitest run",
+    "lint": "eslint src --ext .ts,.tsx --fix",
+    "generate-mark": "node scripts/generate-publicpress-mark.mjs",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "react",
+    "publicpress",
+    "brand",
+    "ui"
+  ],
+  "author": "branchLeft",
+  "license": "MIT",
+  "peerDependencies": {
+    "@branchleft/components": ">=0.4.0 <1.0.0",
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@branchleft/components": "workspace:^",
+    "@branchleft/prettier-config": "^0.6.0",
+    "@branchleft/tsconfig": "^0.6.0",
+    "@storybook/react": "^8.6.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.0.1",
+    "@vitejs/plugin-react": "^5.2.0",
+    "jsdom": "^30.0.1",
+    "typescript": "^6.0.3",
+    "vite": "^6.4.3",
+    "vitest": "^4.1.10",
+    "vitest-axe": "0.1.0"
+  }
+}

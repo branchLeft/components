@@ -1,0 +1,65 @@
+{
+  "name": "@branchleft/components",
+  "version": "0.4.0",
+  "prettier": "@branchleft/prettier-config",
+  "description": "Brand-neutral, reusable component library for branchLeft",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./css": "./dist/index.css"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/branchLeft/components.git",
+    "directory": "packages/components"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "type-check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
+    "test:unit": "vitest run",
+    "lint": "eslint src --ext .ts,.tsx --fix",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "ui"
+  ],
+  "author": "branchLeft",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@branchleft/prettier-config": "^0.6.0",
+    "@branchleft/tsconfig": "^0.6.0",
+    "@storybook/react": "^8.6.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.0.1",
+    "@vitejs/plugin-react": "^5.2.0",
+    "jsdom": "^30.0.1",
+    "typescript": "^6.0.3",
+    "vite": "^6.4.3",
+    "vitest": "^4.1.10",
+    "vitest-axe": "0.1.0"
+  },
+  "dependencies": {
+    "framer-motion": "^13.0.0",
+    "lucide-react": "^1.31.0"
+  }
+}

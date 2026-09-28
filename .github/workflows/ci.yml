@@ -80,6 +80,11 @@ jobs:
         env:
           CI: true
 
+      - name: Test the release-plan script
+        run: pnpm test:scripts
+        env:
+          CI: true
+
       - name: Build
         run: pnpm build
 
