@@ -36,6 +36,27 @@ export async function buildStylesheet(): Promise<string> {
   }
 }
 
+/**
+ * Same production build as `buildStylesheet`, but returns the temp output
+ * directory itself (not cleaned up) instead of just the CSS text — for a
+ * test that also needs the extracted `dist/fonts/*.woff2` files on disk,
+ * e.g. to hash them against their source. The caller owns cleanup
+ * (`fs.rmSync(outDir, { recursive: true, force: true })`).
+ */
+export async function buildStylesheetDist(): Promise<string> {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'branchleft-stylesheet-dist-test-'));
+  await build({
+    root: PACKAGE_ROOT,
+    configFile: path.join(PACKAGE_ROOT, 'vite.config.ts'),
+    logLevel: 'silent',
+    build: {
+      outDir,
+      emptyOutDir: true,
+    },
+  });
+  return outDir;
+}
+
 export type CustomProperties = ReadonlyMap<string, string>;
 
 /**

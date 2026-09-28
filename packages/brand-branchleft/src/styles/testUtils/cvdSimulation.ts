@@ -16,15 +16,27 @@ type Matrix3 = readonly [
   readonly [number, number, number],
 ];
 
-const MACHADO_2009_SEVERITY_1: Readonly<Record<CvdKind, Matrix3>> = {
+/**
+ * Exported (not just a local const) so `cvdMatrices.pin.test.ts` can pin
+ * these exact coefficients against the paper's published table — cycle-2
+ * review found the deuteranopia matrix below had been miscopied (three
+ * transcription errors) and it produced a valid-looking but WRONG
+ * simulation: every row still summed to ~1 (a real Machado matrix
+ * property, and the sanity check the earlier version of this test relied
+ * on), so nothing caught it until someone checked the actual coefficients
+ * against the paper. A row-sum check alone cannot catch a transcription
+ * error that happens to preserve the row sum — only pinning the literal
+ * values can.
+ */
+export const MACHADO_2009_SEVERITY_1: Readonly<Record<CvdKind, Matrix3>> = {
   protanopia: [
     [0.152286, 1.052583, -0.204868],
     [0.114503, 0.786281, 0.099216],
     [-0.003882, -0.048116, 1.051998],
   ],
   deuteranopia: [
-    [0.36732, 1.30063, -0.667955],
-    [0.280085, 0.677324, 0.042591],
+    [0.367322, 0.860646, -0.227968],
+    [0.280085, 0.672501, 0.047413],
     [-0.01182, 0.04294, 0.968881],
   ],
   tritanopia: [

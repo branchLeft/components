@@ -23,6 +23,22 @@ const VALUE_NAMES = [
   'redlines',
 ] as const;
 
+// `danger` and `active` are both real, rendered colours that appear
+// alongside the ValuesColours on screen (a form error next to a
+// ValuesColour badge; a link next to one) — cycle-2 review's own
+// undetected gap (the old dark danger colour was 0.004 from active under
+// a tritanopia simulation) is exactly what omitting them from this
+// pairwise sweep let through. Every member is now checked against every
+// other member, not just against the 7 ValuesColours.
+const ALL_COLOUR_NAMES = [...VALUE_NAMES, 'danger', 'active'] as const;
+type ColourName = (typeof ALL_COLOUR_NAMES)[number];
+
+function propertyFor(name: ColourName): string {
+  if (name === 'danger') return '--bl-color-danger';
+  if (name === 'active') return '--bl-color-active';
+  return `--bl-value-${name}`;
+}
+
 /**
  * OKLab distance floor for "reliably tells two colours apart at a glance
  * under ordinary (non colour-vision-deficient) vision". There's no single
@@ -66,25 +82,26 @@ function allPairs<T>(items: readonly T[]): ReadonlyArray<readonly [T, T]> {
   return pairs;
 }
 
-const PAIRS = allPairs(VALUE_NAMES);
+const PAIRS = allPairs(ALL_COLOUR_NAMES);
 
 describe.each([
   ['dark', () => dark],
   ['light', () => light],
-] as const)('branchleft.css ValuesColours distinguishability — %s mode', (_modeName, getProps) => {
+] as const)('branchleft.css colour distinguishability — %s mode', (_modeName, getProps) => {
   it.each(PAIRS)('%s vs %s clears the distinguishability floor', (a, b) => {
     const props = getProps();
     const distance = oklabDistance(
-      resolveColour(props, `--bl-value-${a}`),
-      resolveColour(props, `--bl-value-${b}`)
+      resolveColour(props, propertyFor(a)),
+      resolveColour(props, propertyFor(b))
     );
     expect(distance).toBeGreaterThanOrEqual(MIN_DISTANCE);
   });
 
   // Called out on its own per the brief: society and redlines are the two
-  // reds in the palette, so they're the closest pair by this metric in
-  // both modes (see the PR body for the numbers) — worth asserting on its
-  // own even though the generic pairwise loop above already covers it.
+  // reds in the palette, so they're the closest ValuesColours pair by this
+  // metric in both modes (see the PR body for the numbers) — worth
+  // asserting on its own even though the generic pairwise loop above
+  // already covers it.
   it('society vs redlines — the pair Rob asked to have flagged — still clears the floor', () => {
     const props = getProps();
     const distance = oklabDistance(
@@ -93,20 +110,4 @@ describe.each([
     );
     expect(distance).toBeGreaterThanOrEqual(MIN_DISTANCE);
   });
-
-  // `--bl-color-danger` (added in cycle 2, replacing the `redlines` alias
-  // `--bl-color-invalid` used to carry) must read as its own colour, not a
-  // near-duplicate of any ValuesColour — redlines included, since both are
-  // now reds in the same palette.
-  it.each(VALUE_NAMES)(
-    'danger colour vs %s ValuesColour clears the distinguishability floor',
-    (name) => {
-      const props = getProps();
-      const distance = oklabDistance(
-        resolveColour(props, '--bl-color-danger'),
-        resolveColour(props, `--bl-value-${name}`)
-      );
-      expect(distance).toBeGreaterThanOrEqual(MIN_DISTANCE);
-    }
-  );
 });

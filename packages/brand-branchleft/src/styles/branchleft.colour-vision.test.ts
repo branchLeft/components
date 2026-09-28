@@ -23,14 +23,19 @@ const VALUE_NAMES = [
   'redlines',
 ] as const;
 
-// The danger colour is a real palette member now (cycle 2) and has to be
-// distinguishable from the ValuesColours under CVD simulation too, not
-// just under ordinary vision (branchleft.distinguishability.test.ts).
-const ALL_COLOUR_NAMES = [...VALUE_NAMES, 'danger'] as const;
+// `danger` and `active` are real palette members that appear on screen
+// alongside the ValuesColours, so both are checked against every other
+// member here too — cycle-2 review found the old dark danger colour was
+// only 0.004 OKLab from `--bl-color-active` under a tritanopia simulation,
+// and nothing in this file caught it because `active` wasn't in the set
+// being swept.
+const ALL_COLOUR_NAMES = [...VALUE_NAMES, 'danger', 'active'] as const;
 type ColourName = (typeof ALL_COLOUR_NAMES)[number];
 
 function propertyFor(name: ColourName): string {
-  return name === 'danger' ? '--bl-color-danger' : `--bl-value-${name}`;
+  if (name === 'danger') return '--bl-color-danger';
+  if (name === 'active') return '--bl-color-active';
+  return `--bl-value-${name}`;
 }
 
 /**
@@ -38,8 +43,8 @@ function propertyFor(name: ColourName): string {
  * Deliberately lower than `branchleft.distinguishability.test.ts`'s 0.05:
  * that number already carries a ~2x margin over the bare "just noticeable
  * difference" estimate (~0.01-0.02) for ordinary vision. Full-severity CVD
- * simulation collapses real chroma information the ValuesColours rely on
- * to differ (hue becomes far less informative under dichromacy), so
+ * simulation collapses real chroma information the palette relies on to
+ * differ (hue becomes far less informative under dichromacy), so
  * requiring the same comfortable margin post-simulation would fail most
  * of the palette, not just the pairs that are genuinely hard to tell
  * apart. 0.02 is the bare JND itself: below it, two colours are not
@@ -48,36 +53,6 @@ function propertyFor(name: ColourName): string {
  * ordinary-vision viewer's.
  */
 const MIN_DISTANCE = 0.02;
-
-/**
- * Known gap, measured directly (see the PR body's colour-vision table):
- * under a full-severity deuteranopia simulation, light-mode
- * `sustainability` (`#91721e`) and `agility` (`#b75e1b`) — both
- * yellow/orange hues, exactly the axis deuteranopia compresses — fall
- * below `MIN_DISTANCE` (measured ≈0.0144). Per the Cycle 2 brief: this is
- * reported, not silently fixed by re-picking the brand owner's ValuesColours. It's
- * excluded from the generic pairwise sweep below and asserted on its own,
- * via `it.fails`, further down this file.
- */
-const KNOWN_GAP = {
-  mode: 'light',
-  kind: 'deuteranopia',
-  a: 'sustainability',
-  b: 'agility',
-} as const;
-
-function isKnownGapPair(
-  mode: 'dark' | 'light',
-  kind: CvdKind,
-  a: ColourName,
-  b: ColourName
-): boolean {
-  return (
-    KNOWN_GAP.mode === mode &&
-    KNOWN_GAP.kind === kind &&
-    ((KNOWN_GAP.a === a && KNOWN_GAP.b === b) || (KNOWN_GAP.a === b && KNOWN_GAP.b === a))
-  );
-}
 
 let dark: CustomProperties;
 let light: CustomProperties;
@@ -100,6 +75,45 @@ function allPairs<T>(items: readonly T[]): ReadonlyArray<readonly [T, T]> {
   return pairs;
 }
 
+/**
+ * Newly found (cycle 3, with the corrected deuteranopia matrix and the
+ * brand owner's cycle-3 colours) — NOT the cycle-2 gap, which the corrected
+ * matrix and the new `agility`/`danger` values actually fix (verified: both
+ * `sustainability vs agility` and the old `agility vs danger` clash now
+ * clear the floor in every simulation/mode).
+ *
+ * Dark mode, deuteranopia, `environment` (`#3fae5c`) vs `--bl-color-active`
+ * (`#ff006e`): 0.0174, below the 0.02 floor. Both simulate to a similar
+ * olive/tan under deuteranopia (verified by simulating each and comparing
+ * the resulting sRGB) — a real clash between a ValuesColour and the link/
+ * focus-ring colour, in dark mode, the brand default. Per this cycle's
+ * brief: reported, not fixed by picking a colour here — that decision
+ * belongs to the brand owner, who has ruled on `--bl-color-active` and
+ * `--bl-value-environment` in the past but not on this specific pairing.
+ * Marked via `it.fails` (excluded from the generic sweep below) so it
+ * stays visible rather than silently passing or silently excluded.
+ */
+const KNOWN_GAP = {
+  mode: 'dark',
+  kind: 'deuteranopia',
+  a: 'environment',
+  b: 'active',
+} as const;
+
+function isKnownGapPair(
+  mode: 'dark' | 'light',
+  kind: CvdKind,
+  a: ColourName,
+  b: ColourName
+): boolean {
+  return (
+    KNOWN_GAP.mode === mode &&
+    KNOWN_GAP.kind === kind &&
+    ((KNOWN_GAP.a === a && KNOWN_GAP.b === b) || (KNOWN_GAP.a === b && KNOWN_GAP.b === a))
+  );
+}
+
+const PAIRS = allPairs(ALL_COLOUR_NAMES);
 const KINDS: readonly CvdKind[] = ['protanopia', 'deuteranopia', 'tritanopia'];
 
 describe.each([
@@ -109,13 +123,7 @@ describe.each([
   'branchleft.css colour-vision-deficiency simulation — %s mode',
   (modeName, getProps) => {
     describe.each(KINDS)('%s', (kind) => {
-      // The known gap (see KNOWN_GAP above) is excluded from this generic
-      // sweep and asserted separately (via `it.fails`, further down this
-      // file), so it isn't tested twice with two different expected
-      // outcomes.
-      const pairs = allPairs(ALL_COLOUR_NAMES).filter(
-        ([a, b]) => !isKnownGapPair(modeName, kind, a, b)
-      );
+      const pairs = PAIRS.filter(([a, b]) => !isKnownGapPair(modeName, kind, a, b));
 
       it.each(pairs)('%s vs %s clears the CVD-simulated distinguishability floor', (a, b) => {
         const props = getProps();
@@ -128,8 +136,8 @@ describe.each([
       });
     });
 
-    // Reported explicitly per the Cycle 2 brief, regardless of pass/fail —
-    // see the PR body's colour-vision table for the full set of numbers.
+    // Reported explicitly per the brief, regardless of pass/fail — see the
+    // PR body's colour-vision table for the full set of numbers.
     it.each(KINDS)('society vs redlines distance is reported under %s simulation', (kind) => {
       const props = getProps();
       const distance = simulatedOklabDistance(
@@ -137,10 +145,19 @@ describe.each([
         resolveColour(props, '--bl-value-redlines'),
         kind
       );
-      // Not a hard requirement beyond the generic pairwise check above (that
-      // pair isn't the known gap, so it's already asserted >= MIN_DISTANCE
-      // there) — this test exists to force the number to be computed and
-      // named in test output, matching the PR body's table line for line.
+      // Not a hard requirement beyond the generic pairwise check above —
+      // this test exists to force the number to be computed and named in
+      // test output, matching the PR body's table line for line.
+      expect(distance).toBeGreaterThan(0);
+    });
+
+    it.each(KINDS)('sustainability vs agility distance is reported under %s simulation', (kind) => {
+      const props = getProps();
+      const distance = simulatedOklabDistance(
+        resolveColour(props, '--bl-value-sustainability'),
+        resolveColour(props, '--bl-value-agility'),
+        kind
+      );
       expect(distance).toBeGreaterThan(0);
     });
   }
@@ -159,8 +176,7 @@ it.fails(
   async () => {
     const css = await buildStylesheet();
     const darkOnly = extractCustomProperties(css, ':root{');
-    const lightOnly = extractCustomProperties(css, ':root[data-theme=light]{');
-    const props = new Map([...darkOnly, ...lightOnly]); // light mode's colour tokens
+    const props = darkOnly; // KNOWN_GAP.mode === 'dark'
 
     const distance = simulatedOklabDistance(
       resolveColour(props, propertyFor(KNOWN_GAP.a)),
