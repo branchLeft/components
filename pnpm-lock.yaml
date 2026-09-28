@@ -14,9 +14,15 @@ importers:
       '@branchleft/tsconfig':
         specifier: ^0.6.0
         version: 0.6.0
+      '@changesets/assemble-release-plan':
+        specifier: ^6.0.10
+        version: 6.0.10
       '@changesets/cli':
         specifier: ^2.29.7
         version: 2.31.1(@types/node@26.6.1)
+      '@changesets/config':
+        specifier: ^3.1.4
+        version: 3.1.4
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.10.0(supports-color@7.2.0))

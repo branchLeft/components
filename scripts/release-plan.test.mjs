@@ -1,10 +1,17 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { pathToFileURL } from 'node:url';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import {
   compareReleaseSets,
   isEntryPoint,
+  isolatedGitArgs,
   isPublishedOnRegistry,
   parseReleaseTagMessage,
+  readTagMessageFromGit,
+  runReleasePlan,
   selectPackagesToPublish,
 } from './release-plan.mjs';
 
@@ -203,5 +210,129 @@ describe('isEntryPoint', () => {
 
   it('is false when no argv1 is given (e.g. imported, not run)', () => {
     expect(isEntryPoint('file:///repo/scripts/release-plan.mjs', undefined)).toBe(false);
+  });
+});
+
+const componentsRelease = { name: '@branchleft/components', version: '0.4.0', private: false };
+
+describe('runReleasePlan', () => {
+  it('resolves and returns the approved list when the tag message matches what is due', async () => {
+    const isPublished = vi.fn().mockResolvedValue(false);
+    const readTagMessage = vi.fn().mockReturnValue('v0.5.0\n\n@branchleft/components@0.4.0\n');
+    const writeSummary = vi.fn();
+
+    const result = await runReleasePlan({
+      packages: [componentsRelease],
+      tagName: 'v0.5.0',
+      isPublished,
+      readTagMessage,
+      writeSummary,
+    });
+
+    expect(result.actual).toEqual([{ name: '@branchleft/components', version: '0.4.0' }]);
+    expect(readTagMessage).toHaveBeenCalledWith('v0.5.0');
+    expect(writeSummary).toHaveBeenCalledOnce();
+  });
+
+  it('rejects before any publish when the tag message is missing a package that is due', async () => {
+    const isPublished = vi.fn().mockResolvedValue(false);
+    // The tag's subject alone — none of the package lines a real message
+    // would carry after it.
+    const readTagMessage = vi.fn().mockReturnValue('v0.5.0\n');
+
+    await expect(
+      runReleasePlan({
+        packages: [componentsRelease],
+        tagName: 'v0.5.0',
+        isPublished,
+        readTagMessage,
+        writeSummary: vi.fn(),
+      })
+    ).rejects.toThrow("v0.5.0's message does not match the computed release plan");
+  });
+
+  it('rejects when the tag message names a package that is not actually due', async () => {
+    const isPublished = vi.fn().mockResolvedValue(true); // already published — not due
+
+    await expect(
+      runReleasePlan({
+        packages: [componentsRelease],
+        tagName: 'v0.5.0',
+        isPublished,
+        readTagMessage: vi.fn().mockReturnValue('v0.5.0\n\n@branchleft/components@0.4.0\n'),
+        writeSummary: vi.fn(),
+      })
+    ).rejects.toThrow("v0.5.0's message does not match the computed release plan");
+  });
+});
+
+describe('readTagMessageFromGit and runReleasePlan, against a real (throwaway, local-only, never-pushed) git tag', () => {
+  let repoDir;
+
+  afterEach(() => {
+    if (repoDir) {
+      rmSync(repoDir, { recursive: true, force: true });
+      repoDir = undefined;
+    }
+  });
+
+  /**
+   * A disposable git repo with one commit and one unsigned annotated tag,
+   * whose message puts its `name@version` lines after a subject line and a
+   * blank line — the same shape RELEASING.md asks a real signed tag to
+   * have. Created fresh per test, under the OS temp dir, and removed in
+   * `afterEach`; nothing here ever touches this repo's own git state or a
+   * remote.
+   */
+  function makeTaggedRepo(tagMessage) {
+    const dir = mkdtempSync(path.join(tmpdir(), 'release-plan-probe-'));
+    // When this suite itself runs from a git hook (pre-commit's own vitest
+    // hook, for one), the parent `git` invocation has already set
+    // GIT_DIR/GIT_WORK_TREE/GIT_INDEX_FILE for that hook's own process
+    // environment, and a plain `execFileSync` inherits them — silently
+    // pointing every `git` call below at THAT repository instead of the
+    // fresh one just created (an earlier version of this fixture found this
+    // out by actually committing "probe commit" onto this repo's real
+    // history). `isolatedGitArgs` — the same helper release-plan.mjs's own
+    // `readTagMessageFromGit` uses — is what makes this fixture safe to run
+    // from inside a hook.
+    const git = (args) => {
+      const isolated = isolatedGitArgs(dir, args);
+      return execFileSync('git', isolated.args, {
+        cwd: dir,
+        encoding: 'utf8',
+        env: isolated.env,
+      });
+    };
+    git(['init', '--quiet']);
+    git(['config', 'user.email', 'probe@example.invalid']);
+    git(['config', 'user.name', 'release-plan probe']);
+    writeFileSync(path.join(dir, 'README.md'), 'probe\n');
+    git(['add', 'README.md']);
+    git(['commit', '--quiet', '--no-verify', '-m', 'probe commit']);
+    git(['tag', '-a', 'v0.0.0-probe', '-m', tagMessage]);
+    return dir;
+  }
+
+  it("readTagMessageFromGit returns the package lines after the tag's subject", () => {
+    repoDir = makeTaggedRepo('v0.0.0-probe\n\n@branchleft/components@0.4.0\n');
+
+    const message = readTagMessageFromGit('v0.0.0-probe', { cwd: repoDir });
+
+    expect(message).toContain('@branchleft/components@0.4.0');
+  });
+
+  it('runReleasePlan resolves when the real tag message (subject + package lines) matches what is due', async () => {
+    repoDir = makeTaggedRepo('v0.0.0-probe\n\n@branchleft/components@0.4.0\n');
+
+    const result = await runReleasePlan({
+      packages: [componentsRelease],
+      tagName: 'v0.0.0-probe',
+      isPublished: vi.fn().mockResolvedValue(false),
+      readTagMessage: (tag) => readTagMessageFromGit(tag, { cwd: repoDir }),
+      writeSummary: vi.fn(),
+    });
+
+    expect(result.actual).toEqual([{ name: '@branchleft/components', version: '0.4.0' }]);
   });
 });

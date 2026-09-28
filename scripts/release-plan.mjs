@@ -4,7 +4,10 @@
 // tag no longer maps to one package's version (three packages version
 // independently), so the tag's own message is the release's record of
 // intent — this script is what holds it to that, before anything is
-// actually published.
+// actually built or published. It also writes the checked list of package
+// names to `GITHUB_OUTPUT`, so the publish step can be filtered to exactly
+// what this gate approved, rather than trusting `pnpm -r publish` to agree
+// with a separately-computed decision.
 
 import { readFileSync, readdirSync, appendFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -134,6 +137,41 @@ export function compareReleaseSets(expected, actual) {
   };
 }
 
+/**
+ * Strips every inherited `GIT_*` environment variable and instead points
+ * `--git-dir`/`--work-tree` explicitly at `repoDir` — belt and braces, not
+ * either alone: when this process is itself invoked from inside a git hook
+ * (a pre-commit run, for one), git has already set `GIT_DIR`/`GIT_WORK_TREE`/
+ * `GIT_INDEX_FILE` in the environment for that hook, and a plain
+ * `execFileSync` inherits them, silently pointing every `git` call below at
+ * the *hook's* repository instead of `repoDir` — no error, just the wrong
+ * repository read from or written to.
+ */
+export function isolatedGitArgs(repoDir, args) {
+  const env = { ...process.env };
+  for (const key of Object.keys(env)) {
+    if (key.startsWith('GIT_')) delete env[key];
+  }
+  return {
+    args: [`--git-dir=${path.join(repoDir, '.git')}`, `--work-tree=${repoDir}`, ...args],
+    env,
+  };
+}
+
+/**
+ * Reads a local tag's own message via `%(contents)`, deliberately not
+ * `%(subject)` — a signed tag's message is the subject line, a blank line,
+ * then the `name@version` lines RELEASING.md asks for, and `%(subject)`
+ * returns only that first line, silently discarding every package line
+ * after it. `git tag -l` (not `cat-file`/`for-each-ref`) works the same way
+ * whether the tag arrived as a full clone or the shallow, tag-only fetch
+ * the tag-push event actually gives CI.
+ */
+export function readTagMessageFromGit(tagName, { cwd } = {}) {
+  const { args, env } = isolatedGitArgs(cwd, ['tag', '-l', '--format=%(contents)', tagName]);
+  return execFileSync('git', args, { cwd, encoding: 'utf8', env });
+}
+
 function writeJobSummary(text) {
   const summaryPath = process.env.GITHUB_STEP_SUMMARY;
   if (summaryPath) {
@@ -147,26 +185,29 @@ function formatPackage(pkg) {
   return `${pkg.name}@${pkg.version}`;
 }
 
-async function main() {
-  const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-  const token = process.env.NODE_AUTH_TOKEN ?? process.env.GITHUB_TOKEN;
-  const tagName = process.env.GITHUB_REF_NAME ?? process.argv[2];
-  if (!tagName) {
-    throw new Error('no tag name given: set GITHUB_REF_NAME or pass one as an argument');
-  }
-
-  const packages = readWorkspacePackages(rootDir);
-  const toPublish = await selectPackagesToPublish(packages, (pkg) =>
-    isPublishedOnRegistry(pkg.name, pkg.version, { registry: pkg.registry, token })
-  );
+/**
+ * The release-plan gate itself: computes which packages are actually due
+ * for release, compares that against what the tag's message declares, and
+ * throws on any mismatch — in either direction — before returning the
+ * approved list. This is the one function a tag-triggered release must
+ * never get past on a mismatch, so it takes its registry lookup and its tag
+ * reader as parameters rather than reaching for the network or `git`
+ * itself, and is exercised end to end (real git tag, stubbed registry) in
+ * release-plan.test.mjs rather than only through `compareReleaseSets`'s own
+ * unit tests.
+ */
+export async function runReleasePlan({
+  packages,
+  tagName,
+  isPublished,
+  readTagMessage,
+  writeSummary = writeJobSummary,
+}) {
+  const toPublish = await selectPackagesToPublish(packages, isPublished);
   const actual = toPublish.map((pkg) => ({ name: pkg.name, version: pkg.version }));
 
-  const tagMessage = execFileSync('git', ['tag', '-l', '--format=%(contents)', tagName], {
-    cwd: rootDir,
-    encoding: 'utf8',
-  });
+  const tagMessage = readTagMessage(tagName);
   const expected = parseReleaseTagMessage(tagMessage);
-
   const comparison = compareReleaseSets(expected, actual);
 
   const summaryLines = [`## Release plan for \`${tagName}\``, ''];
@@ -177,7 +218,7 @@ async function main() {
       '_Nothing to publish — every workspace package is already on the registry at its current version._'
     );
   }
-  writeJobSummary(summaryLines.join('\n'));
+  writeSummary(summaryLines.join('\n'));
 
   if (!comparison.ok) {
     for (const pkg of comparison.missingFromTag) {
@@ -195,11 +236,41 @@ async function main() {
     );
   }
 
+  return { toPublish, actual };
+}
+
+async function main() {
+  const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  const token = process.env.NODE_AUTH_TOKEN ?? process.env.GITHUB_TOKEN;
+  const tagName = process.env.GITHUB_REF_NAME ?? process.argv[2];
+  if (!tagName) {
+    throw new Error('no tag name given: set GITHUB_REF_NAME or pass one as an argument');
+  }
+
+  const packages = readWorkspacePackages(rootDir);
+
+  const { toPublish, actual } = await runReleasePlan({
+    packages,
+    tagName,
+    isPublished: (pkg) =>
+      isPublishedOnRegistry(pkg.name, pkg.version, { registry: pkg.registry, token }),
+    readTagMessage: (tag) => readTagMessageFromGit(tag, { cwd: rootDir }),
+  });
+
   console.log(
     actual.length > 0
       ? `Tag message matches the release plan: ${actual.map(formatPackage).join(', ')}`
       : 'Tag message matches the release plan: nothing to publish.'
   );
+
+  // Names only, comma-joined, so the workflow's publish step can build one
+  // `--filter <name>` per package and bind `pnpm -r publish` to exactly this
+  // gate's decision — never to whatever pnpm's own registry check would
+  // otherwise have picked.
+  const githubOutput = process.env.GITHUB_OUTPUT;
+  if (githubOutput) {
+    appendFileSync(githubOutput, `packages=${toPublish.map((pkg) => pkg.name).join(',')}\n`);
+  }
 }
 
 /**

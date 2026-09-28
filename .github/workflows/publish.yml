@@ -116,9 +116,13 @@ jobs:
 
       # Fails fast, before any build, if the tag's own `name@version` lines
       # don't exactly match the set of workspace packages the registry says
-      # aren't published yet — see scripts/release-plan.mjs. Also writes
-      # that release plan to this run's job summary.
+      # aren't published yet — see scripts/release-plan.mjs. Writes that
+      # release plan to this run's job summary, and its package names (comma
+      # separated, empty when there's nothing to publish) to this step's own
+      # `packages` output — the one thing the publish step below is allowed
+      # to publish.
       - name: Verify the tag's release plan against the registry
+        id: plan
         run: pnpm release-plan
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -130,11 +134,26 @@ jobs:
       - name: Build every workspace package
         run: pnpm -r build
 
-      # The standard tool: `pnpm -r publish` already skips a package whose
-      # current version is already on the registry, and already publishes in
-      # dependency order — no custom publish-loop needed once the plan above
-      # has verified what's actually going to happen.
-      - name: Publish every unpublished workspace package
-        run: pnpm -r publish --no-git-checks
+      # `pnpm -r publish` on its own recomputes, from the registry, its own
+      # opinion of what's unpublished — a second decision that could in
+      # principle disagree with the plan step above (a registry write
+      # between the two steps, for one). One `--filter <name>` per package
+      # the plan approved binds the two: this can publish only what
+      # release-plan already checked against the tag, never a wider set
+      # pnpm's own lookup happens to pick.
+      - name: Publish exactly the checked release plan
+        if: steps.plan.outputs.packages != ''
+        run: |
+          set -euo pipefail
+          filters=()
+          IFS=',' read -ra names <<< "${{ steps.plan.outputs.packages }}"
+          for name in "${names[@]}"; do
+            filters+=(--filter "$name")
+          done
+          pnpm "${filters[@]}" -r publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # When the plan is empty, this step is skipped rather than run with
+        # zero `--filter` flags (which would fall back to every package) —
+        # the job still succeeds, and release-plan.mjs already wrote the
+        # "nothing to publish" line to the job summary above.
