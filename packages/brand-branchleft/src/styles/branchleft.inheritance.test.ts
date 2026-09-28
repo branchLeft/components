@@ -8,20 +8,31 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { buildStylesheet } from './testUtils/buildStylesheet';
 
 /**
- * Returns one CSS rule's declaration body (the text between its `{` and
- * matching `}`) from the built (minified, single-line) stylesheet, given
- * the exact selector text as it appears there (e.g. `p` for the bare-`p`
- * rule, `html,body` for the combined selector). Only matches a rule whose
- * selector list is EXACTLY this text, so `p` doesn't also match `p:last-
- * child` or `.bl-form-error p`.
+ * Returns EVERY CSS rule's declaration body from the built (minified,
+ * single-line) stylesheet whose selector list is EXACTLY this text (e.g.
+ * `p`, `html,body`) — not just the first. A single-match version of this
+ * stayed green when review added a SECOND `p { color: … }` rule
+ * elsewhere: the cascade doesn't care how many rules share a selector, so
+ * an absence check must cover all of them, not only the first found.
+ */
+
+/**
+ * Concatenating every matching body makes both an absence check (`not
+ * .toMatch`) and a presence check (`.toMatch`) correct regardless of which
+ * rule declares the property. Matches only an EXACT selector list, so `p`
+ * doesn't also match `p:last-child` or `.bl-form-error p`.
  */
 function ruleBody(css: string, selector: string): string {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const match = css.match(new RegExp(`(?:^|[{};])${escaped}\\{([^}]*)\\}`));
-  if (!match) {
+  const re = new RegExp(`(?:^|[{};])${escaped}\\{([^}]*)\\}`, 'g');
+  const bodies: string[] = [];
+  for (const match of css.matchAll(re)) {
+    bodies.push(match[1]);
+  }
+  if (bodies.length === 0) {
     throw new Error(`Rule not found in built CSS for selector: ${selector}`);
   }
-  return match[1];
+  return bodies.join(';');
 }
 
 let css: string;

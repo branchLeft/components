@@ -27,6 +27,9 @@ export type { Theme, ThemeToggleProps } from './components/ThemeToggle';
 // Hooks
 export { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 
+// Lib
+export { safeReturnPath } from './lib/safeReturnPath';
+
 // Design tokens
 export type {
   ColourTokens,

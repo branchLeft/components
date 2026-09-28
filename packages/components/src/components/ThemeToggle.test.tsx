@@ -123,6 +123,48 @@ describe('ThemeToggle', () => {
     expect(container2.querySelector('button')!.getAttribute('aria-label')).toBe('Go dark');
   });
 
+  it('renders no hidden return field when returnTo is omitted', () => {
+    const container = mount(React.createElement(ThemeToggle, { action: ACTION, theme: 'dark' }));
+    expect(container.querySelector('input[name="return"]')).toBeNull();
+  });
+
+  it('renders returnTo as a hidden "return" form field', () => {
+    const container = mount(
+      React.createElement(ThemeToggle, { action: ACTION, theme: 'dark', returnTo: '/settings?x=1' })
+    );
+    const input = container.querySelector('input[name="return"]') as HTMLInputElement | null;
+    expect(input).not.toBeNull();
+    expect(input!.type).toBe('hidden');
+    expect(input!.value).toBe('/settings?x=1');
+  });
+
+  it('keeps the toggle in sync when the theme prop changes after mount (name and icon follow)', () => {
+    let root!: Root;
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    try {
+      root = createRoot(container);
+      act(() => root.render(React.createElement(ThemeToggle, { action: ACTION, theme: 'dark' })));
+      expect(container.querySelector('button')!.getAttribute('aria-label')).toBe(
+        'Switch to light mode'
+      );
+      expect(container.querySelector('svg')?.getAttribute('class')).toContain('lucide-sun');
+
+      // Re-render with a NEW theme prop — e.g. the app remounted this
+      // component with fresh loader data after a client-side navigation.
+      act(() => root.render(React.createElement(ThemeToggle, { action: ACTION, theme: 'light' })));
+      expect(container.querySelector('button')!.getAttribute('aria-label')).toBe(
+        'Switch to dark mode'
+      );
+      expect(container.querySelector('svg')?.getAttribute('class')).toContain('lucide-moon');
+      // theme="light" ⇒ next mode (this button's value) is dark.
+      expect(container.querySelector('button')!.getAttribute('value')).toBe('dark');
+    } finally {
+      act(() => root.unmount());
+      container.remove();
+    }
+  });
+
   it('after mount, switches data-theme and writes THEME_COOKIE_NAME when JS handles the submit — in both directions', () => {
     const container = mount(React.createElement(ThemeToggle, { action: ACTION, theme: 'dark' }));
     const form = container.querySelector('form')!;

@@ -183,6 +183,14 @@ export interface ThemeToggleProps {
    * redirect itself (there is no server here to do it from).
    */
   readonly action: string;
+  /**
+   * The current page's path (+ optional search/hash) — the app supplies
+   * this (e.g. from its router), and it's rendered as a hidden `return`
+   * form field so the no-JS `POST` handler knows where to redirect back
+   * to. Omit it and a no-JS submit falls back to whatever the server's
+   * handler does with no `return` field (its own default, or `Referer`).
+   */
+  readonly returnTo?: string;
   /** Accessible name when the button's action is "switch to light mode" (i.e. dark is currently active). Overridable for a consumer-specific phrasing. */
   readonly switchToLightLabel?: string;
   /** Accessible name when the button's action is "switch to dark mode" (i.e. light is currently active). Overridable for a consumer-specific phrasing. */
@@ -216,6 +224,7 @@ export interface ThemeToggleProps {
 export function ThemeToggle({
   theme: initialTheme,
   action,
+  returnTo,
   switchToLightLabel = 'Switch to light mode',
   switchToDarkLabel = 'Switch to dark mode',
   className,
@@ -223,9 +232,23 @@ export function ThemeToggle({
   // Seeded from the prop, which the consumer computed identically on the
   // server (from the cookie) and the client (from the same cookie, or the
   // framework's own hydration data) — so this initial value is never a
-  // guess, and server/client output always agree. After mount, clicks
-  // update this component's own state independently of the prop.
+  // guess, and server/client output always agree.
   const [theme, setTheme] = React.useState<Theme>(initialTheme);
+  // Tracks the LAST `initialTheme` this component rendered with, purely to
+  // detect a change — never read for anything else.
+  const [lastSeenTheme, setLastSeenTheme] = React.useState<Theme>(initialTheme);
+
+  // Adjusts state during render (React's own documented pattern for
+  // "resetting/adjusting state when a prop changes"), not in an effect: a
+  // `setState` call made while rendering re-renders immediately, before
+  // the browser paints, so a changed `initialTheme` (e.g. the app remounts
+  // this component with fresh loader data after a client-side navigation,
+  // with no full page load to hydrate) is reflected without ever painting
+  // a stale frame first.
+  if (initialTheme !== lastSeenTheme) {
+    setLastSeenTheme(initialTheme);
+    setTheme(initialTheme);
+  }
 
   const next: Theme = theme === 'dark' ? 'light' : 'dark';
   const label = theme === 'dark' ? switchToLightLabel : switchToDarkLabel;
@@ -247,6 +270,7 @@ export function ThemeToggle({
 
   return (
     <form method="post" action={action} onSubmit={handleSubmit} className={className}>
+      {returnTo !== undefined && <input type="hidden" name="return" value={returnTo} />}
       <button type="submit" name="theme" value={next} aria-label={label} style={HIT_TARGET_STYLE}>
         {theme === 'dark' ? (
           <Sun aria-hidden="true" size={18} />

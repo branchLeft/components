@@ -160,11 +160,21 @@ order (lowest to highest):
 fallback.** A plain `@import` sequence cannot interleave this package's two
 layers between Tailwind's four: whichever side imports first, its layers
 register as a contiguous block, either entirely below or entirely above
-the other side's, never split across it. Measured directly: importing this
-package's stylesheet before `@import 'tailwindcss'`, with no explicit
-`@layer` statement, put BOTH of this package's layers above `utilities` —
-the opposite of layer 2's requirement, and a bare `h1` then read this
-package's font instead of the site's. If your bundler's CSS pipeline
+the other side's, never split across it. Measured directly, with no
+explicit `@layer` statement:
+
+- Importing this package's stylesheet BEFORE `@import 'tailwindcss'` puts
+  BOTH of this package's layers below all four of Tailwind's (including
+  `theme`) — `branchleft-components` then loses to the site's own `h1`
+  rule too, so `.bl-wordmark--hero` renders at the site's heading size
+  instead of its own.
+- Importing it AFTER `@import 'tailwindcss'` puts BOTH of this package's
+  layers above `utilities` — the opposite failure: a bare `h1` then reads
+  this package's font instead of the site's, and any Tailwind utility
+  applied directly to a covered element loses to this package's default.
+
+Either direction breaks one half of layer 2's requirement; neither is a
+usable fallback. If your bundler's CSS pipeline
 doesn't reliably preserve an explicit multi-name `@layer` statement across
 its own concatenation pass (this repo hit exactly that with an unrelated
 unlayered override file, historically), treat that as a bundler defect to
@@ -214,20 +224,29 @@ nothing for either side to guess and no hydration mismatch:
 ```tsx
 import { ThemeToggle } from '@branchleft/components';
 
-<ThemeToggle theme={theme} action="/theme" />;
+<ThemeToggle theme={theme} action="/theme" returnTo={currentPath} />;
 ```
 
 **Without JavaScript**, clicking the button submits the form to `action`
-with `theme=<the mode to switch TO>` — your server reads that field, stores
-it under `THEME_COOKIE_NAME`, and redirects back to the page with
-`<html data-theme>` already set to match (via `parseThemeCookie` against
-the incoming request's `Cookie` header). Keep the redirect target safe: a
-form with no return path can only fall back to `Referer`, which a
-cross-site page can forge, so redirect only to a same-origin relative
-path you've validated — never trust an absolute URL from the request:
+with `theme=<the mode to switch TO>` and, if you pass `returnTo`, a hidden
+`return` field carrying it — your server reads both, stores the theme
+under `THEME_COOKIE_NAME`, and redirects to a validated same-origin path
+(via the exported `safeReturnPath` helper, never a raw redirect target).
+On the next request, it renders `<html data-theme>` to match, via
+`parseThemeCookie` against the incoming `Cookie` header.
+
+**A form field is attacker-controlled — resolve it with `URL`, never a
+regex.** A denylist regex against the raw string can't see normalisation
+the platform's own URL parser does before your code ever runs: WHATWG URL
+strips ASCII tab/newline from a value BEFORE parsing it, so `"/\t/evil.
+example"` collapses to the protocol-relative `"//evil.example"` — a regex
+written against the original string never sees that collapse.
+`safeReturnPath` resolves the value with `new URL(value, origin)` first,
+then checks the RESULT's origin — which catches every such normalisation
+by construction, not one denylisted character at a time:
 
 ```tsx
-import { THEME_COOKIE_NAME, parseThemeCookie } from '@branchleft/components';
+import { THEME_COOKIE_NAME, parseThemeCookie, safeReturnPath } from '@branchleft/components';
 
 // In your server's request handler, e.g. a POST /theme route:
 const body = new URLSearchParams(await request.text());
@@ -235,13 +254,9 @@ const theme = body.get('theme') === 'light' ? 'light' : 'dark';
 const secure = new URL(request.url).protocol === 'https:' ? '; Secure' : '';
 const cookie = `${THEME_COOKIE_NAME}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax${secure}`;
 
-// A same-origin PATH only — never an absolute URL (open-redirect risk).
-// Reject anything not starting with exactly one `/` (so neither `//evil.com`,
-// a protocol-relative URL, nor `/\evil.com`, which some browsers still treat
-// as `//`, can redirect off-site), falling back to `/`.
-const returnTo = body.get('return') ?? '';
-const safeReturnTo = /^\/(?!\/|\\)/.test(returnTo) ? returnTo : '/';
-// set-cookie: <cookie>, then redirect (303) to safeReturnTo
+const ownOrigin = new URL(request.url).origin;
+const returnTo = safeReturnPath(body.get('return') ?? request.headers.get('referer'), ownOrigin);
+// set-cookie: <cookie>, then redirect (303) to returnTo
 
 // And on every request, when rendering <html>:
 const theme = parseThemeCookie(request.headers.get('cookie'));
