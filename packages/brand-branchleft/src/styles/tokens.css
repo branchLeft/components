@@ -53,7 +53,11 @@
 
   /* ── ValuesColours (dark) — 4.5:1+ on --bl-color-bg ─────────────────── */
   --bl-value-sustainability: #d4a72c;
-  --bl-value-environment: #3fae5c;
+  /* Ruled by the brand owner (workspace#1560 comment 5876482719),
+   * replacing #3fae5c: a change imperceptible to ordinary vision, chosen
+   * because the original clashed with --bl-color-active under a
+   * deuteranopia simulation (see branchleft.colour-vision.test.ts). */
+  --bl-value-environment: #40b25e;
   --bl-value-ai: #8b6fd6;
   --bl-value-society: #e8637a;
   --bl-value-opensource: #3b9fd6;

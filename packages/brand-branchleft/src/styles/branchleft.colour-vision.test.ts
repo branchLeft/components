@@ -75,44 +75,6 @@ function allPairs<T>(items: readonly T[]): ReadonlyArray<readonly [T, T]> {
   return pairs;
 }
 
-/**
- * Newly found (cycle 3, with the corrected deuteranopia matrix and the
- * brand owner's cycle-3 colours) — NOT the cycle-2 gap, which the corrected
- * matrix and the new `agility`/`danger` values actually fix (verified: both
- * `sustainability vs agility` and the old `agility vs danger` clash now
- * clear the floor in every simulation/mode).
- *
- * Dark mode, deuteranopia, `environment` (`#3fae5c`) vs `--bl-color-active`
- * (`#ff006e`): 0.0174, below the 0.02 floor. Both simulate to a similar
- * olive/tan under deuteranopia (verified by simulating each and comparing
- * the resulting sRGB) — a real clash between a ValuesColour and the link/
- * focus-ring colour, in dark mode, the brand default. Per this cycle's
- * brief: reported, not fixed by picking a colour here — that decision
- * belongs to the brand owner, who has ruled on `--bl-color-active` and
- * `--bl-value-environment` in the past but not on this specific pairing.
- * Marked via `it.fails` (excluded from the generic sweep below) so it
- * stays visible rather than silently passing or silently excluded.
- */
-const KNOWN_GAP = {
-  mode: 'dark',
-  kind: 'deuteranopia',
-  a: 'environment',
-  b: 'active',
-} as const;
-
-function isKnownGapPair(
-  mode: 'dark' | 'light',
-  kind: CvdKind,
-  a: ColourName,
-  b: ColourName
-): boolean {
-  return (
-    KNOWN_GAP.mode === mode &&
-    KNOWN_GAP.kind === kind &&
-    ((KNOWN_GAP.a === a && KNOWN_GAP.b === b) || (KNOWN_GAP.a === b && KNOWN_GAP.b === a))
-  );
-}
-
 const PAIRS = allPairs(ALL_COLOUR_NAMES);
 const KINDS: readonly CvdKind[] = ['protanopia', 'deuteranopia', 'tritanopia'];
 
@@ -121,11 +83,9 @@ describe.each([
   ['light', () => light],
 ] as const)(
   'branchleft.css colour-vision-deficiency simulation — %s mode',
-  (modeName, getProps) => {
+  (_modeName, getProps) => {
     describe.each(KINDS)('%s', (kind) => {
-      const pairs = PAIRS.filter(([a, b]) => !isKnownGapPair(modeName, kind, a, b));
-
-      it.each(pairs)('%s vs %s clears the CVD-simulated distinguishability floor', (a, b) => {
+      it.each(PAIRS)('%s vs %s clears the CVD-simulated distinguishability floor', (a, b) => {
         const props = getProps();
         const distance = simulatedOklabDistance(
           resolveColour(props, propertyFor(a)),
@@ -160,29 +120,24 @@ describe.each([
       );
       expect(distance).toBeGreaterThan(0);
     });
-  }
-);
 
-// The one known, reported (not silently fixed) gap — see KNOWN_GAP's
-// comment above. Registered once, standalone (not inside the mode/kind
-// loop above, since it applies to exactly one mode+kind combination): a
-// no-op body for the modes/kinds it doesn't apply to would make
-// `it.fails` itself report a false failure, because `it.fails` requires
-// the wrapped assertion to actually throw. `it.fails` going green here
-// means the underlying assertion is failing as expected; it turning red
-// is the signal that the gap has closed and this entry should be removed.
-it.fails(
-  `${KNOWN_GAP.a} vs ${KNOWN_GAP.b} does NOT clear the CVD-simulated floor under ${KNOWN_GAP.kind} in ${KNOWN_GAP.mode} mode (known gap, reported not fixed)`,
-  async () => {
-    const css = await buildStylesheet();
-    const darkOnly = extractCustomProperties(css, ':root{');
-    const props = darkOnly; // KNOWN_GAP.mode === 'dark'
-
-    const distance = simulatedOklabDistance(
-      resolveColour(props, propertyFor(KNOWN_GAP.a)),
-      resolveColour(props, propertyFor(KNOWN_GAP.b)),
-      KNOWN_GAP.kind
+    // Cycle-3 review found dark-mode environment vs active clashed under
+    // deuteranopia (0.0174 against the 0.02 floor) — the brand owner ruled
+    // on a replacement for --bl-value-environment (workspace#1560 comment
+    // 5876482719: #3fae5c -> #40b25e). Asserted on its own, in addition to
+    // the generic sweep above, since this is the exact pairing that gap was
+    // found in and it's worth a named regression check.
+    it.each(KINDS)(
+      'environment vs active clears the CVD-simulated floor under %s simulation',
+      (kind) => {
+        const props = getProps();
+        const distance = simulatedOklabDistance(
+          resolveColour(props, '--bl-value-environment'),
+          resolveColour(props, '--bl-color-active'),
+          kind
+        );
+        expect(distance).toBeGreaterThanOrEqual(MIN_DISTANCE);
+      }
     );
-    expect(distance).toBeGreaterThanOrEqual(MIN_DISTANCE);
   }
 );
