@@ -2,8 +2,21 @@
   "extends": ["@branchleft/tsconfig/strict-1.json", "@branchleft/tsconfig/react-lib.json"],
   "compilerOptions": {
     "useDefineForClassFields": true,
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    // Resolves straight to source, not `dist/`, so type-check and test can
+    // run on a clean checkout before `@branchleft/components` has ever been
+    // built — see vitest.config.ts's matching `resolve.alias` for the same
+    // thing at the bundler level, and .storybook/main.ts's `viteFinal` for
+    // Storybook. `tsconfig.build.json` inherits this, so the declaration
+    // build doesn't need it either; only the actual `vite build` step does,
+    // which is why the workspace always builds in dependency order first.
+    "paths": {
+      "@branchleft/components": ["../components/src/index.ts"]
+    }
   },
-  "include": ["src"],
+  // `../../test-utils` is included so its ambient `vitest-axe` matcher
+  // augmentation (in axe-setup.ts) is part of this program — see
+  // packages/components/tsconfig.json for why.
+  "include": ["src", "../../test-utils"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { axe } from '../test/axe';
+import { axe } from '../../../../test-utils/axe';
 import { AccordionItem } from './AccordionItem';
 
 describe('AccordionItem', () => {

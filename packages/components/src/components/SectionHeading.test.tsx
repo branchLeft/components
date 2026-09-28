@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { axe } from '../test/axe';
+import { axe } from '../../../../test-utils/axe';
 import { SectionHeading } from './SectionHeading';
 
 describe('SectionHeading', () => {

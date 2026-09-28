@@ -4,7 +4,14 @@
     "noEmit": false,
     "emitDeclarationOnly": true,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    // Clears tsconfig.json's source-pointing `paths` override: with it,
+    // declaration emission (which enforces `rootDir`) tries to pull all of
+    // `@branchleft/components`'s source into this package's own program.
+    // The real workspace build always builds packages in dependency order,
+    // so by the time this step runs, `@branchleft/components`'s `dist/`
+    // exists and normal package resolution is what we want here anyway.
+    "paths": {}
   },
   "include": ["src"],
   "exclude": [

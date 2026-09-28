@@ -67,7 +67,7 @@ To verify Storybook output non-interactively, use `pnpm build:storybook` — nev
 
 ## Publishing
 
-Publishing is handled by CI — do not run `pnpm publish` (or `pnpm publish-workspace`) locally.
+Publishing is handled by CI — do not run `pnpm publish`, `pnpm -r publish` or `pnpm release-plan` locally.
 
 ### Release flow
 

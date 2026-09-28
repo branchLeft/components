@@ -2,9 +2,10 @@ name: Publish
 
 # The tag is a trigger, not a version: each workspace package carries its
 # own version in its own package.json (see Changesets), so pushing one tag
-# no longer maps to "the" release being cut. `scripts/publish-workspace-packages.mjs`
-# below decides, per package, whether its current version is already on the
-# registry.
+# no longer maps to "the" release being cut. The tag's own message is the
+# release's record of intent instead — see RELEASING.md for how to write
+# one — and `scripts/release-plan.mjs` below holds it to that before
+# anything is built or published.
 on:
   push:
     tags:
@@ -113,7 +114,27 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Fails fast, before any build, if the tag's own `name@version` lines
+      # don't exactly match the set of workspace packages the registry says
+      # aren't published yet — see scripts/release-plan.mjs. Also writes
+      # that release plan to this run's job summary.
+      - name: Verify the tag's release plan against the registry
+        run: pnpm release-plan
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Always builds every workspace package, in dependency order, even one
+      # this run isn't about to publish — a brand package's own build needs
+      # `@branchleft/components`'s `dist/` to exist, and that's true whether
+      # or not `@branchleft/components` itself is being published this time.
+      - name: Build every workspace package
+        run: pnpm -r build
+
+      # The standard tool: `pnpm -r publish` already skips a package whose
+      # current version is already on the registry, and already publishes in
+      # dependency order — no custom publish-loop needed once the plan above
+      # has verified what's actually going to happen.
       - name: Publish every unpublished workspace package
-        run: pnpm publish-workspace
+        run: pnpm -r publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

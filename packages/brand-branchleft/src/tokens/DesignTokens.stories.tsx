@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { DesignTokensDocs } from './DesignTokensDocs';
+import { DesignTokensDocs } from '../../../../test-utils/DesignTokensDocs';
 import { branchLeftTokens } from './branchLeftTokens';
 
 const meta = {
