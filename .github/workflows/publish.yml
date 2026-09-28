@@ -146,13 +146,14 @@ jobs:
         run: |
           set -euo pipefail
           filters=()
-          IFS=',' read -ra names <<< "${{ steps.plan.outputs.packages }}"
+          IFS=',' read -ra names <<< "$PLAN_PACKAGES"
           for name in "${names[@]}"; do
             filters+=(--filter "$name")
           done
           pnpm "${filters[@]}" -r publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PLAN_PACKAGES: ${{ steps.plan.outputs.packages }}
         # When the plan is empty, this step is skipped rather than run with
         # zero `--filter` flags (which would fall back to every package) —
         # the job still succeeds, and release-plan.mjs already wrote the
