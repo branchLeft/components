@@ -399,6 +399,16 @@
     outline-offset: 2px;
   }
 
+  .bl-wordmark {
+    font-family: var(--bl-font-wordmark);
+    font-weight: var(--bl-weight-wordmark);
+  }
+
+  .bl-wordmark--hero {
+    font-size: var(--bl-text-wordmark-hero);
+    line-height: var(--bl-leading-wordmark-hero);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     a,
     button,
