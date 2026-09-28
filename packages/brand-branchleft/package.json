@@ -10,7 +10,8 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./css": "./dist/branchleft.css"
+    "./css": "./dist/branchleft.css",
+    "./fonts/*": "./dist/fonts/*"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

@@ -30,8 +30,23 @@ class MemoryStorage implements Storage {
   }
 }
 
-Object.defineProperty(globalThis, 'localStorage', {
-  value: new MemoryStorage(),
-  configurable: true,
-  writable: true,
-});
+/**
+ * Installs the polyfill on `globalThis`. Exported (not just run as a
+ * side effect below) so a test that installs jsdom's globals itself, at a
+ * point in time this module's own top-level side effect can't reach — see
+ * `branchleft.a11y.test.tsx`, which needs jsdom installed AFTER an esbuild
+ * step that jsdom's globals would otherwise break — can call it again once
+ * jsdom is in place.
+ */
+export function installLocalStorage(target: typeof globalThis = globalThis): void {
+  Object.defineProperty(target, 'localStorage', {
+    value: new MemoryStorage(),
+    configurable: true,
+    writable: true,
+  });
+}
+
+// Side-effect entry point for vitest's `setupFiles` (runs once per test
+// file, before jsdom's own environment setup has a chance to skip
+// installing its own — see the header comment above).
+installLocalStorage();

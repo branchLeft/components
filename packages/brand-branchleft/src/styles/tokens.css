@@ -39,12 +39,18 @@
    * head rule) reuses --bl-color-muted, which already clears the stricter
    * 4.5:1 text floor and so clears 3:1 by construction. */
   --bl-color-border: var(--bl-color-muted);
-  /* Form-control invalid state. Reuses the `redlines` ValuesColour: a hard
-   * boundary is exactly what `redlines` already means in the ValuesColours
-   * table, and reusing it (rather than inventing a parallel "error red")
-   * keeps the palette to one set of reds. This mapping isn't in the brief —
-   * flagged as a judgement call in the PR body. */
-  --bl-color-invalid: var(--bl-value-redlines);
+  /* PROVISIONAL — dedicated error/danger colour, deliberately NOT a
+   * ValuesColour. Cycle-1 review (see PR body, "Cycle 2 response") found
+   * that aliasing form `:invalid` to `--bl-value-redlines` broke Rob's own
+   * scoping of ValuesColours to "describing things related to those
+   * values" (workspace#1480 comment 5872329905) — a validation error is a
+   * generic UI condition, not content about branchLeft's `redlines`
+   * topic. This value is a fresh pick, not ruled on by Rob: 6.27:1 on
+   * --bl-color-bg (clears both the 3:1 border floor and the 4.5:1 text
+   * floor) and >0.05 OKLab distance from every ValuesColour including
+   * redlines (see branchleft.contrast.test.ts / .distinguishability.test.ts).
+   * Rob should confirm or replace it. */
+  --bl-color-danger: #fe4c20;
 
   /* ── ValuesColours (dark) — 4.5:1+ on --bl-color-bg ─────────────────── */
   --bl-value-sustainability: #d4a72c;
@@ -123,7 +129,9 @@
   --bl-color-muted: #404040;
   --bl-color-hairline: rgba(0, 0, 0, 0.12);
   --bl-color-border: var(--bl-color-muted);
-  --bl-color-invalid: var(--bl-value-redlines);
+  /* PROVISIONAL — see the dark block's comment. 10.87:1 on --bl-color-bg
+   * (light), >0.05 OKLab distance from every light ValuesColour. */
+  --bl-color-danger: #70202c;
 
   /* ── ValuesColours (light) — deeper variants, each 4.5:1+ on white. */
   --bl-value-sustainability: #91721e;

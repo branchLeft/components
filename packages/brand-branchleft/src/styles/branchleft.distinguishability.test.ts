@@ -24,16 +24,24 @@ const VALUE_NAMES = [
 ] as const;
 
 /**
- * OKLab distance floor for "reliably tells two ValuesColours apart at a
- * glance". There's no single canonical "just noticeable difference"
- * constant for OKLab the way WCAG gives one for contrast, so this is a
- * judgement call, not a cited standard: informal OKLab JND estimates put a
- * bare-minimum detectable difference around 0.01-0.02 for a side-by-side
- * swatch under ideal conditions. 0.05 is roughly double that — a margin
- * meant to survive a real UI's smaller swatches, imperfect displays and
- * non-ideal viewing conditions, not just a lab-condition JND. Every pair
- * in both modes clears it comfortably except the one the brief specifically
- * asked to flag (see the "society vs redlines" test below).
+ * OKLab distance floor for "reliably tells two colours apart at a glance
+ * under ordinary (non colour-vision-deficient) vision". There's no single
+ * canonical "just noticeable difference" constant for OKLab the way WCAG
+ * gives one for contrast, so this is a judgement call, not a cited
+ * standard: informal OKLab JND estimates put a bare-minimum detectable
+ * difference around 0.01-0.02 for a side-by-side swatch under ideal
+ * conditions. 0.05 is roughly double that — a margin meant to survive a
+ * real UI's smaller swatches, imperfect displays and non-ideal viewing
+ * conditions, not just a lab-condition JND.
+ *
+ * This metric — plain Euclidean OKLab distance under ordinary vision —
+ * proves distinguishability for ordinary vision only. It models no colour
+ * vision deficiency: `branchleft.colour-vision.test.ts` is the test that
+ * actually simulates protanopia/deuteranopia/tritanopia (Machado et al.
+ * 2009) and checks distance under each. Cycle-1 review correctly found an
+ * earlier version of this file's comment claimed CVD relevance for a plain
+ * OKLab number that didn't establish it — this comment now claims only
+ * what this file's metric proves.
  */
 const MIN_DISTANCE = 0.05;
 
@@ -74,10 +82,9 @@ describe.each([
   });
 
   // Called out on its own per the brief: society and redlines are the two
-  // reds in the palette, so they're the pair most likely to read as "the
-  // same colour" to a viewer with a red-green colour vision deficiency —
-  // worth asserting (and reporting the actual number for) even though the
-  // generic pairwise loop above already covers this pair.
+  // reds in the palette, so they're the closest pair by this metric in
+  // both modes (see the PR body for the numbers) — worth asserting on its
+  // own even though the generic pairwise loop above already covers it.
   it('society vs redlines — the pair Rob asked to have flagged — still clears the floor', () => {
     const props = getProps();
     const distance = oklabDistance(
@@ -86,4 +93,20 @@ describe.each([
     );
     expect(distance).toBeGreaterThanOrEqual(MIN_DISTANCE);
   });
+
+  // `--bl-color-danger` (added in cycle 2, replacing the `redlines` alias
+  // `--bl-color-invalid` used to carry) must read as its own colour, not a
+  // near-duplicate of any ValuesColour — redlines included, since both are
+  // now reds in the same palette.
+  it.each(VALUE_NAMES)(
+    'danger colour vs %s ValuesColour clears the distinguishability floor',
+    (name) => {
+      const props = getProps();
+      const distance = oklabDistance(
+        resolveColour(props, '--bl-color-danger'),
+        resolveColour(props, `--bl-value-${name}`)
+      );
+      expect(distance).toBeGreaterThanOrEqual(MIN_DISTANCE);
+    }
+  );
 });

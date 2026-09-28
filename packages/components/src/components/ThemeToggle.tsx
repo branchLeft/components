@@ -53,6 +53,27 @@ export const themeInitScript = `(function () {
   } catch (e) {}
 })();`;
 
+/**
+ * `themeInitScript`'s SHA-256 hash, in the `'sha256-<base64>'` form a CSP
+ * `script-src` directive expects for an inline `<script>` — e.g.:
+ *
+ *   Content-Security-Policy: script-src 'self' 'sha256-eaTM2OdrPnWt18EwafzafEMGqGT6XQixJje4JPQ2gUg='
+ *
+ * Inlining `themeInitScript` into a document `<head>` needs one of: a
+ * `'nonce-…'` the server regenerates per response, `'unsafe-inline'` (a
+ * real CSP weakening this package should not ask a consumer to accept), or
+ * this hash. A hash-based `script-src` entry only matches the EXACT
+ * script text — hence why `themeInitScript` is a literal, un-templated
+ * string rather than something assembled per-render, and why this
+ * constant is a literal too, not computed from `crypto` at runtime (this
+ * package ships to browsers; `node:crypto` isn't there). It's computed
+ * once, by `ThemeToggle.hash.test.ts`, which fails if it ever drifts from
+ * `themeInitScript`'s actual content — recompute it there (the test's own
+ * comment says how) and paste the result back here if `themeInitScript`
+ * ever changes.
+ */
+export const themeInitScriptHash = 'sha256-eaTM2OdrPnWt18EwafzafEMGqGT6XQixJje4JPQ2gUg=';
+
 export interface ThemeToggleProps {
   /**
    * Accessible label, read as the button's visible text and its accessible

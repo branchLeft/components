@@ -85,8 +85,18 @@ export function HtmlElements(): React.JSX.Element {
             <input id="html-elements-name" type="text" placeholder="Ada Lovelace" />
           </div>
           <div>
-            <label htmlFor="html-elements-invalid">Invalid field (for :invalid demo)</label>
-            <input id="html-elements-invalid" type="email" defaultValue="not-an-email" required />
+            <label htmlFor="html-elements-invalid">Email (invalid state demo)</label>
+            <input
+              id="html-elements-invalid"
+              type="email"
+              defaultValue="not-an-email"
+              required
+              aria-invalid="true"
+              aria-describedby="html-elements-invalid-error"
+            />
+            <p id="html-elements-invalid-error" className="bl-form-error">
+              Enter a valid email address.
+            </p>
           </div>
           <div>
             <label htmlFor="html-elements-select">Choice</label>

@@ -336,10 +336,38 @@
     cursor: not-allowed;
     opacity: 0.5;
   }
+  /* Colour is never the only signal: `:invalid` fires on the browser's own
+   * native validation, but a consumer driving validation from JS (async
+   * checks, cross-field rules) must additionally set
+   * `aria-invalid="true"` on the control AND render visible error text (or
+   * an icon) referenced by the control's `aria-describedby` — this rule
+   * covers both triggers, but the accessible-name/description wiring and
+   * the visible text/icon are the consumer's responsibility; this
+   * stylesheet only supplies the shared `.bl-form-error` look for that
+   * text (see below). Neither `:invalid` nor `[aria-invalid]` alone is a
+   * substitute for the other: native `:invalid` doesn't fire for
+   * JS-driven validation, and `aria-invalid` alone paints nothing without
+   * this rule pairing it with a class selector browsers don't imply. */
   input:invalid,
+  input[aria-invalid='true'],
   select:invalid,
-  textarea:invalid {
-    border-color: var(--bl-color-invalid);
+  select[aria-invalid='true'],
+  textarea:invalid,
+  textarea[aria-invalid='true'] {
+    border-color: var(--bl-color-danger);
+  }
+
+  /* Paired text/icon affordance for the state above — reference it from
+   * the invalid control's `aria-describedby` so assistive tech announces
+   * the same message a sighted user reads from its colour and position. */
+  .bl-form-error {
+    display: flex;
+    align-items: center;
+    gap: var(--bl-space-xs);
+    font-size: var(--bl-text-small);
+    line-height: var(--bl-leading-small);
+    color: var(--bl-color-danger);
+    margin-block-start: var(--bl-space-xs);
   }
 
   fieldset {
