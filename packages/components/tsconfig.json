@@ -1,0 +1,9 @@
+{
+  "extends": ["@branchleft/tsconfig/strict-1.json", "@branchleft/tsconfig/react-lib.json"],
+  "compilerOptions": {
+    "useDefineForClassFields": true,
+    "types": ["vite/client"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

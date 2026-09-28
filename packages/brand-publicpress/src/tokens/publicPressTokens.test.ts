@@ -1,15 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { branchLeftTokens } from './branchLeftTokens';
-import { publicPressTokens } from './publicPressTokens';
 import {
   REQUIRED_COLOUR_KEYS,
   REQUIRED_TOKEN_KEYS,
   REQUIRED_TYPE_FACE_KEYS,
   type DesignTokens,
-} from './types';
+} from '@branchleft/components';
+import { publicPressTokens } from './publicPressTokens';
 
 const brands: { name: string; tokens: DesignTokens }[] = [
-  { name: 'branchLeft', tokens: branchLeftTokens },
   { name: 'PublicPress', tokens: publicPressTokens },
 ];
 
@@ -68,21 +66,6 @@ describe.each(brands)('$name token set', ({ tokens }) => {
         expect(step.value.length).toBeGreaterThan(0);
       }
     }
-  });
-});
-
-describe('branchLeft tokens', () => {
-  it('has no shadow scale (no box-shadow usage exists in the site source)', () => {
-    expect(branchLeftTokens.shadow).toBeUndefined();
-  });
-
-  it('has a motion scale sourced from real transition durations', () => {
-    expect(branchLeftTokens.motion?.duration.length).toBeGreaterThan(0);
-    expect(branchLeftTokens.motion?.duration.some((d) => !d.provisional)).toBe(true);
-  });
-
-  it('marks the primary brand colour as sourced, not provisional', () => {
-    expect(branchLeftTokens.colour.brand.dark).toBe('#b31761');
   });
 });
 

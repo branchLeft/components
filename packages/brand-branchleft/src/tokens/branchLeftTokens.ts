@@ -1,4 +1,4 @@
-import type { DesignTokens } from './types';
+import type { DesignTokens } from '@branchleft/components';
 
 /**
  * branchLeft design tokens, extracted from the website repo's live styling

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { DesignTokens } from './types';
+import type { DesignTokens } from '@branchleft/components';
 
 /**
  * Storybook-only documentation view of a brand's token set — swatches,

@@ -1,60 +1,29 @@
 {
-  "name": "@branchleft/components",
-  "version": "0.3.0",
+  "name": "branchleft-components-workspace",
+  "private": true,
   "prettier": "@branchleft/prettier-config",
   "packageManager": "pnpm@11.17.0",
-  "description": "Reusable component library for branchLeft",
+  "description": "Monorepo for branchLeft's published component and brand packages",
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./css": "./dist/index.css"
-  },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/branchLeft/components.git"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "public"
-  },
   "scripts": {
-    "dev": "storybook dev -p 6006",
-    "build": "vite build && tsc -p tsconfig.build.json",
+    "build": "pnpm -r --if-present run build",
     "build:storybook": "storybook build",
-    "preview": "vite preview",
-    "type-check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
-    "test:unit": "vitest",
-    "test:ui": "vitest --ui",
-    "lint": "eslint src --ext .ts,.tsx --fix",
+    "dev": "storybook dev -p 6006",
+    "type-check": "tsc --noEmit -p tsconfig.node.json && pnpm -r --if-present run type-check",
+    "test:unit": "pnpm -r --if-present run test:unit",
+    "test:scripts": "vitest run --config vitest.config.ts",
+    "lint": "eslint packages/*/src --ext .ts,.tsx --fix",
     "format": "prettier --write . --ignore-path .gitignore --ignore-path .prettierignore --ignore-path node_modules/@branchleft/prettier-config/prettierignore",
     "format:check": "prettier --check . --ignore-path .gitignore --ignore-path .prettierignore --ignore-path node_modules/@branchleft/prettier-config/prettierignore",
-    "prepare": "[ \"$CI\" = \"true\" ] || pre-commit install",
-    "prepublishOnly": "pnpm build"
-  },
-  "keywords": [
-    "react",
-    "components",
-    "ui"
-  ],
-  "author": "branchLeft",
-  "license": "MIT",
-  "peerDependencies": {
-    "react": "^18.2.0 || ^19.0.0",
-    "react-dom": "^18.2.0 || ^19.0.0"
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "publish-workspace": "node scripts/publish-workspace-packages.mjs",
+    "prepare": "[ \"$CI\" = \"true\" ] || pre-commit install"
   },
   "devDependencies": {
     "@branchleft/prettier-config": "^0.6.0",
     "@branchleft/tsconfig": "^0.6.0",
+    "@changesets/cli": "^2.29.7",
     "@eslint/js": "^10.0.1",
     "@storybook/addon-a11y": "^8.6.18",
     "@storybook/addon-essentials": "^8.6.18",
@@ -81,11 +50,6 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.66.0",
     "vite": "^6.4.3",
-    "vitest": "^4.1.10",
-    "vitest-axe": "0.1.0"
-  },
-  "dependencies": {
-    "framer-motion": "^13.0.0",
-    "lucide-react": "^1.31.0"
+    "vitest": "^4.1.10"
   }
 }

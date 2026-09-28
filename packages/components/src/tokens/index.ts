@@ -1,5 +1,3 @@
-export { branchLeftTokens } from './branchLeftTokens';
-export { publicPressTokens, publicPressInks } from './publicPressTokens';
 export type {
   ColourTokens,
   ColourValue,

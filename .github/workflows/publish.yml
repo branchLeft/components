@@ -1,5 +1,10 @@
 name: Publish
 
+# The tag is a trigger, not a version: each workspace package carries its
+# own version in its own package.json (see Changesets), so pushing one tag
+# no longer maps to "the" release being cut. `scripts/publish-workspace-packages.mjs`
+# below decides, per package, whether its current version is already on the
+# registry.
 on:
   push:
     tags:
@@ -79,18 +84,6 @@ jobs:
             exit 1
           fi
 
-      - name: Assert the tag matches package.json
-        env:
-          TAG: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-          want="${TAG#v}"
-          got=$(node -p "require('./package.json').version")
-          if [ "$got" != "$want" ]; then
-            echo "::error file=package.json::version $got does not match tag $want"
-            exit 1
-          fi
-
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -120,7 +113,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish
-        run: pnpm publish --no-git-checks
+      - name: Publish every unpublished workspace package
+        run: pnpm publish-workspace
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

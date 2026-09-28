@@ -2,16 +2,6 @@
 export { AccordionItem } from './components/AccordionItem';
 export type { AccordionItemProps } from './components/AccordionItem';
 
-export { Logo } from './components/Logo';
-export type { LogoColor, LogoBackground, LogoProps } from './components/Logo';
-
-export { PublicPressWordmark } from './components/PublicPressWordmark';
-export type { PublicPressWordmarkProps } from './components/PublicPressWordmark';
-
-export { PublicPressLogo } from './components/PublicPressLogo';
-export type { PublicPressLogoProps } from './components/PublicPressLogo';
-export type { PublicPressColor } from './components/publicPressGeometry';
-
 export { SectionHeading } from './components/SectionHeading';
 export type { SectionHeadingProps, SectionHeadingLevel } from './components/SectionHeading';
 
@@ -28,7 +18,6 @@ export type { Value, ValueAccent, ValuesCloudProps } from './components/ValuesCl
 export { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 
 // Design tokens
-export { branchLeftTokens, publicPressInks, publicPressTokens } from './tokens';
 export type {
   ColourTokens,
   ColourValue,
@@ -42,3 +31,4 @@ export type {
   TypeScaleStep,
   TypeTokens,
 } from './tokens';
+export { REQUIRED_COLOUR_KEYS, REQUIRED_TOKEN_KEYS, REQUIRED_TYPE_FACE_KEYS } from './tokens';

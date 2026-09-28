@@ -1,5 +1,5 @@
 import { PUBLIC_PRESS_INKS } from '../components/publicPressGeometry';
-import type { DesignTokens } from './types';
+import type { DesignTokens } from '@branchleft/components';
 
 /**
  * All four ruled PublicPress mark inks (block + knockout-letter colour),
