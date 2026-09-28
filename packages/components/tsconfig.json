@@ -1,0 +1,18 @@
+{
+  "extends": ["@branchleft/tsconfig/strict-1.json", "@branchleft/tsconfig/react-lib.json"],
+  "compilerOptions": {
+    "useDefineForClassFields": true,
+    "types": ["vite/client"]
+  },
+  // The two axe helpers are included so `axe-setup.ts`'s ambient
+  // `vitest-axe` matcher augmentation is part of this program — nothing
+  // here imports that file directly (vitest loads it via `setupFiles`), so
+  // without this it would never be type-checked and the augmentation would
+  // never apply to this package's own `*.test.tsx` files. Deliberately not
+  // the whole `test-utils` directory: `DesignTokensDocs.tsx` there imports
+  // `@branchleft/components` by name, which this package (being that same
+  // package) has no `paths` override for — only the two brand packages'
+  // tsconfigs include it.
+  "include": ["src", "../../test-utils/axe.ts", "../../test-utils/axe-setup.ts"],
+  "exclude": ["node_modules", "dist"]
+}

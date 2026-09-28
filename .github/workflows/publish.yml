@@ -1,5 +1,11 @@
 name: Publish
 
+# The tag is a trigger, not a version: each workspace package carries its
+# own version in its own package.json (see Changesets), so pushing one tag
+# no longer maps to "the" release being cut. The tag's own message is the
+# release's record of intent instead — see RELEASING.md for how to write
+# one — and `scripts/release-plan.mjs` below holds it to that before
+# anything is built or published.
 on:
   push:
     tags:
@@ -79,18 +85,6 @@ jobs:
             exit 1
           fi
 
-      - name: Assert the tag matches package.json
-        env:
-          TAG: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-          want="${TAG#v}"
-          got=$(node -p "require('./package.json').version")
-          if [ "$got" != "$want" ]; then
-            echo "::error file=package.json::version $got does not match tag $want"
-            exit 1
-          fi
-
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -120,7 +114,47 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish
-        run: pnpm publish --no-git-checks
+      # Fails fast, before any build, if the tag's own `name@version` lines
+      # don't exactly match the set of workspace packages the registry says
+      # aren't published yet — see scripts/release-plan.mjs. Writes that
+      # release plan to this run's job summary, and its package names (comma
+      # separated, empty when there's nothing to publish) to this step's own
+      # `packages` output — the one thing the publish step below is allowed
+      # to publish.
+      - name: Verify the tag's release plan against the registry
+        id: plan
+        run: pnpm release-plan
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Always builds every workspace package, in dependency order, even one
+      # this run isn't about to publish — a brand package's own build needs
+      # `@branchleft/components`'s `dist/` to exist, and that's true whether
+      # or not `@branchleft/components` itself is being published this time.
+      - name: Build every workspace package
+        run: pnpm -r build
+
+      # `pnpm -r publish` on its own recomputes, from the registry, its own
+      # opinion of what's unpublished — a second decision that could in
+      # principle disagree with the plan step above (a registry write
+      # between the two steps, for one). One `--filter <name>` per package
+      # the plan approved binds the two: this can publish only what
+      # release-plan already checked against the tag, never a wider set
+      # pnpm's own lookup happens to pick.
+      - name: Publish exactly the checked release plan
+        if: steps.plan.outputs.packages != ''
+        run: |
+          set -euo pipefail
+          filters=()
+          IFS=',' read -ra names <<< "$PLAN_PACKAGES"
+          for name in "${names[@]}"; do
+            filters+=(--filter "$name")
+          done
+          pnpm "${filters[@]}" -r publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PLAN_PACKAGES: ${{ steps.plan.outputs.packages }}
+        # When the plan is empty, this step is skipped rather than run with
+        # zero `--filter` flags (which would fall back to every package) —
+        # the job still succeeds, and release-plan.mjs already wrote the
+        # "nothing to publish" line to the job summary above.
