@@ -13,6 +13,9 @@ const meta = {
     // story exercises the JS-enhanced path, which preventDefaults the
     // navigation before it would ever reach this URL).
     action: '/theme',
+    // Storybook plays the part of "the consumer" here — no real
+    // server/cookie exists, so this is just the starting mode.
+    theme: 'dark',
   },
 } satisfies Meta<typeof ThemeToggle>;
 
@@ -27,6 +30,11 @@ type Story = StoryObj<typeof meta>;
  * instead submit the form to `action`, for the consumer's server to handle.
  */
 export const Default: Story = {};
+
+/** Starting from light instead of the default dark. */
+export const StartingLight: Story = {
+  args: { theme: 'light' },
+};
 
 /**
  * Both accessible-name strings ("switch to light" / "switch to dark")

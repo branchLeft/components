@@ -1,8 +1,8 @@
 import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import * as React from 'react';
-import { createRoot, type Root } from 'react-dom/client';
+import { createRoot, hydrateRoot, type Root } from 'react-dom/client';
 import { act } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { axe } from '../../../../test-utils/axe';
 import {
   ThemeToggle,
@@ -58,7 +58,7 @@ afterEach(() => {
 
 describe('ThemeToggle', () => {
   it('renders a real form posting to `action`, with a submit button named/valued for the mode to switch TO', () => {
-    const container = mount(React.createElement(ThemeToggle, { action: ACTION }));
+    const container = mount(React.createElement(ThemeToggle, { action: ACTION, theme: 'dark' }));
     const form = container.querySelector('form')!;
     const button = container.querySelector('button')!;
 
@@ -66,46 +66,36 @@ describe('ThemeToggle', () => {
     expect(form.getAttribute('action')).toBe(ACTION);
     expect(button.getAttribute('type')).toBe('submit');
     expect(button.getAttribute('name')).toBe('theme');
-    // No data-theme set yet ⇒ this render assumes dark ⇒ next mode is light.
+    // theme="dark" ⇒ next mode (this button's value) is light.
     expect(button.getAttribute('value')).toBe('light');
   });
 
-  it('reflects an initial data-theme="light" already on <html> at mount, rather than assuming dark', () => {
-    document.documentElement.setAttribute('data-theme', 'light');
-    const container = mount(React.createElement(ThemeToggle, { action: ACTION }));
-
+  it('reflects theme="light" via the button value, without reading `document` at all', () => {
+    // Deliberately does NOT set document.documentElement's data-theme here —
+    // the whole point of the prop is that the component never needs to
+    // read the DOM to know the starting mode.
+    const container = mount(React.createElement(ThemeToggle, { action: ACTION, theme: 'light' }));
     const button = container.querySelector('button')!;
-    // Currently light ⇒ next mode (this button's value/action) is dark.
     expect(button.getAttribute('value')).toBe('dark');
   });
 
   it('has no aria-pressed attribute', () => {
-    const container = mount(React.createElement(ThemeToggle, { action: ACTION }));
+    const container = mount(React.createElement(ThemeToggle, { action: ACTION, theme: 'dark' }));
     expect(container.querySelector('button')!.hasAttribute('aria-pressed')).toBe(false);
   });
 
-  it('the accessible name flips between the two labels depending on the starting mode', () => {
+  it('the accessible name flips between the two labels depending on the theme prop', () => {
     const darkContainer = document.createElement('div');
     document.body.appendChild(darkContainer);
     const darkRoot = createRoot(darkContainer);
-    act(() => darkRoot.render(React.createElement(ThemeToggle, { action: ACTION })));
-    // Assumed-dark render ⇒ offers to switch to light.
+    act(() => darkRoot.render(React.createElement(ThemeToggle, { action: ACTION, theme: 'dark' })));
     expect(darkContainer.querySelector('button')!.getAttribute('aria-label')).toBe(
       'Switch to light mode'
     );
     act(() => darkRoot.unmount());
     darkContainer.remove();
 
-    document.documentElement.setAttribute('data-theme', 'light');
-    const container = mount(React.createElement(ThemeToggle, { action: ACTION }));
-    expect(container.querySelector('button')!.getAttribute('aria-label')).toBe(
-      'Switch to dark mode'
-    );
-  });
-
-  it('reflects a light starting state via the label, read from <html> at mount', () => {
-    document.documentElement.setAttribute('data-theme', 'light');
-    const container = mount(React.createElement(ThemeToggle, { action: ACTION }));
+    const container = mount(React.createElement(ThemeToggle, { action: ACTION, theme: 'light' }));
     expect(container.querySelector('button')!.getAttribute('aria-label')).toBe(
       'Switch to dark mode'
     );
@@ -115,16 +105,17 @@ describe('ThemeToggle', () => {
     const container = mount(
       React.createElement(ThemeToggle, {
         action: ACTION,
+        theme: 'dark',
         switchToLightLabel: 'Go light',
         switchToDarkLabel: 'Go dark',
       })
     );
     expect(container.querySelector('button')!.getAttribute('aria-label')).toBe('Go light');
 
-    document.documentElement.setAttribute('data-theme', 'light');
     const container2 = mount(
       React.createElement(ThemeToggle, {
         action: ACTION,
+        theme: 'light',
         switchToLightLabel: 'Go light',
         switchToDarkLabel: 'Go dark',
       })
@@ -132,8 +123,8 @@ describe('ThemeToggle', () => {
     expect(container2.querySelector('button')!.getAttribute('aria-label')).toBe('Go dark');
   });
 
-  it('switches data-theme and writes THEME_COOKIE_NAME when JS handles the submit', () => {
-    const container = mount(React.createElement(ThemeToggle, { action: ACTION }));
+  it('after mount, switches data-theme and writes THEME_COOKIE_NAME when JS handles the submit — in both directions', () => {
+    const container = mount(React.createElement(ThemeToggle, { action: ACTION, theme: 'dark' }));
     const form = container.querySelector('form')!;
 
     act(() => {
@@ -142,6 +133,7 @@ describe('ThemeToggle', () => {
 
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
     expect(readThemeCookie()).toBe('light');
+    expect(container.querySelector('button')!.getAttribute('value')).toBe('dark');
 
     act(() => {
       form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
@@ -149,10 +141,11 @@ describe('ThemeToggle', () => {
 
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
     expect(readThemeCookie()).toBe('dark');
+    expect(container.querySelector('button')!.getAttribute('value')).toBe('light');
   });
 
   it('also writes THEME_STORAGE_KEY on submit, for back-compat with the no-server localStorage path', () => {
-    const container = mount(React.createElement(ThemeToggle, { action: ACTION }));
+    const container = mount(React.createElement(ThemeToggle, { action: ACTION, theme: 'dark' }));
     const form = container.querySelector('form')!;
 
     act(() => {
@@ -163,7 +156,7 @@ describe('ThemeToggle', () => {
   });
 
   it('prevents the default form navigation once JS handles the submit', () => {
-    const container = mount(React.createElement(ThemeToggle, { action: ACTION }));
+    const container = mount(React.createElement(ThemeToggle, { action: ACTION, theme: 'dark' }));
     const form = container.querySelector('form')!;
     const event = new Event('submit', { bubbles: true, cancelable: true });
 
@@ -175,9 +168,82 @@ describe('ThemeToggle', () => {
   });
 
   it('has no axe violations', async () => {
-    const html = renderToStaticMarkup(React.createElement(ThemeToggle, { action: ACTION }));
+    const html = renderToStaticMarkup(
+      React.createElement(ThemeToggle, { action: ACTION, theme: 'dark' })
+    );
     const results = await axe(html);
     expect(results).toHaveNoViolations();
+  });
+
+  describe('no-JS: what a server render alone must offer (no hydration involved)', () => {
+    // Mirrors the README's server contract exactly: a light-mode visitor's
+    // server render, with no client JS at all, must be a form that posts
+    // the OPPOSITE mode — otherwise a no-JS visitor can switch one way and
+    // never back (the cycle-2 review finding this guards).
+    it.each([
+      ['dark', 'light', 'Switch to light mode'],
+      ['light', 'dark', 'Switch to dark mode'],
+    ] as const)(
+      'server-rendered with theme=%s posts theme=%s, labelled %j',
+      (theme, postedValue, label) => {
+        const html = renderToStaticMarkup(
+          React.createElement(ThemeToggle, { action: ACTION, theme })
+        );
+        const container = document.createElement('div');
+        container.innerHTML = html;
+        const button = container.querySelector('button')!;
+        const form = container.querySelector('form')!;
+
+        expect(form.getAttribute('method')).toBe('post');
+        expect(form.getAttribute('action')).toBe(ACTION);
+        expect(button.getAttribute('name')).toBe('theme');
+        expect(button.getAttribute('value')).toBe(postedValue);
+        expect(button.getAttribute('aria-label')).toBe(label);
+      }
+    );
+  });
+
+  describe('hydration: server and client must agree via the theme prop', () => {
+    // Reproduces the cycle-2 review's real round trip (renderToString →
+    // served HTML → hydrateRoot), for both starting modes, with
+    // onRecoverableError spied so any hydration mismatch shows up as a
+    // real assertion failure rather than only a console warning.
+    it.each(['dark', 'light'] as const)(
+      'hydrates theme=%s with no recoverable error, correct name and icon',
+      (theme) => {
+        const html = renderToString(React.createElement(ThemeToggle, { action: ACTION, theme }));
+        const container = document.createElement('div');
+        container.innerHTML = html;
+        document.body.appendChild(container);
+
+        const errors: string[] = [];
+        let root: ReturnType<typeof hydrateRoot> | undefined;
+        try {
+          act(() => {
+            root = hydrateRoot(
+              container,
+              React.createElement(ThemeToggle, { action: ACTION, theme }),
+              {
+                onRecoverableError: (error) => {
+                  errors.push(String((error as { message?: unknown })?.message ?? error));
+                },
+              }
+            );
+          });
+
+          expect(errors).toEqual([]);
+
+          const button = container.querySelector('button')!;
+          const expectedLabel = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+          const expectedIconClass = theme === 'dark' ? 'lucide-sun' : 'lucide-moon';
+          expect(button.getAttribute('aria-label')).toBe(expectedLabel);
+          expect(button.querySelector('svg')?.getAttribute('class')).toContain(expectedIconClass);
+        } finally {
+          if (root) act(() => root!.unmount());
+          container.remove();
+        }
+      }
+    );
   });
 
   describe('themeInitScript (legacy, no-server path)', () => {
@@ -278,6 +344,11 @@ describe('ThemeToggle', () => {
 
     it('treats a value with embedded "=" as unknown, defaulting to dark', () => {
       expect(parseThemeCookie(`${THEME_COOKIE_NAME}=light=extra`)).toBe('dark');
+    });
+
+    it('accepts an RFC 6265 quoted value', () => {
+      expect(parseThemeCookie(`${THEME_COOKIE_NAME}="light"`)).toBe('light');
+      expect(parseThemeCookie(`${THEME_COOKIE_NAME}="dark"`)).toBe('dark');
     });
   });
 });

@@ -91,17 +91,29 @@ import '@branchleft/brand-branchleft/css';
 It declares itself across two cascade layers, in this order:
 
 ```css
-@layer branchleft.base, branchleft.components;
+@layer branchleft-base, branchleft-components;
 ```
 
-- **`branchleft.base`** — plain-element defaults (`html`, `body`, `h1`–`h6`,
+**Flat, hyphenated names — never dotted.** A dotted name like
+`branchleft.base` is CSS Cascade Layers syntax for a SUB-layer (`base`)
+nested inside a single parent layer (`branchleft`) — the parent's position
+among its top-level siblings is fixed by the parent name's own first
+appearance, and no top-level order statement can independently interleave
+its children among other top-level layers. An earlier version of this
+package used dotted names, and no achievable layer order made a component
+class beat a same-priority site element rule while also losing to it
+elsewhere, as required below — confirmed by building this exact stylesheet
+into a real Tailwind v4 app and checking computed styles in a real
+browser: see "Verifying this" below.
+
+- **`branchleft-base`** — plain-element defaults (`html`, `body`, `h1`–`h6`,
   `p`, `table`, form controls, …). Deliberately the LOWER-priority of the
   two, so a consuming app's own element rules can outrank it just by
   living in a later-registered layer — no `!important`, no specificity
   fights.
-- **`branchleft.components`** — this package's class-based rules
+- **`branchleft-components`** — this package's class-based rules
   (`.bl-wordmark`, `.bl-wordmark--hero`, `.bl-form-error`). Deliberately
-  HIGHER than `branchleft.base`: a component class must beat a same-element
+  HIGHER than `branchleft-base`: a component class must beat a same-element
   generic rule regardless of which layer that generic rule lives in (e.g.
   a consuming app's own `h1` default competing with `.bl-wordmark--hero` on
   the same `<h1>`), and cascade layers — not selector specificity — are
@@ -112,11 +124,11 @@ It declares itself across two cascade layers, in this order:
 `@import 'tailwindcss'` itself expands to
 `@layer theme, base, components, utilities;` before pulling in Tailwind's
 own rules for each. Slot this package's two layers around those so that
-**the site's own element rules beat `branchleft.base`, while
-`branchleft.components` beats the site's element rules**:
+**the site's own element rules beat `branchleft-base`, while
+`branchleft-components` beats the site's element rules**:
 
 ```css
-@layer theme, branchleft.base, base, branchleft.components, components, utilities;
+@layer theme, branchleft-base, base, branchleft-components, components, utilities;
 ```
 
 Cascade-layer priority is order of FIRST APPEARANCE in a layer-order
@@ -127,32 +139,57 @@ order (lowest to highest):
 
 1. `theme` (Tailwind's own token layer) — nothing here should ever need to
    win against anything.
-2. `branchleft.base` — this package's element defaults.
+2. `branchleft-base` — this package's element defaults.
 3. `base` (Tailwind's preflight, plus wherever the site wraps its own
    element defaults in `@layer base`, matching Tailwind's own name) — beats
-   `branchleft.base`, so the site's own choice for e.g. `h1` always wins
+   `branchleft-base`, so the site's own choice for e.g. `h1` always wins
    over this package's.
-4. `branchleft.components` — beats both `base` layers above, so
+4. `branchleft-components` — beats both `base` layers above, so
    `.bl-wordmark--hero` on an `<h1>` wins even though the site's own `h1`
    rule sits in `base`. This is the fix for the defect where the class lost
    to the element rule purely because both were registered in the same
    (lowest) priority layer.
 5. `components` (the site's own component classes, in `@layer components`)
-   — beats `branchleft.components`, so a same-named or overlapping site
+   — beats `branchleft-components`, so a same-named or overlapping site
    class still wins if one is ever written.
 6. `utilities` (Tailwind's utility classes) — highest, as in any ordinary
    Tailwind app: a `text-*`/`font-*` utility on an element still beats
    every layer below it.
 
-**This order must be declared explicitly**, not left to import order:
-review of a live consumer found its bundler's CSS pipeline did not reliably
-preserve an explicit multi-name `@layer` order statement across
-concatenation in one specific case (an unlayered override file, not this
-statement) — if your own bundler has the same issue, the fallback is
-import order (first-imported name registers lowest), which then must
-import in exactly this same sequence: this package's stylesheet, then
-Tailwind, then any of the site's own layered files, verified against the
-built (not source) CSS.
+**This order must be declared explicitly — there is no working import-order
+fallback.** A plain `@import` sequence cannot interleave this package's two
+layers between Tailwind's four: whichever side imports first, its layers
+register as a contiguous block, either entirely below or entirely above
+the other side's, never split across it. Measured directly: importing this
+package's stylesheet before `@import 'tailwindcss'`, with no explicit
+`@layer` statement, put BOTH of this package's layers above `utilities` —
+the opposite of layer 2's requirement, and a bare `h1` then read this
+package's font instead of the site's. If your bundler's CSS pipeline
+doesn't reliably preserve an explicit multi-name `@layer` statement across
+its own concatenation pass (this repo hit exactly that with an unrelated
+unlayered override file, historically), treat that as a bundler defect to
+fix, or as a reason to leave this package's own component classes (`.bl-
+wordmark`, etc.) unlayered in your build instead of relying on this order
+— not a reason to fall back to import order, which does not achieve it.
+
+### Verifying this
+
+Layer-priority claims in this file are checked against a real build, not
+asserted from the spec text alone: `packages/brand-branchleft/src/styles/
+branchleft.layers.test.ts` asserts the built CSS uses flat (undotted)
+layer names and that every class-based rule lives in the higher-priority
+one. Proving the FULL claim — that a real Tailwind v4 app's own `h1` rule
+beats this package's element default, while this package's component class
+still beats that same `h1` rule — needs a real Tailwind compile and a real
+browser's computed styles; CSS Cascade Layers priority is not something
+jsdom or a text-only test can evaluate correctly. This package has no
+existing browser-test toolchain and this repo's CI has no sibling app to
+build against, so that full proof is a manual, documented script rather
+than a CI gate — see `packages/brand-branchleft/scripts/verify-layer-order.mjs`
+and its own header comment for how to run it (it needs a Tailwind v4
+install and a Chromium binary, e.g. via a sibling `website/` checkout's
+`node_modules`, exactly as used to produce the measurements in this
+package's PR history).
 
 Fonts (Space Grotesk, Syne, IBM Plex Sans, Roboto Mono) ship as their own
 `dist/fonts/*.woff2` files, referenced by the stylesheet's own `@font-face`
@@ -168,27 +205,43 @@ package's `./fonts/*` export subpath. Every family is SIL Open Font License
 
 Dark is the brand default; light is opt-in via `data-theme="light"` on
 `<html>`. `@branchleft/components`'s `ThemeToggle` renders that switch as a
-real `<form>` around an icon button, so it works with JavaScript disabled:
+real `<form>` around an icon button, so it works with JavaScript disabled.
+It takes the theme ALREADY in effect as a required `theme` prop — your
+server computes this once with `parseThemeCookie` and the same value must
+reach both the server render and the client's first render, so there is
+nothing for either side to guess and no hydration mismatch:
 
 ```tsx
 import { ThemeToggle } from '@branchleft/components';
 
-<ThemeToggle action="/theme" />;
+<ThemeToggle theme={theme} action="/theme" />;
 ```
 
 **Without JavaScript**, clicking the button submits the form to `action`
 with `theme=<the mode to switch TO>` — your server reads that field, stores
 it under `THEME_COOKIE_NAME`, and redirects back to the page with
 `<html data-theme>` already set to match (via `parseThemeCookie` against
-the incoming request's `Cookie` header):
+the incoming request's `Cookie` header). Keep the redirect target safe: a
+form with no return path can only fall back to `Referer`, which a
+cross-site page can forge, so redirect only to a same-origin relative
+path you've validated — never trust an absolute URL from the request:
 
 ```tsx
 import { THEME_COOKIE_NAME, parseThemeCookie } from '@branchleft/components';
 
 // In your server's request handler, e.g. a POST /theme route:
-const theme = new URLSearchParams(await request.text()).get('theme') === 'light' ? 'light' : 'dark';
-const cookie = `${THEME_COOKIE_NAME}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`;
-// set-cookie: <cookie>, then redirect back (303) to the referring page
+const body = new URLSearchParams(await request.text());
+const theme = body.get('theme') === 'light' ? 'light' : 'dark';
+const secure = new URL(request.url).protocol === 'https:' ? '; Secure' : '';
+const cookie = `${THEME_COOKIE_NAME}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax${secure}`;
+
+// A same-origin PATH only — never an absolute URL (open-redirect risk).
+// Reject anything not starting with exactly one `/` (so neither `//evil.com`,
+// a protocol-relative URL, nor `/\evil.com`, which some browsers still treat
+// as `//`, can redirect off-site), falling back to `/`.
+const returnTo = body.get('return') ?? '';
+const safeReturnTo = /^\/(?!\/|\\)/.test(returnTo) ? returnTo : '/';
+// set-cookie: <cookie>, then redirect (303) to safeReturnTo
 
 // And on every request, when rendering <html>:
 const theme = parseThemeCookie(request.headers.get('cookie'));
@@ -198,14 +251,12 @@ const theme = parseThemeCookie(request.headers.get('cookie'));
 **With JavaScript**, `ThemeToggle` intercepts that same submit,
 `preventDefault`s the navigation, sets `data-theme` on `<html>` immediately,
 and writes the same cookie itself via `document.cookie` (`Path=/`,
-`SameSite=Lax`, a one-year `Max-Age`, plus `Secure` when the page is
-https) — so the switch feels instant, landing on the exact same state
-either way. It reads the mode it's currently offering to switch away from
-by checking `document.documentElement.dataset.theme` once mounted (your
-server already rendered that attribute correctly from the cookie, before
-this component ever runs), rather than guessing from `localStorage` — the
-guess-based version could render the wrong ARIA/label state and never
-correct itself until the next click.
+`SameSite=Lax`, a one-year `Max-Age`, plus `Secure` only when the page
+itself is https — the same rule as the server snippet above, since an
+unconditional `Secure` is silently rejected on a plain-http origin) — so
+the switch feels instant, landing on the exact same state either way.
+After that first render, it tracks its own state independently of the
+`theme` prop.
 
 The button is icon-only (a sun in dark mode, a moon in light mode, via
 `lucide-react`) with no `aria-pressed` — its accessible name states the
@@ -214,7 +265,12 @@ static pressed/unpressed state can't convey on its own. Override either
 string:
 
 ```tsx
-<ThemeToggle action="/theme" switchToLightLabel="Go light" switchToDarkLabel="Go dark" />
+<ThemeToggle
+  theme={theme}
+  action="/theme"
+  switchToLightLabel="Go light"
+  switchToDarkLabel="Go dark"
+/>
 ```
 
 For a **static app with no server** to set a cookie, `THEME_STORAGE_KEY`,
@@ -257,8 +313,7 @@ related to those values," not generic UI error states. Colour is never
 the only signal: pair an invalid control with `aria-invalid="true"` and
 visible error text (the `.bl-form-error` class styles that text)
 referenced via `aria-describedby`, so the error reaches assistive tech the
-same way it reaches a sighted user. `--bl-color-danger` is marked
-provisional in `tokens.css` — not yet confirmed by the brand owner.
+same way it reaches a sighted user.
 
 ## PublicPress mark
 

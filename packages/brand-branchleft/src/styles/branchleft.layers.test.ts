@@ -40,25 +40,48 @@ beforeAll(async () => {
 }, 30_000);
 
 describe('branchleft.css cascade layers', () => {
-  it('declares branchleft.base before branchleft.components in an explicit layer-order statement', () => {
-    // The unminified source's declaration is `@layer branchleft.base,
-    // branchleft.components;` — assert on the order of the two names
-    // rather than the exact separator/whitespace a minifier might change.
-    expect(css).toMatch(/@layer\s+branchleft\.base\s*,\s*branchleft\.components\s*;/);
-  });
+  /**
+   * A dotted name (`branchleft.base`) registers as a SUB-layer of one
+   * parent layer, whose position among top-level siblings is fixed by the
+   * PARENT's first appearance, not by where either child is listed — a
+   * real Tailwind v4 build in a real browser found no achievable order
+   * made a component class beat a same-priority site rule while a plain
+   * element default still lost to it, with that naming.
+   */
 
-  it('puts every class-based rule in branchleft.components, not branchleft.base', () => {
-    const baseBody = namedLayerBody(css, 'branchleft.base');
-    const componentsBody = namedLayerBody(css, 'branchleft.components');
-
-    for (const selector of ['.bl-wordmark', '.bl-wordmark--hero', '.bl-form-error']) {
-      expect(componentsBody, `${selector} in branchleft.components`).toContain(`${selector}{`);
-      expect(baseBody, `${selector} absent from branchleft.base`).not.toContain(`${selector}{`);
+  /**
+   * This is the single fact that made the whole design unfixable by
+   * reordering — a check that dotted names are absent from every `@layer`
+   * statement in the built CSS is what would have failed on that design,
+   * and must keep failing if it's ever reintroduced.
+   */
+  it('never declares a dotted (sub-)layer name anywhere in the built CSS', () => {
+    const layerStatements = css.match(/@layer\s+[^;{]+[;{]/g) ?? [];
+    expect(layerStatements.length).toBeGreaterThan(0);
+    for (const statement of layerStatements) {
+      expect(statement, statement).not.toMatch(/[a-z0-9-]+\.[a-z0-9-]+/);
     }
   });
 
-  it('branchleft.base still holds the plain-element defaults (a sanity check the two blocks were not swapped)', () => {
-    const baseBody = namedLayerBody(css, 'branchleft.base');
+  it('declares branchleft-base before branchleft-components in an explicit layer-order statement', () => {
+    // The unminified source's declaration is `@layer branchleft-base,
+    // branchleft-components;` — assert on the order of the two names
+    // rather than the exact separator/whitespace a minifier might change.
+    expect(css).toMatch(/@layer\s+branchleft-base\s*,\s*branchleft-components\s*;/);
+  });
+
+  it('puts every class-based rule in branchleft-components, not branchleft-base', () => {
+    const baseBody = namedLayerBody(css, 'branchleft-base');
+    const componentsBody = namedLayerBody(css, 'branchleft-components');
+
+    for (const selector of ['.bl-wordmark', '.bl-wordmark--hero', '.bl-form-error']) {
+      expect(componentsBody, `${selector} in branchleft-components`).toContain(`${selector}{`);
+      expect(baseBody, `${selector} absent from branchleft-base`).not.toContain(`${selector}{`);
+    }
+  });
+
+  it('branchleft-base still holds the plain-element defaults (a sanity check the two blocks were not swapped)', () => {
+    const baseBody = namedLayerBody(css, 'branchleft-base');
     expect(baseBody).toContain('html,body{');
   });
 });

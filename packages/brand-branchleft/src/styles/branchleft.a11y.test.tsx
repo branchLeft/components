@@ -69,7 +69,7 @@ describe.each(['dark', 'light'] as const)('branchleft stylesheet a11y — %s mod
       React.createElement(
         React.Fragment,
         null,
-        React.createElement(ThemeToggle, { action: '/theme' }),
+        React.createElement(ThemeToggle, { action: '/theme', theme: mode }),
         React.createElement(HtmlElements)
       )
     );

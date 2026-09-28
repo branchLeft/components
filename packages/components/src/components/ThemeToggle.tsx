@@ -52,26 +52,20 @@ export function parseThemeCookie(cookieHeader: string | null): Theme {
     if (eq === -1) continue; // malformed pair (no "name=value") — ignore, not a match
     const name = pair.slice(0, eq).trim();
     if (name !== THEME_COOKIE_NAME) continue;
-    const value = pair.slice(eq + 1).trim();
+    let value = pair.slice(eq + 1).trim();
+    // RFC 6265 permits a quoted-string cookie-value; some cookie
+    // libraries write one. Strip one matching pair of double quotes
+    // before comparing, so `bl-theme="light"` parses the same as
+    // `bl-theme=light`.
+    if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
+      value = value.slice(1, -1);
+    }
     if (isTheme(value)) result = value;
     // else: this occurrence's value isn't a recognised theme (empty,
     // malformed, or injection-looking) — leave `result` at whatever the
     // last VALID occurrence set, or the 'dark' default if there was none.
   }
   return result;
-}
-
-/**
- * Reads the mode already rendered on `<html>` — set by the consumer's
- * server from the theme cookie, well before this component exists — never
- * a stored preference of this component's own. On the server (no
- * `document`) there is nothing to read, so this returns the same `'dark'`
- * assumption a fresh client render would compute anyway, meaning server
- * and initial-client output always agree.
- */
-function readRenderedTheme(): Theme {
-  if (typeof document === 'undefined') return 'dark';
-  return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
 }
 
 function writeStoredTheme(theme: Theme): void {
@@ -168,6 +162,20 @@ const HIT_TARGET_STYLE: React.CSSProperties = {
 
 export interface ThemeToggleProps {
   /**
+   * The theme already in effect for this render — the consumer's server
+   * computes this with `parseThemeCookie` and passes it down (e.g. as
+   * loader data), and the client must pass the SAME value on its first
+   * render (the framework's own hydration data, or a `parseThemeCookie
+   * (document.cookie)` call reading the identical cookie) — never derived
+   * independently by this component.
+   */
+
+  // Passing the same value both times is what makes server and client
+  // output agree, so there is nothing for React to reconcile and no
+  // hydration mismatch. After mount, the component tracks its own state
+  // from here on, independent of this prop.
+  readonly theme: Theme;
+  /**
    * The URL the no-JS `<form>` posts to. The consumer's server reads the
    * submitted `theme` field, stores it under `THEME_COOKIE_NAME`, and
    * redirects back to the page the toggle was on — this component renders
@@ -206,17 +214,18 @@ export interface ThemeToggleProps {
  * the `data-theme` attribute contract a brand stylesheet keys off.
  */
 export function ThemeToggle({
+  theme: initialTheme,
   action,
   switchToLightLabel = 'Switch to light mode',
   switchToDarkLabel = 'Switch to dark mode',
   className,
 }: Readonly<ThemeToggleProps>): React.JSX.Element {
-  // Lazy initialiser, not an effect: both the server and the client's
-  // FIRST render pass agree on 'dark' (no `document` exists server-side),
-  // so there's no markup mismatch to correct afterwards — on a real page,
-  // `document.documentElement.dataset.theme` is already whatever the
-  // consumer's server rendered from the cookie by the time this runs.
-  const [theme, setTheme] = React.useState<Theme>(readRenderedTheme);
+  // Seeded from the prop, which the consumer computed identically on the
+  // server (from the cookie) and the client (from the same cookie, or the
+  // framework's own hydration data) — so this initial value is never a
+  // guess, and server/client output always agree. After mount, clicks
+  // update this component's own state independently of the prop.
+  const [theme, setTheme] = React.useState<Theme>(initialTheme);
 
   const next: Theme = theme === 'dark' ? 'light' : 'dark';
   const label = theme === 'dark' ? switchToLightLabel : switchToDarkLabel;

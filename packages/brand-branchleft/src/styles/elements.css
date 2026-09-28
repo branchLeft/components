@@ -1,23 +1,23 @@
 /* ─── branchLeft element defaults ─────────────────────────────────────────
  * Two layers, in this file's own priority order (a consuming app's other
  * layers slot in around these — see the README's "Layer order" section for
- * where): `branchleft.base` holds plain-element defaults, so a consuming
+ * where): `branchleft-base` holds plain-element defaults, so a consuming
  * app's own element rules (its `base` layer, in Tailwind v4 terms) can
  * outrank it just by being declared in a later-registered layer — no
- * `!important`, no specificity games. `branchleft.components` holds this
+ * `!important`, no specificity games. `branchleft-components` holds this
  * package's own class-based rules (`.bl-wordmark*`, `.bl-form-error`) and
- * must be registered AFTER `branchleft.base` so a component class still
+ * must be registered AFTER `branchleft-base` so a component class still
  * beats a same-element generic rule (e.g. a consuming app's own `h1`
  * default) regardless of which layer that generic rule lives in, as long
- * as the app's layer order also places `branchleft.components` above it.
+ * as the app's layer order also places `branchleft-components` above it.
  *
  * Colour, transition and radius always read from a `--bl-*` custom
  * property — never a literal hex — so both modes (and any consumer
  * override of a single token) apply without touching this file.
  */
-@layer branchleft.base, branchleft.components;
+@layer branchleft-base, branchleft-components;
 
-@layer branchleft.base {
+@layer branchleft-base {
   /* Family, size, colour and line-height live here — on the two elements
    * every other element inherits from — and nowhere else on a bare text
    * element below. A consumer's convention (this site included) is to size
@@ -187,11 +187,10 @@
   }
 
   /* ── Quotes and rules ──────────────────────────────────────────────── */
+  /* No `font-size`/`color` — see the html/body rule's comment above. */
   blockquote {
-    font-size: var(--bl-text-body);
     line-height: var(--bl-leading-body);
     font-style: italic;
-    color: var(--bl-color-fg);
     margin: var(--bl-space-md) 0;
     padding-inline-start: var(--bl-space-sm);
     /* A quote's left rule must actually be seen, so it reads from
@@ -247,10 +246,9 @@
   }
 
   /* ── Tables ────────────────────────────────────────────────────────── */
+  /* No `font-size`/`color` — see the html/body rule's comment above. */
   table {
-    font-size: var(--bl-text-body);
     line-height: var(--bl-leading-body);
-    color: var(--bl-color-fg);
     border-collapse: collapse;
     width: 100%;
     margin: 0 0 var(--bl-space-sm);
@@ -311,12 +309,12 @@
     font-family: var(--bl-font-sans);
   }
 
+  /* No `font-size`/`color` — see the html/body rule's comment above. Only
+   * `font-weight: 500` is the owner-accepted deliberate choice here. */
   label {
     display: inline-block;
-    font-size: var(--bl-text-body);
     line-height: var(--bl-leading-body);
     font-weight: 500;
-    color: var(--bl-color-fg);
     margin-block-end: var(--bl-space-xs);
   }
 
@@ -389,7 +387,7 @@
     border-color: var(--bl-color-danger);
   }
 
-  /* `.bl-form-error`'s own styling lives in the `branchleft.components`
+  /* `.bl-form-error`'s own styling lives in the `branchleft-components`
    * layer below (it's a class-based rule) — this comment is the pointer
    * the input rules above reference. */
 
@@ -434,13 +432,13 @@
 }
 
 /* Component classes — deliberately a SEPARATE, later-registered layer from
- * `branchleft.base` above (see this file's header comment and the README's
+ * `branchleft-base` above (see this file's header comment and the README's
  * "Layer order" section): a class selector needs to beat a same-element
  * generic rule regardless of specificity (e.g. a consuming app's own `h1`
  * default competing with `.bl-wordmark--hero` on the same `<h1>`), and
  * cascade layers — not selector specificity — are what settles that once
  * both rules target the same element. */
-@layer branchleft.components {
+@layer branchleft-components {
   .bl-wordmark {
     font-family: var(--bl-font-wordmark);
     font-weight: var(--bl-weight-wordmark);
@@ -455,7 +453,7 @@
    * reference it from the invalid control's `aria-describedby` so
    * assistive tech announces the same message a sighted user reads from
    * its colour and position. A class-based rule, so it lives in this layer
-   * too, not `branchleft.base`. */
+   * too, not `branchleft-base`. */
   .bl-form-error {
     display: flex;
     align-items: center;
