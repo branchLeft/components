@@ -4,13 +4,13 @@
 // real browser resolves competing rules across layers; jsdom does not
 // implement this correctly, and this repo has no sibling app to compile
 // Tailwind against, so this is a documented script rather than a gate.
-//
+
 // Requires a real Tailwind v4 install and a real Chromium binary — this
 // repo has neither. Point it at a sibling checkout that does (e.g.
 // `website/`, which already installs both for its own e2e suite):
 //
 //   node scripts/verify-layer-order.mjs /path/to/website/node_modules/.pnpm
-//
+
 // It builds this package's own `dist/branchleft.css` (run `pnpm build`
 // first) into two small Tailwind v4 fixtures — this package's recommended
 // explicit `@layer` order, and a plain-import-order fallback with no
