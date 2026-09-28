@@ -134,14 +134,14 @@ regenerated to match — `ThemeToggle.hash.test.ts` fails the build if the
 two ever drift apart.
 
 Form validation styling (`input:invalid`, `[aria-invalid="true"]`) uses a
-dedicated `--bl-color-danger` token — never a ValuesColour, since Rob's
-ValuesColours ruling scopes them to "describing things related to those
-values," not generic UI error states. Colour is never the only signal:
-pair an invalid control with `aria-invalid="true"` and visible error text
-(the `.bl-form-error` class styles that text) referenced via
-`aria-describedby`, so the error reaches assistive tech the same way it
-reaches a sighted user. `--bl-color-danger` is marked provisional in
-`tokens.css` — it hasn't been ruled on by Rob yet.
+dedicated `--bl-color-danger` token — never a ValuesColour, since the
+brand owner's ValuesColours ruling scopes them to "describing things
+related to those values," not generic UI error states. Colour is never
+the only signal: pair an invalid control with `aria-invalid="true"` and
+visible error text (the `.bl-form-error` class styles that text)
+referenced via `aria-describedby`, so the error reaches assistive tech the
+same way it reaches a sighted user. `--bl-color-danger` is marked
+provisional in `tokens.css` — not yet confirmed by the brand owner.
 
 ## PublicPress mark
 

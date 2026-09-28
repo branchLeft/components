@@ -55,7 +55,7 @@ const MIN_DISTANCE = 0.02;
  * `sustainability` (`#91721e`) and `agility` (`#b75e1b`) — both
  * yellow/orange hues, exactly the axis deuteranopia compresses — fall
  * below `MIN_DISTANCE` (measured ≈0.0144). Per the Cycle 2 brief: this is
- * reported, not silently fixed by re-picking Rob's ValuesColours. It's
+ * reported, not silently fixed by re-picking the brand owner's ValuesColours. It's
  * excluded from the generic pairwise sweep below and asserted on its own,
  * via `it.fails`, further down this file.
  */

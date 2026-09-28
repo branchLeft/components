@@ -41,15 +41,15 @@
   --bl-color-border: var(--bl-color-muted);
   /* PROVISIONAL — dedicated error/danger colour, deliberately NOT a
    * ValuesColour. Cycle-1 review (see PR body, "Cycle 2 response") found
-   * that aliasing form `:invalid` to `--bl-value-redlines` broke Rob's own
-   * scoping of ValuesColours to "describing things related to those
-   * values" (workspace#1480 comment 5872329905) — a validation error is a
-   * generic UI condition, not content about branchLeft's `redlines`
-   * topic. This value is a fresh pick, not ruled on by Rob: 6.27:1 on
+   * that aliasing form `:invalid` to `--bl-value-redlines` broke the brand
+   * owner's own scoping of ValuesColours to "describing things related to
+   * those values" (workspace#1480 comment 5872329905) — a validation error
+   * is a generic UI condition, not content about branchLeft's `redlines`
+   * topic. This value is a fresh pick, not yet ruled on: 6.27:1 on
    * --bl-color-bg (clears both the 3:1 border floor and the 4.5:1 text
    * floor) and >0.05 OKLab distance from every ValuesColour including
    * redlines (see branchleft.contrast.test.ts / .distinguishability.test.ts).
-   * Rob should confirm or replace it. */
+   * Needs confirmation or replacement before this ships as final. */
   --bl-color-danger: #fe4c20;
 
   /* ── ValuesColours (dark) — 4.5:1+ on --bl-color-bg ─────────────────── */
