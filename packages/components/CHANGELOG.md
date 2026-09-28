@@ -1,5 +1,11 @@
 # @branchleft/components
 
+## 0.5.0
+
+### Minor Changes
+
+- d0ba794: Add `ThemeToggle`, a brand-neutral component that switches `data-theme` between dark and light on `<html>` and persists the choice, plus `themeInitScript` for flash-free SSR.
+
 ## 0.4.0
 
 ### Minor Changes

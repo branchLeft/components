@@ -1,5 +1,12 @@
 # @branchleft/brand-branchleft
 
+## 0.2.0
+
+### Minor Changes
+
+- d0ba794: Add the branchLeft stylesheet (`@branchleft/brand-branchleft/css`, built to `dist/branchleft.css`): dark-default/light-toggle colour modes, the ValuesColours palette, and full HTML element defaults in a `branchleft.base` cascade layer.
+- 59379c5: Add the wordmark: `.bl-wordmark` (Syne at weight 500, inheriting the surrounding size) and `.bl-wordmark--hero` (3.75rem, line-height 1), with `--bl-weight-wordmark`, `--bl-text-wordmark-hero` and `--bl-leading-wordmark-hero`.
+
 ## 0.1.0
 
 ### Minor Changes
