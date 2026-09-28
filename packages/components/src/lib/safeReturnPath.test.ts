@@ -23,8 +23,46 @@ describe('safeReturnPath', () => {
     ['', '/'],
     ['/about?x=1#y', '/about?x=1#y'],
     ['https://example.com/settings?a=1', '/settings?a=1'],
+    // Cycle-3 review's own finding: the URL parser normalises dot segments
+    // (and `%2e` decoded as a dot) down to a same-origin `pathname` that
+    // itself STARTS WITH `//` — protocol-relative once returned on its
+    // own, even though the resolved URL really was on-origin. Each of
+    // these collapses to the safe `/evil.com`, not the dangerous
+    // `//evil.com` the origin-only check let through.
+    ['/.//evil.com', '/evil.com'],
+    ['/..//evil.com', '/evil.com'],
+    ['/a/..//evil.com', '/evil.com'],
+    ['/%2e//evil.com', '/evil.com'],
+    ['/./\\evil.com', '/evil.com'],
+    ['https://example.com//evil.com', '/evil.com'],
+    ['//example.com//evil.com', '/evil.com'],
   ])('safeReturnPath(%j, origin) === %j', (value, expected) => {
     expect(safeReturnPath(value, ORIGIN)).toBe(expected);
+  });
+
+  it('the output never starts with "//" for any of the dot-segment inputs above', () => {
+    for (const value of [
+      '/.//evil.com',
+      '/..//evil.com',
+      '/a/..//evil.com',
+      '/%2e//evil.com',
+      '/./\\evil.com',
+      'https://example.com//evil.com',
+      '//example.com//evil.com',
+    ]) {
+      expect(safeReturnPath(value, ORIGIN)).not.toMatch(/^\/\//);
+    }
+  });
+
+  it('rejects a value longer than the 2048-character cap', () => {
+    const long = '/' + 'a'.repeat(3000);
+    expect(safeReturnPath(long, ORIGIN)).toBe('/');
+  });
+
+  it('keeps a value at exactly the cap', () => {
+    const atCap = '/' + 'a'.repeat(2047);
+    expect(atCap.length).toBe(2048);
+    expect(safeReturnPath(atCap, ORIGIN)).toBe(atCap);
   });
 
   it('returns "/" for null', () => {
@@ -61,5 +99,90 @@ describe('safeReturnPath', () => {
     // is exercised directly here regardless of how the parser handles it.
     // eslint-disable-next-line no-control-regex -- deliberately matching C0 controls and DEL.
     expect(safeReturnPath('/a\u0000b', ORIGIN)).not.toMatch(/[\x00-\x1f\x7f]/);
+  });
+});
+
+describe('safeReturnPath — property fuzz', () => {
+  // A tiny, dependency-free deterministic PRNG (mulberry32) — no `Math.
+  // random()`, so a failure is reproducible from SEED alone, and adding a
+  // fuzzing library isn't warranted for one function.
+  function mulberry32(seed: number): () => number {
+    let a = seed;
+    return () => {
+      a |= 0;
+      a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  const SEED = 20260929;
+  const ITERATIONS = 5000;
+  const MAX_LENGTH = 2048;
+
+  // Every trick the reviews found, as composable fragments — the fuzz
+  // input is built by concatenating a random handful of these, in random
+  // order, not by picking one whole known-bad string: the point is to
+  // cover COMBINATIONS review didn't think to write by hand.
+  const FRAGMENTS = [
+    '/',
+    '//',
+    '\\',
+    '.',
+    '..',
+    '%2e',
+    '%2f',
+    '%5c',
+    '\t',
+    '\n',
+    '\r',
+    '@',
+    ':',
+    'https://',
+    '//example.com',
+    'example.com',
+    'evil.com',
+    'a',
+    'b',
+    '?x=1',
+    '#y',
+    '',
+  ];
+
+  function randomInput(rand: () => number): string {
+    const fragmentCount = 1 + Math.floor(rand() * 8); // 1..8 fragments
+    let out = '';
+    for (let i = 0; i < fragmentCount; i++) {
+      out += FRAGMENTS[Math.floor(rand() * FRAGMENTS.length)];
+    }
+    return out;
+  }
+
+  it(`holds the output invariant across ${ITERATIONS} generated inputs (seed ${SEED})`, () => {
+    const rand = mulberry32(SEED);
+    for (let i = 0; i < ITERATIONS; i++) {
+      const input = randomInput(rand);
+      const output = safeReturnPath(input, ORIGIN);
+
+      // 1. Starts with exactly one `/`, never `//` or `/\`.
+      expect(output, `input=${JSON.stringify(input)} output=${JSON.stringify(output)}`).toMatch(
+        /^\/(?!\/|\\)/
+      );
+      // 2. No control characters.
+      // eslint-disable-next-line no-control-regex -- deliberately matching C0 controls and DEL.
+      expect(output, `input=${JSON.stringify(input)}`).not.toMatch(/[\x00-\x1f\x7f]/);
+      // 3. Never exceeds the cap.
+      expect(output.length, `input=${JSON.stringify(input)}`).toBeLessThanOrEqual(MAX_LENGTH);
+      // 4. Re-parsing the output against `origin` stays on `origin`.
+      expect(new URL(output, ORIGIN).origin, `input=${JSON.stringify(input)}`).toBe(ORIGIN);
+      // 5. The property that actually matters: a browser resolving this
+      // exact string against a DIFFERENT site stays on THAT site — proof
+      // the string is a plain relative reference, never protocol-relative
+      // or absolute, regardless of which origin happens to be asking.
+      expect(new URL(output, 'https://other.example').host, `input=${JSON.stringify(input)}`).toBe(
+        'other.example'
+      );
+    }
   });
 });

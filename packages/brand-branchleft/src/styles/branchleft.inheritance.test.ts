@@ -24,7 +24,14 @@ import { buildStylesheet } from './testUtils/buildStylesheet';
  */
 function ruleBody(css: string, selector: string): string {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const re = new RegExp(`(?:^|[{};])${escaped}\\{([^}]*)\\}`, 'g');
+  // A LOOKBEHIND for the boundary, not a consuming group: two rules for
+  // the same selector placed back to back in the built CSS (`…}p{…}p{…}`)
+  // share ONE `}` between them. A consuming `(?:^|[{};])` swallows that
+  // shared `}` into the FIRST match, so `matchAll`'s next scan starts
+  // right after it with no boundary character left for the SECOND `p{` to
+  // match against — it's silently skipped. A lookbehind only asserts the
+  // boundary is there without consuming it, so both matches see it.
+  const re = new RegExp(`(?<=^|[{};])${escaped}\\{([^}]*)\\}`, 'g');
   const bodies: string[] = [];
   for (const match of css.matchAll(re)) {
     bodies.push(match[1]);

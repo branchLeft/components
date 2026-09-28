@@ -235,15 +235,20 @@ under `THEME_COOKIE_NAME`, and redirects to a validated same-origin path
 On the next request, it renders `<html data-theme>` to match, via
 `parseThemeCookie` against the incoming `Cookie` header.
 
-**A form field is attacker-controlled — resolve it with `URL`, never a
-regex.** A denylist regex against the raw string can't see normalisation
-the platform's own URL parser does before your code ever runs: WHATWG URL
-strips ASCII tab/newline from a value BEFORE parsing it, so `"/\t/evil.
-example"` collapses to the protocol-relative `"//evil.example"` — a regex
-written against the original string never sees that collapse.
-`safeReturnPath` resolves the value with `new URL(value, origin)` first,
-then checks the RESULT's origin — which catches every such normalisation
-by construction, not one denylisted character at a time:
+**A form field is attacker-controlled — validate the OUTPUT, not the
+input.** A denylist regex against the raw string can't see normalisation
+the platform's own URL parser does before your code ever runs — e.g.
+WHATWG URL strips ASCII tab/newline from a value before parsing it, and
+normalises `..`/`.`/`%2e` dot segments, either of which can leave a
+same-origin `pathname` that itself starts with `//` (protocol-relative,
+once returned on its own, regardless of which origin it resolved from).
+`safeReturnPath` resolves the value with `new URL(value, origin)`, checks
+that result's origin, then checks the STRING IT IS ABOUT TO RETURN: it
+collapses any leading run of `/`/`\` to one `/`, rejects anything still
+containing a backslash, a control character, or over 2048 characters, and
+finally requires that re-parsing that exact string against `origin` lands
+back on `origin` — the guarantee is on what comes out, checked directly,
+not inferred from what the input looked like going in:
 
 ```tsx
 import { THEME_COOKIE_NAME, parseThemeCookie, safeReturnPath } from '@branchleft/components';
@@ -270,8 +275,22 @@ and writes the same cookie itself via `document.cookie` (`Path=/`,
 itself is https — the same rule as the server snippet above, since an
 unconditional `Secure` is silently rejected on a plain-http origin) — so
 the switch feels instant, landing on the exact same state either way.
-After that first render, it tracks its own state independently of the
-`theme` prop.
+After that first render, clicks update its own state independently of the
+`theme` prop — but if `theme` itself later changes (e.g. the app remounts
+the toggle with fresh loader data after a client-side navigation), it
+resyncs to the new value rather than keeping a stale one.
+
+**Behind a TLS-terminating reverse proxy**, `request.url`'s scheme and
+host are the proxy's OWN internal connection to your server (often plain
+`http://`), not what the visitor's browser actually used — read the
+proxy's forwarded headers (`X-Forwarded-Proto`/`X-Forwarded-Host`, or your
+framework's equivalent) for both `Secure` and the `origin` passed to
+`safeReturnPath`, or both quietly fail differently-safe rather than
+correctly: `Secure` is silently dropped from the cookie (the browser still
+accepts it, just without the flag), and `safeReturnPath` rejects every
+absolute-URL `Referer` fallback to `/` (its own origin will never match an
+internal `http://` URL's), though a same-origin relative `return` field
+still works either way.
 
 The button is icon-only (a sun in dark mode, a moon in light mode, via
 `lucide-react`) with no `aria-pressed` — its accessible name states the
