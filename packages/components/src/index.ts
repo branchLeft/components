@@ -14,6 +14,14 @@ export type { PageTransitionProps } from './components/PageTransition';
 export { ValuesCloud } from './components/ValuesCloud';
 export type { Value, ValueAccent, ValuesCloudProps } from './components/ValuesCloud';
 
+export {
+  ThemeToggle,
+  THEME_STORAGE_KEY,
+  themeInitScript,
+  themeInitScriptHash,
+} from './components/ThemeToggle';
+export type { Theme, ThemeToggleProps } from './components/ThemeToggle';
+
 // Hooks
 export { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 

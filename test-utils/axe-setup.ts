@@ -27,5 +27,12 @@ declare module 'vitest' {
 // previous `document.body.appendChild` would still accumulate and risk
 // duplicate-id false positives. Clear the body between tests defensively.
 afterEach(() => {
-  document.body.innerHTML = '';
+  // A per-file `// @vitest-environment node` override (e.g. a test that
+  // builds CSS via vite/esbuild, which breaks under jsdom's globals) has
+  // no `document` at all — this setup file still runs for it since
+  // `setupFiles` applies workspace-wide, so this guard is required, not
+  // defensive dead code.
+  if (typeof document !== 'undefined') {
+    document.body.innerHTML = '';
+  }
 });

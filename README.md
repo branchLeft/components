@@ -77,8 +77,71 @@ read from `--bl-*` custom properties (with built-in fallbacks) so it stays
 themable — see each component's Storybook docs for the full list of
 customisable properties.
 
-`@branchleft/brand-branchleft` has no `./css` export yet — its stylesheet is
-tracked separately and lands there once written.
+## branchLeft stylesheet and theme toggle
+
+`@branchleft/brand-branchleft/css` is a complete, opt-in stylesheet for any
+new branchLeft-branded app — dark-default/light-toggle colour modes, the
+ValuesColours palette, and an explicit default for every HTML element it
+covers, all inside a single `branchleft.base` cascade layer so a consuming
+app can override anything without fighting specificity:
+
+```tsx
+import '@branchleft/brand-branchleft/css';
+```
+
+Fonts (Space Grotesk, Syne, IBM Plex Sans, Roboto Mono) ship as their own
+`dist/fonts/*.woff2` files, referenced by the stylesheet's own `@font-face`
+rules — nothing is base64-inlined, so an unrelated colour/spacing change
+never forces a re-download of unchanged font bytes. If you need to reach a
+font file directly (e.g. `<link rel="preload">`), it's reachable via the
+package's `./fonts/*` export subpath.
+
+Dark is the brand default; light is opt-in via `data-theme="light"` on
+`<html>`. `@branchleft/components`'s `ThemeToggle` sets that attribute and
+persists the choice:
+
+```tsx
+import { ThemeToggle } from '@branchleft/components';
+
+<ThemeToggle />;
+```
+
+For an SSR app, embed `themeInitScript` in the document `<head>` (before
+any stylesheet or hydration) so a returning light-mode visitor's page
+doesn't flash dark on first paint:
+
+```tsx
+import { themeInitScript } from '@branchleft/components';
+
+<script dangerouslySetInnerHTML={{ __html: themeInitScript }} />;
+```
+
+Inlining that script needs your `Content-Security-Policy`'s `script-src` to
+allow it — either a per-response `nonce`, or the pre-computed
+`themeInitScriptHash`:
+
+```tsx
+import { themeInitScriptHash } from '@branchleft/components';
+// themeInitScriptHash === "sha256-eaTM2OdrPnWt18EwafzafEMGqGT6XQixJje4JPQ2gUg="
+
+// e.g. as a response header:
+// Content-Security-Policy: script-src 'self' 'sha256-eaTM2OdrPnWt18EwafzafEMGqGT6XQixJje4JPQ2gUg='
+```
+
+A hash-based CSP entry only matches the exact script text, so if
+`themeInitScript` is ever edited, `themeInitScriptHash` must be
+regenerated to match — `ThemeToggle.hash.test.ts` fails the build if the
+two ever drift apart.
+
+Form validation styling (`input:invalid`, `[aria-invalid="true"]`) uses a
+dedicated `--bl-color-danger` token — never a ValuesColour, since the
+brand owner's ValuesColours ruling scopes them to "describing things
+related to those values," not generic UI error states. Colour is never
+the only signal: pair an invalid control with `aria-invalid="true"` and
+visible error text (the `.bl-form-error` class styles that text)
+referenced via `aria-describedby`, so the error reaches assistive tech the
+same way it reaches a sighted user. `--bl-color-danger` is marked
+provisional in `tokens.css` — not yet confirmed by the brand owner.
 
 ## PublicPress mark
 

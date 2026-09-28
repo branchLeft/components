@@ -1,0 +1,79 @@
+/* ─── branchLeft fonts ────────────────────────────────────────────────────
+ * @font-face declarations for the four families the tokens.css `--bl-font-*`
+ * stacks name. Files are copied byte-for-byte from the website's live
+ * `public/fonts/` (origin/main) — woff2 only (no ttf fallback: every
+ * browser this stylesheet targets supports woff2, and shipping both would
+ * double the package's font payload for no practical gain here).
+ *
+ * All four are SIL Open Font License 1.1 — the licence text for each family
+ * ships alongside its font file (`fonts/<Family>/OFL.txt`), copied from
+ * each family's canonical google/fonts OFL.txt.
+ */
+
+@font-face {
+  font-family: 'Syne';
+  src: url('./fonts/Syne/Syne-VariableFont_wght.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('./fonts/SpaceGrotesk/SpaceGrotesk-VariableFont_wght.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('./fonts/RobotoMono/RobotoMono-VariableFont_wght.woff2') format('woff2');
+  font-weight: 100 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('./fonts/RobotoMono/RobotoMono-Italic-VariableFont_wght.woff2') format('woff2');
+  font-weight: 100 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* IBM Plex Sans — static weights only (matches the website's own subset:
+ * Regular, Italic, Medium, SemiBold — no 700; see elements.css's `strong`
+ * rule for why that caps the boldest weight this stylesheet ever asks
+ * for). */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('./fonts/IBMPlexSans/IBMPlexSans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('./fonts/IBMPlexSans/IBMPlexSans-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('./fonts/IBMPlexSans/IBMPlexSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('./fonts/IBMPlexSans/IBMPlexSans-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
