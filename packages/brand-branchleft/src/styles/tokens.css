@@ -93,6 +93,13 @@
   --bl-leading-body: 1.6;
   --bl-leading-small: 1.5;
 
+  /* ── Type: the wordmark — the brand name set in Syne. Weight and the hero
+   * size are the website's own values (`.logo-font`, `.hero-wordmark`); an
+   * inline brand name keeps the size of the text around it. */
+  --bl-weight-wordmark: 500;
+  --bl-text-wordmark-hero: 3.75rem;
+  --bl-leading-wordmark-hero: 1;
+
   /* ── Spacing — literal named tokens (nav-offset family) plus the
    * Tailwind spacing-scale steps the site's CSS actually uses. */
   --bl-space-xs: 0.5rem;
