@@ -8,25 +8,33 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  args: {
+    // Storybook has no server to post to — clicking still works (this
+    // story exercises the JS-enhanced path, which preventDefaults the
+    // navigation before it would ever reach this URL).
+    action: '/theme',
+  },
 } satisfies Meta<typeof ThemeToggle>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Click to flip `data-theme` on `<html>` between `"dark"` and `"light"` —
- * open this story's HTML panel to see the attribute change. The choice
- * persists to `localStorage`, so reloading Storybook keeps whichever mode
- * was last picked.
+ * An icon button inside a real `<form>`. With JavaScript (as here in
+ * Storybook), clicking flips `data-theme` on `<html>` instantly and writes
+ * the theme cookie via `document.cookie` — open this story's HTML panel to
+ * see the attribute change. With JavaScript disabled, the same click would
+ * instead submit the form to `action`, for the consumer's server to handle.
  */
-export const Default: Story = {
-  args: {},
-};
+export const Default: Story = {};
 
 /**
- * A consumer-supplied label overrides the default accessible name/visible
- * text.
+ * Both accessible-name strings ("switch to light" / "switch to dark")
+ * overridden by props.
  */
-export const CustomLabel: Story = {
-  args: { label: 'Switch theme' },
+export const CustomLabels: Story = {
+  args: {
+    switchToLightLabel: 'Go light',
+    switchToDarkLabel: 'Go dark',
+  },
 };

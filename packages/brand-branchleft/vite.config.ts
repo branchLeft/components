@@ -18,6 +18,15 @@ const FONT_FILES = [
   'IBMPlexSans/IBMPlexSans-SemiBold.woff2',
 ];
 
+// Every family's own SIL OFL 1.1 licence text (`src/styles/fonts/<Family>/
+// OFL.txt`), one per family directory in FONT_FILES (RobotoMono and
+// IBMPlexSans each contribute more than one FONT_FILES entry but only one
+// licence file). Derived from FONT_FILES rather than hand-listed, so a new
+// family can't be added to one list and forgotten in the other.
+const FONT_LICENCE_FILES = Array.from(
+  new Set(FONT_FILES.map((relativePath) => path.dirname(relativePath) + '/OFL.txt'))
+);
+
 /**
  * Emits every font as its own file under `dist/fonts/`, addressed by a
  * plain relative `url()` from `dist/branchleft.css`, instead of Vite's
@@ -89,6 +98,19 @@ function extractFontsPlugin(): Plugin {
       }
 
       fs.writeFileSync(cssPath, rewritten);
+
+      // Every font family is SIL OFL 1.1 (see fonts.css's header comment) —
+      // its licence text ships alongside the woff2 it covers, in the same
+      // dist/fonts/<Family>/ directory, rather than assuming the package's
+      // own MIT LICENSE file covers font bytes it never granted rights to.
+      // Copied here (not left to package.json's `files: ["dist"]` alone to
+      // discover) so a missing source file fails the build loudly instead
+      // of silently shipping a font with no licence text next to it.
+      for (const relativePath of FONT_LICENCE_FILES) {
+        const destPath = path.join(outDir, 'fonts', relativePath);
+        fs.mkdirSync(path.dirname(destPath), { recursive: true });
+        fs.copyFileSync(path.join(fontsDir, relativePath), destPath);
+      }
     },
   };
 }

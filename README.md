@@ -82,33 +82,150 @@ customisable properties.
 `@branchleft/brand-branchleft/css` is a complete, opt-in stylesheet for any
 new branchLeft-branded app — dark-default/light-toggle colour modes, the
 ValuesColours palette, and an explicit default for every HTML element it
-covers, all inside a single `branchleft.base` cascade layer so a consuming
-app can override anything without fighting specificity:
+covers:
 
 ```tsx
 import '@branchleft/brand-branchleft/css';
 ```
+
+It declares itself across two cascade layers, in this order:
+
+```css
+@layer branchleft.base, branchleft.components;
+```
+
+- **`branchleft.base`** — plain-element defaults (`html`, `body`, `h1`–`h6`,
+  `p`, `table`, form controls, …). Deliberately the LOWER-priority of the
+  two, so a consuming app's own element rules can outrank it just by
+  living in a later-registered layer — no `!important`, no specificity
+  fights.
+- **`branchleft.components`** — this package's class-based rules
+  (`.bl-wordmark`, `.bl-wordmark--hero`, `.bl-form-error`). Deliberately
+  HIGHER than `branchleft.base`: a component class must beat a same-element
+  generic rule regardless of which layer that generic rule lives in (e.g.
+  a consuming app's own `h1` default competing with `.bl-wordmark--hero` on
+  the same `<h1>`), and cascade layers — not selector specificity — are
+  what decide that once both target the same element.
+
+### Layer order in a Tailwind v4 app
+
+`@import 'tailwindcss'` itself expands to
+`@layer theme, base, components, utilities;` before pulling in Tailwind's
+own rules for each. Slot this package's two layers around those so that
+**the site's own element rules beat `branchleft.base`, while
+`branchleft.components` beats the site's element rules**:
+
+```css
+@layer theme, branchleft.base, base, branchleft.components, components, utilities;
+```
+
+Cascade-layer priority is order of FIRST APPEARANCE in a layer-order
+statement — later-listed layers always win over earlier ones, regardless
+of selector specificity, and an unlayered rule always beats every named
+layer regardless of where it sits. Reading the list above in priority
+order (lowest to highest):
+
+1. `theme` (Tailwind's own token layer) — nothing here should ever need to
+   win against anything.
+2. `branchleft.base` — this package's element defaults.
+3. `base` (Tailwind's preflight, plus wherever the site wraps its own
+   element defaults in `@layer base`, matching Tailwind's own name) — beats
+   `branchleft.base`, so the site's own choice for e.g. `h1` always wins
+   over this package's.
+4. `branchleft.components` — beats both `base` layers above, so
+   `.bl-wordmark--hero` on an `<h1>` wins even though the site's own `h1`
+   rule sits in `base`. This is the fix for the defect where the class lost
+   to the element rule purely because both were registered in the same
+   (lowest) priority layer.
+5. `components` (the site's own component classes, in `@layer components`)
+   — beats `branchleft.components`, so a same-named or overlapping site
+   class still wins if one is ever written.
+6. `utilities` (Tailwind's utility classes) — highest, as in any ordinary
+   Tailwind app: a `text-*`/`font-*` utility on an element still beats
+   every layer below it.
+
+**This order must be declared explicitly**, not left to import order:
+review of a live consumer found its bundler's CSS pipeline did not reliably
+preserve an explicit multi-name `@layer` order statement across
+concatenation in one specific case (an unlayered override file, not this
+statement) — if your own bundler has the same issue, the fallback is
+import order (first-imported name registers lowest), which then must
+import in exactly this same sequence: this package's stylesheet, then
+Tailwind, then any of the site's own layered files, verified against the
+built (not source) CSS.
 
 Fonts (Space Grotesk, Syne, IBM Plex Sans, Roboto Mono) ship as their own
 `dist/fonts/*.woff2` files, referenced by the stylesheet's own `@font-face`
 rules — nothing is base64-inlined, so an unrelated colour/spacing change
 never forces a re-download of unchanged font bytes. If you need to reach a
 font file directly (e.g. `<link rel="preload">`), it's reachable via the
-package's `./fonts/*` export subpath.
+package's `./fonts/*` export subpath. Every family is SIL Open Font License
+1.1 — each family's own `OFL.txt` licence text ships alongside its
+`dist/fonts/<Family>/*.woff2`, separately from this package's own `MIT`
+`license` field in `package.json`, which covers only its code.
+
+### Theme toggle
 
 Dark is the brand default; light is opt-in via `data-theme="light"` on
-`<html>`. `@branchleft/components`'s `ThemeToggle` sets that attribute and
-persists the choice:
+`<html>`. `@branchleft/components`'s `ThemeToggle` renders that switch as a
+real `<form>` around an icon button, so it works with JavaScript disabled:
 
 ```tsx
 import { ThemeToggle } from '@branchleft/components';
 
-<ThemeToggle />;
+<ThemeToggle action="/theme" />;
 ```
 
-For an SSR app, embed `themeInitScript` in the document `<head>` (before
-any stylesheet or hydration) so a returning light-mode visitor's page
-doesn't flash dark on first paint:
+**Without JavaScript**, clicking the button submits the form to `action`
+with `theme=<the mode to switch TO>` — your server reads that field, stores
+it under `THEME_COOKIE_NAME`, and redirects back to the page with
+`<html data-theme>` already set to match (via `parseThemeCookie` against
+the incoming request's `Cookie` header):
+
+```tsx
+import { THEME_COOKIE_NAME, parseThemeCookie } from '@branchleft/components';
+
+// In your server's request handler, e.g. a POST /theme route:
+const theme = new URLSearchParams(await request.text()).get('theme') === 'light' ? 'light' : 'dark';
+const cookie = `${THEME_COOKIE_NAME}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`;
+// set-cookie: <cookie>, then redirect back (303) to the referring page
+
+// And on every request, when rendering <html>:
+const theme = parseThemeCookie(request.headers.get('cookie'));
+// <html lang="en" data-theme={theme === 'light' ? 'light' : undefined}>
+```
+
+**With JavaScript**, `ThemeToggle` intercepts that same submit,
+`preventDefault`s the navigation, sets `data-theme` on `<html>` immediately,
+and writes the same cookie itself via `document.cookie` (`Path=/`,
+`SameSite=Lax`, a one-year `Max-Age`, plus `Secure` when the page is
+https) — so the switch feels instant, landing on the exact same state
+either way. It reads the mode it's currently offering to switch away from
+by checking `document.documentElement.dataset.theme` once mounted (your
+server already rendered that attribute correctly from the cookie, before
+this component ever runs), rather than guessing from `localStorage` — the
+guess-based version could render the wrong ARIA/label state and never
+correct itself until the next click.
+
+The button is icon-only (a sun in dark mode, a moon in light mode, via
+`lucide-react`) with no `aria-pressed` — its accessible name states the
+action directly ("Switch to light mode" / "Switch to dark mode"), which a
+static pressed/unpressed state can't convey on its own. Override either
+string:
+
+```tsx
+<ThemeToggle action="/theme" switchToLightLabel="Go light" switchToDarkLabel="Go dark" />
+```
+
+For a **static app with no server** to set a cookie, `THEME_STORAGE_KEY`,
+`themeInitScript` and `themeInitScriptHash` remain available as an
+optional, JS-only fallback path — `ThemeToggle` still writes
+`localStorage` under `THEME_STORAGE_KEY` on every toggle for back-compat
+with this path, but a server-backed app should prefer the cookie above,
+which is also what makes the no-JS form submission actually work. Embed
+`themeInitScript` in the document `<head>` (before any stylesheet or
+hydration) so a returning light-mode visitor's page doesn't flash dark on
+first paint:
 
 ```tsx
 import { themeInitScript } from '@branchleft/components';

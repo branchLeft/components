@@ -17,6 +17,8 @@ export type { Value, ValueAccent, ValuesCloudProps } from './components/ValuesCl
 export {
   ThemeToggle,
   THEME_STORAGE_KEY,
+  THEME_COOKIE_NAME,
+  parseThemeCookie,
   themeInitScript,
   themeInitScriptHash,
 } from './components/ThemeToggle';
