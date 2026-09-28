@@ -1,0 +1,167 @@
+/* ─── branchLeft design tokens ────────────────────────────────────────────
+ * Custom properties only — no selectors that paint anything. `elements.css`
+ * consumes these inside `@layer branchleft.base`; a consuming app can
+ * override any `--bl-*` property on `:root` (or narrower) without touching
+ * that layer at all.
+ *
+ * Dark is the default and carries no attribute selector. Light is opt-in:
+ * set `data-theme="light"` on `<html>` (see `@branchleft/components`'s
+ * `ThemeToggle`, which does exactly that and persists the choice). There is
+ * deliberately no `prefers-color-scheme` branch here — dark is brand, not a
+ * fallback, so the OS preference never overrides the toggle/default.
+ *
+ * Every literal colour value below is reproduced from the branchLeft brief
+ * (workspace#1560 / #1480) — nothing here is invented. Contrast ratios are
+ * computed against the built stylesheet by this package's own test, not
+ * hand-checked comments; see `branchleft.contrast.test.ts`.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* ── Core colours (dark, the default) ──────────────────────────────── */
+  --bl-color-bg: #000000;
+  --bl-color-fg: #ffffff;
+  /* Active colour: links, hover, focus, taglines. 5.48:1 on --bl-color-bg. */
+  --bl-color-active: #ff006e;
+  /* Filled-button fill. Always paired with literal white text (6.54:1) —
+   * see `--bl-color-button-fg` below, which is NOT swapped per mode. */
+  --bl-color-button-fill: #b31761;
+  --bl-color-button-fg: #ffffff;
+  /* 4.5:1+ on --bl-color-bg (color-mix(in srgb, white 75%, black), resolved
+   * to a literal hex so the contrast test doesn't have to evaluate
+   * color-mix() from parsed CSS text). */
+  --bl-color-muted: #bfbfbf;
+  /* Decorative only (dividers, card outlines) — never a meaningful
+   * boundary. Do not use this for anything that must be seen. */
+  --bl-color-hairline: rgba(255, 255, 255, 0.12);
+  /* A border that must be seen (form-control outlines, fieldset, table
+   * head rule) reuses --bl-color-muted, which already clears the stricter
+   * 4.5:1 text floor and so clears 3:1 by construction. */
+  --bl-color-border: var(--bl-color-muted);
+  /* Form-control invalid state. Reuses the `redlines` ValuesColour: a hard
+   * boundary is exactly what `redlines` already means in the ValuesColours
+   * table, and reusing it (rather than inventing a parallel "error red")
+   * keeps the palette to one set of reds. This mapping isn't in the brief —
+   * flagged as a judgement call in the PR body. */
+  --bl-color-invalid: var(--bl-value-redlines);
+
+  /* ── ValuesColours (dark) — 4.5:1+ on --bl-color-bg ─────────────────── */
+  --bl-value-sustainability: #d4a72c;
+  --bl-value-environment: #3fae5c;
+  --bl-value-ai: #8b6fd6;
+  --bl-value-society: #e8637a;
+  --bl-value-opensource: #3b9fd6;
+  --bl-value-agility: #e07a2c;
+  /* Closest ValuesColour pair to `society` in both modes — see the PR body
+   * for the OKLab distance and why it still clears the distinguishability
+   * floor. */
+  --bl-value-redlines: #d73838;
+
+  /* ── Type: families ──────────────────────────────────────────────────
+   * Roles match the website's `--font-*` tokens exactly (fonts.css ships
+   * the matching @font-face rules): display for headings, wordmark for the
+   * brand mark, sans for body copy, mono for the "machine voice" (code,
+   * labels, anything that should read as data rather than prose). */
+  --bl-font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --bl-font-wordmark: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --bl-font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --bl-font-mono: 'Roboto Mono', ui-monospace, monospace;
+
+  /* ── Type: sizes — the site's Tailwind default scale, promoted to
+   * explicit values so adopting this stylesheet changes nothing on the
+   * site. Heading line-height is the site's own literal override (base.css
+   * sets 1.1 on h1–h6 uniformly, superseding Tailwind's per-size default). */
+  --bl-text-h1: 2.25rem;
+  --bl-text-h2: 1.875rem;
+  --bl-text-h3: 1.5rem;
+  --bl-text-h4: 1.25rem;
+  --bl-text-h5: 1.125rem;
+  --bl-text-h6: 1rem;
+  --bl-text-body: 1rem;
+  --bl-text-small: 0.875rem;
+  --bl-leading-heading: 1.1;
+  --bl-leading-body: 1.6;
+  --bl-leading-small: 1.5;
+
+  /* ── Spacing — literal named tokens (nav-offset family) plus the
+   * Tailwind spacing-scale steps the site's CSS actually uses. */
+  --bl-space-xs: 0.5rem;
+  --bl-space-sm: 1rem;
+  --bl-space-md: 1.5rem;
+  --bl-space-lg: 2rem;
+  --bl-space-xl: 3rem;
+  --bl-space-2xl: 4rem;
+
+  /* ── Radius — pill is the only step in any source today. */
+  --bl-radius-pill: 9999px;
+
+  /* ── Motion — named durations; `elements.css` zeroes all of them under
+   * `prefers-reduced-motion: reduce` in one place rather than repeating the
+   * media query per rule. */
+  --bl-motion-fast: 150ms;
+  --bl-motion-base: 200ms;
+  --bl-motion-slow: 300ms;
+  --bl-motion-deliberate: 500ms;
+  --bl-motion-easing-standard: ease;
+  --bl-motion-easing-out: ease-out;
+}
+
+/* ── Light mode — opt-in via [data-theme="light"] on <html> ────────────── */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bl-color-bg: #ffffff;
+  --bl-color-fg: #000000;
+  /* Deeper pink than the dark-mode active colour — Rob's ruling
+   * (workspace#1480 comment 5872329905): "#ff006e" alone is only 3.83:1 on
+   * white, so light mode gets its own value at 5.23:1. */
+  --bl-color-active: #d6005c;
+  --bl-color-button-fill: #b31761;
+  --bl-color-button-fg: #ffffff;
+  /* 4.5:1+ on --bl-color-bg (color-mix(in srgb, black 75%, white)). */
+  --bl-color-muted: #404040;
+  --bl-color-hairline: rgba(0, 0, 0, 0.12);
+  --bl-color-border: var(--bl-color-muted);
+  --bl-color-invalid: var(--bl-value-redlines);
+
+  /* ── ValuesColours (light) — deeper variants, each 4.5:1+ on white. */
+  --bl-value-sustainability: #91721e;
+  --bl-value-environment: #308546;
+  --bl-value-ai: #8163d3;
+  --bl-value-society: #e02b4b;
+  --bl-value-opensource: #247cad;
+  --bl-value-agility: #b75e1b;
+  --bl-value-redlines: #c62828;
+}
+
+/* ── ValuesCloud bridge ───────────────────────────────────────────────────
+ * Brand-neutral hook from `@branchleft/components`'s `ValuesCloud`: it sets
+ * `data-accent="<key>"` on each node/panel and reads `--value-accent` for
+ * that node's colour. Mapping every key here means dropping this stylesheet
+ * into a page keeps an existing `<ValuesCloud>` themed correctly, per-mode,
+ * with no extra wiring. Left unlayered (same reasoning as the website's own
+ * `components/values-cloud.css`): it only has to beat the component's
+ * built-in `[data-accent]` fallback, and cascade-layer ordering across a
+ * bundler's own CSS concatenation isn't guaranteed. */
+[data-accent='sustainability'] {
+  --value-accent: var(--bl-value-sustainability);
+}
+[data-accent='environment'] {
+  --value-accent: var(--bl-value-environment);
+}
+[data-accent='ai'] {
+  --value-accent: var(--bl-value-ai);
+}
+[data-accent='society'] {
+  --value-accent: var(--bl-value-society);
+}
+[data-accent='opensource'] {
+  --value-accent: var(--bl-value-opensource);
+}
+[data-accent='agility'] {
+  --value-accent: var(--bl-value-agility);
+}
+[data-accent='redlines'] {
+  --value-accent: var(--bl-value-redlines);
+}

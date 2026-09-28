@@ -6,9 +6,18 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      // Two entries: `index` is the real JS API. `styles` exists only to
+      // pull the branchLeft stylesheet (tokens/fonts/elements) into the
+      // build graph so Vite extracts it to dist/branchleft.css (see
+      // assetFileNames below) for the `./css` export — it produces a
+      // throwaway styles.{js,cjs} chunk that nothing in package.json
+      // references. Mirrors @branchleft/components's own vite.config.ts.
+      entry: {
+        index: path.resolve(__dirname, 'src/index.ts'),
+        styles: path.resolve(__dirname, 'src/styles.ts'),
+      },
       name: 'branchLeftBrandBranchLeft',
-      fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
+      fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
       // Externalise every subpath of react/react-dom (including
@@ -21,6 +30,12 @@ export default defineConfig({
           react: 'React',
           'react-dom': 'ReactDOM',
         },
+        // Only one CSS asset is ever produced (from the `styles` entry) —
+        // force it to `branchleft.css` to match the `./css` export in
+        // package.json. Font files pulled in via fonts.css's url()s land in
+        // dist/assets/ under their own hashed names, untouched by this.
+        assetFileNames: (assetInfo) =>
+          assetInfo.name?.endsWith('.css') ? 'branchleft.[ext]' : 'assets/[name]-[hash][extname]',
       },
     },
   },
