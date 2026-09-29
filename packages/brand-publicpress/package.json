@@ -1,6 +1,6 @@
 {
   "name": "@branchleft/brand-publicpress",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "prettier": "@branchleft/prettier-config",
   "description": "PublicPress-branded marks and design tokens",
   "type": "module",
@@ -43,7 +43,7 @@
   "author": "branchLeft",
   "license": "MIT",
   "peerDependencies": {
-    "@branchleft/components": ">=0.4.0 <1.0.0",
+    "@branchleft/components": ">=0.6.0 <1.0.0",
     "react": "^18.2.0 || ^19.0.0",
     "react-dom": "^18.2.0 || ^19.0.0"
   },

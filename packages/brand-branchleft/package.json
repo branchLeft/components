@@ -1,6 +1,6 @@
 {
   "name": "@branchleft/brand-branchleft",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "prettier": "@branchleft/prettier-config",
   "description": "branchLeft-branded marks and design tokens",
   "type": "module",
