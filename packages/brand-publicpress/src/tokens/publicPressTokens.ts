@@ -62,7 +62,7 @@ export const publicPressTokens: DesignTokens = {
 
   type: {
     faces: {
-      // Owner-ruled text face (workspace#1615): self-hosted Jost (SIL OFL
+      // Owner-ruled text face: self-hosted Jost (SIL OFL
       // 1.1), with the holding page's own Futura stack kept behind it as
       // the fallback chain. Font files ship in this package
       // (styles/fonts/Jost/, loaded via styles/fonts.css) —
@@ -86,7 +86,7 @@ export const publicPressTokens: DesignTokens = {
         source:
           'Google Fonts family "Libre Franklin" (SIL OFL 1.1) — glyph outlines only, vectorised into SVG path data in PublicPressWordmark/PublicPressLogo; no web font file is loaded at runtime',
       },
-      // Same ruling and files as display (workspace#1615) — self-hosted
+      // Same ruling and files as display — self-hosted
       // Jost, Futura stack behind it as fallback.
       body: {
         family: 'Jost',
@@ -95,7 +95,7 @@ export const publicPressTokens: DesignTokens = {
         source:
           'Self-hosted Jost (SIL OFL 1.1) — @fontsource-variable/jost@5.3.0 latin-subset woff2, styles/fonts/Jost/, loaded by styles/fonts.css; falls back to the holding page’s own Futura stack',
       },
-      // Owner-ruled mono face (workspace#1615): self-hosted Courier Prime
+      // Owner-ruled mono face: self-hosted Courier Prime
       // (SIL OFL 1.1). Font files ship in this package
       // (styles/fonts/CourierPrime/, loaded via styles/fonts.css) —
       // @fontsource/courier-prime@5.3.0, latin subset.
