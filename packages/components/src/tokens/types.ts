@@ -111,8 +111,7 @@ export interface MotionTokens {
 /**
  * The structure every brand's token set must provide. `shadow` and
  * `motion` are optional at this level because a brand may genuinely have
- * no ruling either way yet (see the "shadow if present, motion if
- * present" scoping in workspace#1435/#1436) — `REQUIRED_TOKEN_KEYS` below
+ * no ruling either way yet — `REQUIRED_TOKEN_KEYS` below
  * lists only the keys every brand must have.
  */
 export interface DesignTokens {

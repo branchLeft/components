@@ -14,11 +14,10 @@ export const publicPressInks = PUBLIC_PRESS_INKS;
 
 /**
  * PublicPress design tokens. Unlike branchLeft, PublicPress has no settled
- * site-wide theme yet (brand owner's sketch, workspace#1436, in progress —
- * see `ghost-platform-docs`'s `19-try-it-now-design/*`/`OPEN-QUESTIONS.md`).
- * The wordmark/logo (`components` PR #92, workspace#1313 ruling: the four
- * fixed ink blocks, Libre Franklin Bold) is the only settled *visual*
- * ruling anywhere — those entries are non-provisional; everything else is
+ * site-wide theme yet; the brand owner's sketch is in progress. The
+ * wordmark/logo (the four fixed ink blocks, Libre Franklin Bold) and the
+ * yellow active colour are the only settled visual rulings — those entries
+ * are non-provisional; everything else is
  * a placeholder, mostly borrowed from branchLeft's tokens.
  */
 export const publicPressTokens: DesignTokens = {
@@ -32,7 +31,7 @@ export const publicPressTokens: DesignTokens = {
     background: { dark: '#000000', light: '#FAFAF7', provisional: true },
     foreground: { dark: '#FAFAF7', light: '#000000', provisional: true },
 
-    // The primary ("blue") ink — settled, PR #92 / workspace#1313 ruling,
+    // The primary ("blue") ink — settled by the brand owner's mark ruling,
     // scripts/publicpress-mark-spec.json → inks.blue.block. No light/dark
     // variants are ruled, so the same value is used for both; that's a
     // structural fill, not a claim that a dark-mode variant was decided.
@@ -74,9 +73,8 @@ export const publicPressTokens: DesignTokens = {
         provisional: true,
       },
       // Settled: the wordmark/logo glyph outlines are Libre Franklin Bold
-      // (SIL OFL 1.1), vectorised into static SVG paths — see PR #92's
-      // README addition and scripts/publicpress-mark-spec.json's `note`
-      // field. Only weight 700 (Bold) is used; no web font is loaded by the
+      // (SIL OFL 1.1), vectorised into static SVG paths — see the README
+      // and scripts/publicpress-mark-spec.json's `note` field. Only weight 700 (Bold) is used; no web font is loaded by the
       // components (the outlines are pre-baked paths), so `source` names
       // the origin typeface rather than a font file the app loads.
       wordmark: {

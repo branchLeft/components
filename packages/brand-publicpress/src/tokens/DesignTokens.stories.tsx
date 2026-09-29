@@ -36,9 +36,7 @@ type Story = StoryObj<typeof meta>;
  * ink blocks, Libre Franklin Bold) is a settled ruling — everything else
  * shown here as PROVISIONAL is a placeholder pending the brand owner's
  * brand sketch, mostly borrowed from branchLeft's own tokens so the shared
- * structure has something to render. See the components PR body's "Open
- * questions for the brand owner" for the full list of what's still
- * undecided.
+ * structure has something to render.
  */
 export const Tokens: Story = {
   args: {
