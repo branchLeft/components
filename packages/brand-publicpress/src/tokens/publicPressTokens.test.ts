@@ -112,10 +112,25 @@ describe('PublicPress tokens', () => {
     expect(publicPressTokens.type.faces.wordmark.family).toBe('Libre Franklin');
   });
 
-  it('marks every other type face as provisional (no ruling exists yet)', () => {
-    expect(publicPressTokens.type.faces.display.provisional).toBe(true);
-    expect(publicPressTokens.type.faces.body.provisional).toBe(true);
-    expect(publicPressTokens.type.faces.mono.provisional).toBe(true);
+  it('marks display, body, and mono faces as non-provisional, self-hosted', () => {
+    const expectedStack =
+      "'Jost', 'Futura', 'Century Gothic', 'Avenir Next', system-ui, sans-serif";
+    const expectedMonoStack = "'Courier Prime', 'Courier New', Courier, monospace";
+
+    expect(publicPressTokens.type.faces.display.provisional).toBeFalsy();
+    expect(publicPressTokens.type.faces.display.family).toBe('Jost');
+    expect(publicPressTokens.type.faces.display.fallbackStack).toBe(expectedStack);
+    expect(publicPressTokens.type.faces.display.weights).toEqual([400, 500, 600, 700]);
+
+    expect(publicPressTokens.type.faces.body.provisional).toBeFalsy();
+    expect(publicPressTokens.type.faces.body.family).toBe('Jost');
+    expect(publicPressTokens.type.faces.body.fallbackStack).toBe(expectedStack);
+    expect(publicPressTokens.type.faces.body.weights).toEqual([400, 500, 600, 700]);
+
+    expect(publicPressTokens.type.faces.mono.provisional).toBeFalsy();
+    expect(publicPressTokens.type.faces.mono.family).toBe('Courier Prime');
+    expect(publicPressTokens.type.faces.mono.fallbackStack).toBe(expectedMonoStack);
+    expect(publicPressTokens.type.faces.mono.weights).toEqual([400, 700]);
   });
 
   it('settles every type-scale size (owner ruling) but leaves spacing and radius provisional', () => {

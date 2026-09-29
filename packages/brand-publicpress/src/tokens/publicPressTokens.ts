@@ -13,12 +13,12 @@ import type { DesignTokens } from '@branchleft/components';
 export const publicPressInks = PUBLIC_PRESS_INKS;
 
 /**
- * PublicPress design tokens. Unlike branchLeft, PublicPress has no settled
- * site-wide theme yet; the brand owner's sketch is in progress. The
- * wordmark/logo (the four fixed ink blocks, Libre Franklin Bold) and the
- * yellow active colour are the only settled visual rulings — those entries
- * are non-provisional; everything else is
- * a placeholder, mostly borrowed from branchLeft's tokens.
+ * PublicPress design tokens. The wordmark/logo (four fixed ink blocks,
+ * Libre Franklin Bold), the yellow active colour, the three typefaces
+ * (self-hosted Jost with the holding page's Futura stack behind it for
+ * display and body, self-hosted Courier Prime for mono), and the type
+ * scale are settled visual rulings. Everything else is provisional,
+ * mostly borrowed from branchLeft's tokens.
  */
 export const publicPressTokens: DesignTokens = {
   brand: 'PublicPress',
@@ -62,15 +62,17 @@ export const publicPressTokens: DesignTokens = {
 
   type: {
     faces: {
-      // No display typeface is ruled for PublicPress product UI (marketing
-      // site, portal). Provisionally reusing branchLeft's until the brand
-      // owner's brand sketch settles one.
+      // Owner-ruled text face: self-hosted Jost (SIL OFL
+      // 1.1), with the holding page's own Futura stack kept behind it as
+      // the fallback chain. Font files ship in this package
+      // (styles/fonts/Jost/, loaded via styles/fonts.css) —
+      // @fontsource-variable/jost@5.3.0, latin subset.
       display: {
-        family: 'Space Grotesk',
-        fallbackStack: "'Space Grotesk', ui-sans-serif, system-ui, sans-serif",
-        weights: [300, 400, 500, 600, 700],
-        source: "Not ruled for PublicPress — provisional reuse of branchLeft's display face",
-        provisional: true,
+        family: 'Jost',
+        fallbackStack: "'Jost', 'Futura', 'Century Gothic', 'Avenir Next', system-ui, sans-serif",
+        weights: [400, 500, 600, 700],
+        source:
+          'Self-hosted Jost (SIL OFL 1.1) — @fontsource-variable/jost@5.3.0 latin-subset woff2, styles/fonts/Jost/, loaded by styles/fonts.css; falls back to the holding page’s own Futura stack',
       },
       // Settled: the wordmark/logo glyph outlines are Libre Franklin Bold
       // (SIL OFL 1.1), vectorised into static SVG paths — see the README
@@ -84,22 +86,25 @@ export const publicPressTokens: DesignTokens = {
         source:
           'Google Fonts family "Libre Franklin" (SIL OFL 1.1) — glyph outlines only, vectorised into SVG path data in PublicPressWordmark/PublicPressLogo; no web font file is loaded at runtime',
       },
-      // No body/reading typeface is ruled. Provisional reuse of
-      // branchLeft's.
+      // Same ruling and files as display — self-hosted
+      // Jost, Futura stack behind it as fallback.
       body: {
-        family: 'IBM Plex Sans',
-        fallbackStack: "'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif",
-        weights: [400, 500, 600],
-        source: "Not ruled for PublicPress — provisional reuse of branchLeft's body face",
-        provisional: true,
+        family: 'Jost',
+        fallbackStack: "'Jost', 'Futura', 'Century Gothic', 'Avenir Next', system-ui, sans-serif",
+        weights: [400, 500, 600, 700],
+        source:
+          'Self-hosted Jost (SIL OFL 1.1) — @fontsource-variable/jost@5.3.0 latin-subset woff2, styles/fonts/Jost/, loaded by styles/fonts.css; falls back to the holding page’s own Futura stack',
       },
-      // No mono/label typeface is ruled. Provisional reuse of branchLeft's.
+      // Owner-ruled mono face: self-hosted Courier Prime
+      // (SIL OFL 1.1). Font files ship in this package
+      // (styles/fonts/CourierPrime/, loaded via styles/fonts.css) —
+      // @fontsource/courier-prime@5.3.0, latin subset.
       mono: {
-        family: 'Roboto Mono',
-        fallbackStack: "'Roboto Mono', ui-monospace, monospace",
-        weights: [100, 200, 300, 400, 500, 600, 700],
-        source: "Not ruled for PublicPress — provisional reuse of branchLeft's mono face",
-        provisional: true,
+        family: 'Courier Prime',
+        fallbackStack: "'Courier Prime', 'Courier New', Courier, monospace",
+        weights: [400, 700],
+        source:
+          'Self-hosted Courier Prime (SIL OFL 1.1) — @fontsource/courier-prime@5.3.0 latin-subset woff2, styles/fonts/CourierPrime/, loaded by styles/fonts.css',
       },
     },
     // Owner ruling: h1-h6 and small are settled (reused from branchLeft's

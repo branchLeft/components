@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { DesignTokensDocs } from '../../../../test-utils/DesignTokensDocs';
 import { publicPressTokens } from './publicPressTokens';
+// Loads Jost + Courier Prime so the type specimens render in the real
+// faces, not a fallback; fonts.css holds only @font-face rules, no element
+// styles.
+import '../styles/fonts.css';
 
 const meta = {
   title: 'Design Tokens/PublicPress',
