@@ -13,12 +13,11 @@ import type { DesignTokens } from '@branchleft/components';
 export const publicPressInks = PUBLIC_PRESS_INKS;
 
 /**
- * PublicPress design tokens. Unlike branchLeft, PublicPress has no settled
- * site-wide theme yet; the brand owner's sketch is in progress. The
- * wordmark/logo (the four fixed ink blocks, Libre Franklin Bold) and the
- * yellow active colour are the only settled visual rulings — those entries
- * are non-provisional; everything else is
- * a placeholder, mostly borrowed from branchLeft's tokens.
+ * PublicPress design tokens. The wordmark/logo (four fixed ink blocks,
+ * Libre Franklin Bold), the yellow active colour, the three typefaces
+ * (Futura for display and body, Courier Prime for mono), and the type
+ * scale are settled visual rulings. Everything else is provisional,
+ * mostly borrowed from branchLeft's tokens.
  */
 export const publicPressTokens: DesignTokens = {
   brand: 'PublicPress',
@@ -62,15 +61,15 @@ export const publicPressTokens: DesignTokens = {
 
   type: {
     faces: {
-      // No display typeface is ruled for PublicPress product UI (marketing
-      // site, portal). Provisionally reusing branchLeft's until the brand
-      // owner's brand sketch settles one.
+      // Owner-chosen stack from publicpress.co.uk holding page, system
+      // fonts only, no font file loaded. Futura is the primary; fallbacks
+      // include Century Gothic, Avenir Next, and system sans-serif.
       display: {
-        family: 'Space Grotesk',
-        fallbackStack: "'Space Grotesk', ui-sans-serif, system-ui, sans-serif",
-        weights: [300, 400, 500, 600, 700],
-        source: "Not ruled for PublicPress — provisional reuse of branchLeft's display face",
-        provisional: true,
+        family: 'Futura',
+        fallbackStack: "'Futura', 'Century Gothic', 'Avenir Next', system-ui, sans-serif",
+        weights: [400],
+        source:
+          'Owner-chosen stack from publicpress.co.uk holding page, system fonts only, no font file loaded',
       },
       // Settled: the wordmark/logo glyph outlines are Libre Franklin Bold
       // (SIL OFL 1.1), vectorised into static SVG paths — see the README
@@ -84,22 +83,24 @@ export const publicPressTokens: DesignTokens = {
         source:
           'Google Fonts family "Libre Franklin" (SIL OFL 1.1) — glyph outlines only, vectorised into SVG path data in PublicPressWordmark/PublicPressLogo; no web font file is loaded at runtime',
       },
-      // No body/reading typeface is ruled. Provisional reuse of
-      // branchLeft's.
+      // Owner-chosen stack from publicpress.co.uk holding page, system
+      // fonts only, no font file loaded. Same Futura stack as display face.
       body: {
-        family: 'IBM Plex Sans',
-        fallbackStack: "'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif",
-        weights: [400, 500, 600],
-        source: "Not ruled for PublicPress — provisional reuse of branchLeft's body face",
-        provisional: true,
+        family: 'Futura',
+        fallbackStack: "'Futura', 'Century Gothic', 'Avenir Next', system-ui, sans-serif",
+        weights: [400],
+        source:
+          'Owner-chosen stack from publicpress.co.uk holding page, system fonts only, no font file loaded',
       },
-      // No mono/label typeface is ruled. Provisional reuse of branchLeft's.
+      // Owner-chosen stack from publicpress.co.uk holding page (footer),
+      // system fonts only, no font file loaded. Courier Prime is the primary;
+      // fallbacks include Courier New, Courier, and system monospace.
       mono: {
-        family: 'Roboto Mono',
-        fallbackStack: "'Roboto Mono', ui-monospace, monospace",
-        weights: [100, 200, 300, 400, 500, 600, 700],
-        source: "Not ruled for PublicPress — provisional reuse of branchLeft's mono face",
-        provisional: true,
+        family: 'Courier Prime',
+        fallbackStack: "'Courier Prime', 'Courier New', Courier, monospace",
+        weights: [400],
+        source:
+          'Owner-chosen stack from publicpress.co.uk holding page, system fonts only, no font file loaded',
       },
     },
     // Owner ruling: h1-h6 and small are settled (reused from branchLeft's
