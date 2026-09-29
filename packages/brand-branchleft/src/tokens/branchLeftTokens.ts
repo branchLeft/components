@@ -76,17 +76,9 @@ export const branchLeftTokens: DesignTokens = {
           'Self-hosted variable font (website /fonts/RobotoMono/*.woff2+.ttf); Google Fonts family "Roboto Mono"',
       },
     },
-    // theme.css's @layer base applies Tailwind utilities (`text-4xl` …
-    // `text-base`) to h1–h6, with no font-size override anywhere in @theme
-    // — Tailwind v4's own built-in scale for those class names (confirmed:
-    // website/package.json pins `tailwindcss: ^4.3.3`, no tailwind config
-    // file — `@theme` only touches colour/font/spacing). Pixel values are
-    // inferred from the Tailwind version, not written literally anywhere
-    // here — marked provisional on that basis. `body`/`li` 1.6 is literal,
-    // from base.css's `p`/`li` rules.
-    // Owner ruling settles h1-h6 and `small` (previously flagged
-    // provisional pending confirmation the inferred Tailwind pixel values
-    // were acceptable as real sizes, not just a placeholder guess).
+    // h1–h6 are Tailwind v4's default sizes for the utilities the site's
+    // base layer applies (`text-4xl` … `text-base`); the owner accepted them
+    // as the scale. Body line-height 1.6 is the site's own `p`/`li` value.
     scale: [
       { name: 'h1', fontSize: '2.25rem', lineHeight: '2.5rem' },
       { name: 'h2', fontSize: '1.875rem', lineHeight: '2.25rem' },
