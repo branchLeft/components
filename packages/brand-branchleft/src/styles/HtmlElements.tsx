@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type { CSSProperties, JSX } from 'react';
 
 /**
  * Storybook-only fixture rendering one of every element `elements.css`
@@ -17,7 +17,7 @@ import * as React from 'react';
  * pair (each sized only by its own content, per the stylesheet) doesn't
  * read as two randomly-spaced inline items.
  */
-const fieldRowStyle: React.CSSProperties = {
+const fieldRowStyle: CSSProperties = {
   display: 'grid',
   gridTemplateColumns: '11rem 1fr',
   alignItems: 'center',
@@ -25,7 +25,7 @@ const fieldRowStyle: React.CSSProperties = {
   marginBottom: '0.75rem',
 };
 
-export function HtmlElements(): React.JSX.Element {
+export function HtmlElements(): JSX.Element {
   return (
     <div>
       <h1>Heading level one</h1>

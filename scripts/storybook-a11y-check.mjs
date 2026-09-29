@@ -83,10 +83,36 @@ export function resolveStaticPath(root, requestUrl) {
   return resolved;
 }
 
+const STATIC_DIR_BOUNDARY = path.resolve(STATIC_DIR) + path.sep;
+
+/**
+ * `@storybook/addon-a11y` (already enabled, `.storybook/main.ts`) runs its
+ * own axe-core pass on every story in the background, on a timer this
+ * script doesn't control — occasionally still in flight when this script's
+ * own `analyze()` call starts, which axe-core rejects outright rather than
+ * queuing. Retried rather than avoided: there is no supported way to ask
+ * Storybook to skip its own scan for one visit.
+ */
+async function analyzeColorContrast(page) {
+  const ALREADY_RUNNING = 'Axe is already running';
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    try {
+      return await new AxeBuilder({ page }).withRules(['color-contrast']).analyze();
+    } catch (err) {
+      if (attempt === 5 || !String(err).includes(ALREADY_RUNNING)) throw err;
+      await page.waitForTimeout(300 * attempt);
+    }
+  }
+  throw new Error('unreachable');
+}
+
 async function serveStatic() {
   const server = createServer(async (req, res) => {
     const requestedPath = resolveStaticPath(STATIC_DIR, req.url);
-    if (requestedPath === null) {
+    // Re-checked here, immediately guarding the two filesystem calls below,
+    // rather than trusted as already-safe from resolveStaticPath's return
+    // value alone.
+    if (requestedPath === null || !requestedPath.startsWith(STATIC_DIR_BOUNDARY)) {
       res.statusCode = 400;
       res.setHeader('Content-Type', 'text/plain');
       res.end('bad request');
@@ -168,13 +194,16 @@ async function main() {
 
           try {
             await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
-            await page.waitForTimeout(250);
+            // Longer than any token's `motion.duration` (500ms, the
+            // slowest) — PageTransition's own fade-in is still mid-animation
+            // (genuinely low opacity, not a colour-token defect) at 250ms.
+            await page.waitForTimeout(700);
 
             if (pageErrors.length > 0) {
               failures.push({ id: entry.id, theme, kind: 'render-error', detail: pageErrors });
             }
 
-            const results = await new AxeBuilder({ page }).withRules(['color-contrast']).analyze();
+            const results = await analyzeColorContrast(page);
             if (results.violations.length > 0) {
               failures.push({
                 id: entry.id,

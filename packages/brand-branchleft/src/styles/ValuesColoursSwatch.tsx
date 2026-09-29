@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type { JSX } from 'react';
 
 const VALUE_NAMES = [
   'sustainability',
@@ -16,7 +16,7 @@ const VALUE_NAMES = [
  * properties (or the `[data-accent]`/`--value-accent` bridge for
  * `ValuesCloud`) directly, there's no component wrapper to import.
  */
-export function ValuesColoursSwatch(): React.JSX.Element {
+export function ValuesColoursSwatch(): JSX.Element {
   return (
     <ul
       style={{
