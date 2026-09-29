@@ -2,7 +2,12 @@ import path from 'path';
 import type { StorybookConfig } from '@storybook/react-vite';
 
 const config: StorybookConfig = {
-  stories: ['../packages/*/src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  stories: [
+    '../packages/*/src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    // Lives outside every package so no tsconfig applies to it: the only
+    // thing that makes its JSX compile is the esbuild setting below.
+    './probes/*.stories.tsx',
+  ],
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',

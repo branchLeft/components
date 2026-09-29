@@ -185,7 +185,15 @@ async function main() {
     process.exitCode = 1;
     return;
   }
-  const entries = Object.values(JSON.parse(indexRaw).entries);
+  // STORYBOOK_A11Y_ONLY narrows a local run to ids containing that text;
+  // CI never sets it, so CI always checks every entry.
+  const only = process.env.STORYBOOK_A11Y_ONLY;
+  const entries = Object.values(JSON.parse(indexRaw).entries).filter(
+    (entry) => !only || entry.id.includes(only)
+  );
+  if (entries.length === 0) {
+    throw new Error(`No Storybook entries match STORYBOOK_A11Y_ONLY=${only}`);
+  }
 
   const server = await serveStatic();
   const browser = await chromium.launch();
@@ -236,15 +244,10 @@ async function main() {
             try {
               // A real "the story is actually on screen" signal, not a
               // fixed delay tuned to one animation: the root Storybook
-              // mounts into has at least one child, and every requested
-              // font has finished loading (a font swap after the wait
-              // would still count as "rendered" for our purposes, but
-              // waiting for it removes one more source of a flaky
-              // contrast read against fallback-font metrics). Reduced
-              // motion (this context's own setting) makes framer-motion's
-              // own components skip to their end state immediately, so
-              // this resolves right away for a working story rather than
-              // needing its own animation-specific wait.
+              // mounts into has at least one child. Reduced motion (this
+              // context's own setting) makes framer-motion components
+              // skip to their end state immediately, so this resolves
+              // right away for a working story.
               await page.waitForFunction(
                 (selector) => {
                   const root = document.querySelector(selector);

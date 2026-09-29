@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 // Regression probe, not a real component: JSX with no `React` import at
-// all, anywhere in this file. It only compiles because Storybook's Vite
+// all, in a directory no tsconfig covers. It only compiles because Storybook's Vite
 // build forces the automatic JSX runtime explicitly
 // (`viteConfig.esbuild.jsx = 'automatic'` in `.storybook/main.ts`) —
 // remove that line and this story throws `ReferenceError: React is not
