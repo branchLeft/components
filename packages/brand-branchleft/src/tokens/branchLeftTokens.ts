@@ -64,11 +64,14 @@ export const branchLeftTokens: DesignTokens = {
         source:
           'Self-hosted variable font (website /fonts/SpaceGrotesk/*.woff2+.ttf); Google Fonts family "Space Grotesk"',
       },
-      // theme.css: `--font-wordmark: 'Syne', ...`. fonts.css: variable 400–800.
+      // theme.css: `--font-wordmark: 'Syne', ...`. fonts.css caps the loaded
+      // face's own variable range at 400–500 — the wordmark itself
+      // (`--bl-weight-wordmark`) never asks for more, and Syne reads as a
+      // visibly different, wider letterform above 500.
       wordmark: {
         family: 'Syne',
         fallbackStack: "'Syne', ui-sans-serif, system-ui, sans-serif",
-        weights: [400, 500, 600, 700, 800],
+        weights: [400, 500],
         source:
           'Self-hosted variable font (website /fonts/Syne/*.woff2+.ttf); Google Fonts family "Syne"',
       },
@@ -112,8 +115,13 @@ export const branchLeftTokens: DesignTokens = {
       { name: 'h6', fontSize: '1rem', lineHeight: '1.5rem', provisional: true },
       { name: 'body', fontSize: '1rem', lineHeight: '1.6' },
       { name: 'small', fontSize: '0.875rem', lineHeight: '1.25rem', provisional: true },
-      // hero-wordmark: `@apply text-6xl` with an explicit `line-height: 1` override.
-      { name: 'hero-wordmark', fontSize: '3.75rem', lineHeight: '1', provisional: true },
+      // The website title-page wordmark size — `@apply text-6xl` with an
+      // explicit `line-height: 1` override, settled from the live site by
+      // PR #103 (`--bl-text-wordmark-hero`/`--bl-leading-wordmark-hero` in
+      // this package's own stylesheet, `styles/tokens.css`). Not a generic
+      // heading step: it's the one size used for the brand name itself on
+      // the site's title page.
+      { name: 'hero-wordmark', fontSize: '3.75rem', lineHeight: '1' },
     ],
   },
 

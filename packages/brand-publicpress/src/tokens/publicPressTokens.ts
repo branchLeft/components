@@ -58,6 +58,20 @@ export const publicPressTokens: DesignTokens = {
     muted: { dark: '#FAFAF7', light: '#000000', provisional: true },
     // No hairline colour is ruled. Provisional guess only.
     hairline: { dark: '#FAFAF7', light: '#000000', provisional: true },
+
+    // Active/accent colour (links, hover, focus) — owner ruling on
+    // workspace#1596: the mark's own yellow ink is PublicPress's
+    // active/accent colour. `dark` is that ruled hex, unchanged
+    // (16.79:1 on black — see `publicPressTokens.test.ts`).
+    //
+    // That same hex is only ~1.25:1 on white, so it can never be text or a
+    // thin line in light mode — only a fill sitting behind dark text/icons
+    // (the mark's own block-and-knockout convention). `light` below is a
+    // deeper variant for light-mode TEXT use: same hue, the smallest
+    // lightness reduction that still clears 4.5:1 on white (~4.51:1).
+    // Marked provisional as a whole — this derived value is not yet a
+    // ruling, and needs the owner's confirmation.
+    active: { dark: '#FFE800', light: '#837800', provisional: true },
   },
 
   type: {

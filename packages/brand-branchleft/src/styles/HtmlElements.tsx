@@ -8,6 +8,22 @@ import * as React from 'react';
  * to plain markup automatically, so there is nothing for consumers to
  * import here.
  */
+/**
+ * Storybook-only demo layout for a form field row (label + control) — not
+ * part of `elements.css`, which deliberately ships no form-row grid (see
+ * that file's own comments): a consumer's markup decides label/control
+ * placement, this fixture just needs its own so a bare `label` + `input`
+ * pair (each sized only by its own content, per the stylesheet) doesn't
+ * read as two randomly-spaced inline items.
+ */
+const fieldRowStyle: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: '11rem 1fr',
+  alignItems: 'center',
+  columnGap: '1rem',
+  marginBottom: '0.75rem',
+};
+
 export function HtmlElements(): React.JSX.Element {
   return (
     <div>
@@ -78,13 +94,13 @@ export function HtmlElements(): React.JSX.Element {
       </figure>
 
       <form>
-        <fieldset>
+        <fieldset style={{ maxWidth: '36rem' }}>
           <legend>Example form</legend>
-          <div>
+          <div style={fieldRowStyle}>
             <label htmlFor="html-elements-name">Name</label>
             <input id="html-elements-name" type="text" placeholder="Ada Lovelace" />
           </div>
-          <div>
+          <div style={fieldRowStyle}>
             <label htmlFor="html-elements-invalid">Email (invalid state demo)</label>
             <input
               id="html-elements-invalid"
@@ -94,29 +110,35 @@ export function HtmlElements(): React.JSX.Element {
               aria-invalid="true"
               aria-describedby="html-elements-invalid-error"
             />
-            <p id="html-elements-invalid-error" className="bl-form-error">
-              Enter a valid email address.
-            </p>
           </div>
-          <div>
+          <p
+            id="html-elements-invalid-error"
+            className="bl-form-error"
+            style={{ marginInlineStart: '12rem' }}
+          >
+            Enter a valid email address.
+          </p>
+          <div style={fieldRowStyle}>
             <label htmlFor="html-elements-select">Choice</label>
             <select id="html-elements-select">
               <option>One</option>
               <option>Two</option>
             </select>
           </div>
-          <div>
+          <div style={fieldRowStyle}>
             <label htmlFor="html-elements-textarea">Message</label>
             <textarea id="html-elements-textarea" rows={3} placeholder="Say something" />
           </div>
-          <div>
+          <div style={fieldRowStyle}>
             <label htmlFor="html-elements-disabled">Disabled field</label>
             <input id="html-elements-disabled" type="text" disabled placeholder="Disabled" />
           </div>
-          <button type="button">Filled button</button>{' '}
-          <button type="button" disabled>
-            Disabled button
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button type="button">Filled button</button>
+            <button type="button" disabled>
+              Disabled button
+            </button>
+          </div>
         </fieldset>
       </form>
     </div>

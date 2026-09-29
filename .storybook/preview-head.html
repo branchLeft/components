@@ -1,0 +1,38 @@
+<script>
+  // A GitHub Pages deploy replaces every hashed chunk file with a new
+  // deploy's set; a tab left open across that replacement still holds the
+  // OLD index/iframe HTML, which references chunk URLs the new deploy no
+  // longer serves. Navigating within that stale tab (Storybook's own
+  // sidebar routing, or a docs page requesting another story's chunk) then
+  // fails with "Failed to fetch dynamically imported module" — reloading
+  // fetches the current HTML and its current, matching chunk set, which
+  // resolves it. Guarded by a timestamp (not a one-shot flag) so a genuinely
+  // broken deploy can't reload-loop the tab: at most one recovery attempt
+  // per 10 seconds.
+  (function () {
+    var KEY = 'sb-chunk-reload-at';
+    function reloadOnce() {
+      var last = Number(sessionStorage.getItem(KEY) || 0);
+      if (Date.now() - last < 10000) return;
+      sessionStorage.setItem(KEY, String(Date.now()));
+      location.reload();
+    }
+    // Vite's own build emits this event when a dynamic import() it
+    // generated fails to load, in both dev and a static build.
+    window.addEventListener('vite:preloadError', function (event) {
+      event.preventDefault();
+      reloadOnce();
+    });
+    // Belt-and-braces: match the failure by message too, in case a chunk
+    // fails in a way that doesn't surface as vite:preloadError (e.g. a
+    // dynamic import triggered from manager -> preview messaging rather
+    // than Vite's own preload machinery).
+    window.addEventListener('unhandledrejection', function (event) {
+      var reason = event && event.reason;
+      var message = reason && (reason.message || String(reason));
+      if (message && /Failed to fetch dynamically imported module/i.test(message)) {
+        reloadOnce();
+      }
+    });
+  })();
+</script>

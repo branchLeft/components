@@ -7,6 +7,36 @@ import {
 } from '@branchleft/components';
 import { publicPressTokens } from './publicPressTokens';
 
+// Local WCAG 2.x contrast helper — deliberately not shared with
+// brand-branchleft's own copy (`styles/testUtils/colourMath.ts`): brand
+// packages don't depend on each other (see the workspace CLAUDE.md), and
+// this is the only contrast check this package needs.
+function hexToRgb(hex: string): readonly [number, number, number] {
+  const match = /^#([0-9a-fA-F]{6})$/.exec(hex.trim());
+  if (!match) {
+    throw new Error(`Expected a #rrggbb hex colour, got: ${hex}`);
+  }
+  const n = parseInt(match[1], 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function srgbChannelToLinear(channel8bit: number): number {
+  const c = channel8bit / 255;
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
+
+function relativeLuminance([r, g, b]: readonly [number, number, number]): number {
+  const [rl, gl, bl] = [r, g, b].map(srgbChannelToLinear);
+  return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
+}
+
+function contrastRatio(hexA: string, hexB: string): number {
+  const lumA = relativeLuminance(hexToRgb(hexA));
+  const lumB = relativeLuminance(hexToRgb(hexB));
+  const [lighter, darker] = lumA > lumB ? [lumA, lumB] : [lumB, lumA];
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 const brands: { name: string; tokens: DesignTokens }[] = [
   { name: 'PublicPress', tokens: publicPressTokens },
 ];
@@ -92,6 +122,28 @@ describe('PublicPress tokens', () => {
     expect(publicPressTokens.type.scale.every((step) => step.provisional)).toBe(true);
     expect(publicPressTokens.spacing.every((step) => step.provisional)).toBe(true);
     expect(publicPressTokens.radius.every((step) => step.provisional)).toBe(true);
+  });
+
+  it('rules the active/accent colour as the mark yellow, dark-mode only as text/lines', () => {
+    const active = publicPressTokens.colour.active;
+    expect(active).toBeDefined();
+    expect(active?.dark).toBe('#FFE800');
+    // Owner ruling: the mark's own yellow ink, ruled as active/accent on
+    // workspace#1596 — clears the 4.5:1 text/UI-component floor on black by
+    // a wide margin.
+    expect(contrastRatio(active!.dark, '#000000')).toBeGreaterThan(15);
+  });
+
+  it('derives a light-mode active variant that actually clears 4.5:1 on white', () => {
+    const active = publicPressTokens.colour.active!;
+    // The ruled yellow itself fails badly on white — this is exactly why a
+    // separate, deeper light-mode value exists at all.
+    expect(contrastRatio(active.dark, '#ffffff')).toBeLessThan(1.5);
+    expect(contrastRatio(active.light, '#ffffff')).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('marks the derived light-mode active variant provisional (not yet an owner ruling)', () => {
+    expect(publicPressTokens.colour.active?.provisional).toBe(true);
   });
 });
 

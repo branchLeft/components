@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ValuesColoursSwatch } from './ValuesColoursSwatch';
+import { themedCanvas } from '../../../../test-utils/ThemedCanvas';
 import '../styles';
 
 const meta = {
@@ -9,6 +10,7 @@ const meta = {
     layout: 'padded',
   },
   tags: ['autodocs'],
+  decorators: [themedCanvas],
 } satisfies Meta<typeof ValuesColoursSwatch>;
 
 export default meta;

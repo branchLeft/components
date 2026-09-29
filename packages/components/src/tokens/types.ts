@@ -25,6 +25,13 @@ export interface ColourTokens {
   muted: ColourValue;
   /** Hairline border/divider colour. */
   hairline: ColourValue;
+  /**
+   * Active/accent colour — links, hover, focus. Optional: not every brand
+   * has ruled a distinct one yet (a brand may still fold this role into
+   * `brandAccent`), but the shape exists here so a brand that HAS ruled one
+   * (see `publicPressTokens`) doesn't need its own one-off colour key.
+   */
+  active?: ColourValue;
 }
 
 export interface TypeFace {

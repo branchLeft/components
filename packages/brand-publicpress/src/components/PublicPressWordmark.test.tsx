@@ -2,7 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { axe } from '../../../../test-utils/axe';
 import { PublicPressWordmark } from './PublicPressWordmark';
-import { PUBLIC_PRESS_GLYPHS } from './publicPressMark.generated';
+import {
+  PUBLIC_PRESS_GLYPHS,
+  PUBLIC_PRESS_INKS,
+  type PublicPressColor,
+} from './publicPressMark.generated';
 
 // The wordmark's block: 260-unit side insets + the sequence advances
 // (pilcrowP, u, b, l, i, c, the 60-unit gap, pilcrowP, r, e, s, s, with the
@@ -51,6 +55,27 @@ describe('PublicPressWordmark', () => {
     expect(html).toContain('fill="#000000"');
     expect(html).not.toContain('fill="#FAFAF7"');
   });
+
+  it.each(Object.keys(PUBLIC_PRESS_INKS) as PublicPressColor[])(
+    "renders every glyph's fill from publicPressInks.%s — no arg/control state ever bleeds a different colour's fill in",
+    (color) => {
+      const ink = PUBLIC_PRESS_INKS[color];
+      const html = renderToStaticMarkup(<PublicPressWordmark color={color} />);
+      expect(html).toContain(`fill="${ink.block}"`);
+      expect(html).toContain(`fill="${ink.letters}"`);
+      // Every other ink's block fill must be absent — catches a stuck/
+      // cross-story colour exactly the way it would visually appear.
+      for (const other of Object.keys(PUBLIC_PRESS_INKS) as PublicPressColor[]) {
+        if (
+          other !== color &&
+          PUBLIC_PRESS_INKS[other].block !== ink.block &&
+          PUBLIC_PRESS_INKS[other].block !== ink.letters
+        ) {
+          expect(html).not.toContain(`fill="${PUBLIC_PRESS_INKS[other].block}"`);
+        }
+      }
+    }
+  );
 
   it('renders exactly two pilcrow-P glyphs and nine other letters', () => {
     const html = renderToStaticMarkup(<PublicPressWordmark />);

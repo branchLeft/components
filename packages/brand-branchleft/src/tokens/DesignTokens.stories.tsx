@@ -9,6 +9,20 @@ const meta = {
     layout: 'padded',
   },
   tags: ['autodocs'],
+  argTypes: {
+    // A fixed, whole-token-set fixture, not meant for interactive editing —
+    // the Controls addon's default JSON-tree renderer for a non-primitive
+    // value also fails color-contrast in both themes. Overriding the
+    // type/default columns to plain text avoids that renderer entirely;
+    // disabling the row outright (`table.disable`) isn't an option here —
+    // `tokens` is this component's only prop, so an empty Args table falls
+    // back to Storybook's own "couldn't be auto-generated" notice, which
+    // has the same colour-contrast bug.
+    tokens: {
+      control: false,
+      table: { type: { summary: 'DesignTokens' }, defaultValue: { summary: 'branchLeftTokens' } },
+    },
+  },
 } satisfies Meta<typeof DesignTokensDocs>;
 
 export default meta;

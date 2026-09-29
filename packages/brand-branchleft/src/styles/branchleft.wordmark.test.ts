@@ -42,4 +42,15 @@ describe('branchleft.css wordmark', () => {
     expect(body).toMatch(/font-size\s*:\s*var\(--bl-text-wordmark-hero\)/);
     expect(body).toMatch(/line-height\s*:\s*var\(--bl-leading-wordmark-hero\)/);
   }, 30_000);
+
+  it("caps the built Syne @font-face's own weight range at the wordmark weight", async () => {
+    const css = await buildStylesheet();
+    const fontFace = css.match(/@font-face\s*\{[^}]*font-family:\s*['"]?Syne['"]?[^}]*\}/)?.[0];
+    expect(fontFace, 'Syne @font-face').toBeDefined();
+    const range = fontFace?.match(/font-weight\s*:\s*([^;}]+)[;}]/)?.[1].trim();
+    // A browser only ever renders a weight inside this declared range — a
+    // heavier request (600+) is clamped to the top of it, never rendered as
+    // a real loaded weight above `--bl-weight-wordmark` (500).
+    expect(range).toBe('400 500');
+  }, 30_000);
 });

@@ -2,7 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { axe } from '../../../../test-utils/axe';
 import { PublicPressLogo } from './PublicPressLogo';
-import { PUBLIC_PRESS_GLYPHS } from './publicPressMark.generated';
+import {
+  PUBLIC_PRESS_GLYPHS,
+  PUBLIC_PRESS_INKS,
+  type PublicPressColor,
+} from './publicPressMark.generated';
 
 // The logo block is square, side = the wordmark's 1340-unit block height.
 // Hardcoded independently of the generated module so a geometry regression
@@ -49,6 +53,25 @@ describe('PublicPressLogo', () => {
     expect(html).toContain('fill="#000000"');
     expect(html).not.toContain('fill="#FAFAF7"');
   });
+
+  it.each(Object.keys(PUBLIC_PRESS_INKS) as PublicPressColor[])(
+    "renders every glyph's fill from publicPressInks.%s — no arg/control state ever bleeds a different colour's fill in",
+    (color) => {
+      const ink = PUBLIC_PRESS_INKS[color];
+      const html = renderToStaticMarkup(<PublicPressLogo color={color} />);
+      expect(html).toContain(`fill="${ink.block}"`);
+      expect(html).toContain(`fill="${ink.letters}"`);
+      for (const other of Object.keys(PUBLIC_PRESS_INKS) as PublicPressColor[]) {
+        if (
+          other !== color &&
+          PUBLIC_PRESS_INKS[other].block !== ink.block &&
+          PUBLIC_PRESS_INKS[other].block !== ink.letters
+        ) {
+          expect(html).not.toContain(`fill="${PUBLIC_PRESS_INKS[other].block}"`);
+        }
+      }
+    }
+  );
 
   it('renders exactly one pilcrow-P glyph', () => {
     const html = renderToStaticMarkup(<PublicPressLogo />);
