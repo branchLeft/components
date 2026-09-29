@@ -14,7 +14,12 @@ function JsxRuntimeProbe() {
 const meta = {
   title: 'Internal/JsxRuntimeProbe',
   component: JsxRuntimeProbe,
-  tags: ['autodocs'],
+  // '!dev' removes the built-in 'dev' tag every story gets by default,
+  // which is what the manager's sidebar filters on — this story stops
+  // appearing in the published sidebar/docs nav while staying in
+  // storybook-static's index.json, so scripts/storybook-a11y-check.mjs
+  // (which reads that index directly, not the sidebar) still renders it.
+  tags: ['!dev'],
 } satisfies Meta<typeof JsxRuntimeProbe>;
 
 export default meta;

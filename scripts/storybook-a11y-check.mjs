@@ -31,6 +31,16 @@ const THEMES = ['dark', 'light'];
 // count, with headroom for it to grow.
 const OVERALL_TIMEOUT_MS = 10 * 60 * 1000;
 
+// The explicit, documented bound the DOM-quiet wait below enforces: this
+// script always watches each story's root for the full DOM_QUIET_CAP_MS
+// after its initial render (no early exit), then checks whether anything
+// mutated in the last QUIET_MS of that window. Quiet by then: scanned as
+// rendered. Still mutating: the check fails (`still-mutating`) rather
+// than scanning content that might not be final. A story whose real
+// content only appears after DOM_QUIET_CAP_MS has elapsed is not covered.
+const QUIET_MS = 300;
+const DOM_QUIET_CAP_MS = 1500;
+
 const CONTENT_TYPES = {
   '.html': 'text/html',
   '.js': 'text/javascript',
@@ -272,43 +282,6 @@ async function main() {
                     });
                   })
               );
-              // "Has children" alone only proves an INITIAL render — a
-              // story whose real content lands later (a timer, a delayed
-              // fetch) would still get scanned while still showing a
-              // placeholder; a mutation-quiet check alone doesn't catch
-              // that either, since a story that mutates once, waits, then
-              // mutates again looks "quiet" in between. A 2s floor —
-              // comfortably past this suite's own sabotage case (a story
-              // whose low-contrast content appears at 1.5s) — plus the
-              // quiet-DOM wait below for anything slower still.
-              await page.waitForTimeout(2000);
-              await page.evaluate(
-                () =>
-                  new Promise((resolve) => {
-                    const root = document.querySelector('#storybook-root, #storybook-docs');
-                    if (!root) {
-                      resolve(undefined);
-                      return;
-                    }
-                    let quietTimer;
-                    const hardCap = setTimeout(() => {
-                      observer.disconnect();
-                      clearTimeout(quietTimer);
-                      resolve(undefined);
-                    }, 3000);
-                    const settle = () => {
-                      clearTimeout(quietTimer);
-                      quietTimer = setTimeout(() => {
-                        observer.disconnect();
-                        clearTimeout(hardCap);
-                        resolve(undefined);
-                      }, 400);
-                    };
-                    const observer = new MutationObserver(settle);
-                    observer.observe(root, { childList: true, subtree: true, attributes: true });
-                    settle();
-                  })
-              );
             } catch {
               rendered = false;
             }
@@ -320,6 +293,51 @@ async function main() {
                 kind: 'empty-render',
                 detail: [`${rootSelector} has no children after 10s — the story never rendered`],
               });
+            }
+
+            // "Has children" alone only proves an INITIAL render — a story
+            // whose real content lands later (a timer, a delayed fetch)
+            // would still get scanned while still showing a placeholder.
+            // Deliberately no early exit on first sight of quiet: that
+            // would resolve before a later mutation had a chance to
+            // happen at all. Watches for the full bound instead; see
+            // DOM_QUIET_CAP_MS above for exactly what it does and doesn't
+            // cover.
+            if (rendered) {
+              const quiet = await page.evaluate(
+                ({ quietMs, capMs }) =>
+                  new Promise((resolve) => {
+                    const root = document.querySelector('#storybook-root, #storybook-docs');
+                    if (!root) {
+                      resolve({ settled: true });
+                      return;
+                    }
+                    let lastMutationAt = 0;
+                    const observer = new MutationObserver(() => {
+                      lastMutationAt = Date.now();
+                    });
+                    observer.observe(root, { childList: true, subtree: true, attributes: true });
+                    setTimeout(() => {
+                      observer.disconnect();
+                      const quietForMs = lastMutationAt === 0 ? capMs : Date.now() - lastMutationAt;
+                      resolve({ settled: quietForMs >= quietMs });
+                    }, capMs);
+                  }),
+                { quietMs: QUIET_MS, capMs: DOM_QUIET_CAP_MS }
+              );
+              if (!quiet.settled) {
+                rendered = false;
+                failures.push({
+                  id: entry.id,
+                  theme,
+                  kind: 'still-mutating',
+                  detail: [
+                    `${rootSelector} was still mutating ${DOM_QUIET_CAP_MS}ms after ` +
+                      `initial render (story ${entry.id}) — failing rather than scanning ` +
+                      `content that may not be its final state`,
+                  ],
+                });
+              }
             }
 
             if (pageErrors.length > 0) {
