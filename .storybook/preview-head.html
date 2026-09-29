@@ -1,4 +1,4 @@
-<script>
+<script type="module">
   // A GitHub Pages deploy replaces every hashed chunk file with a new
   // deploy's set; a tab left open across that replacement still holds the
   // OLD index/iframe HTML, which references chunk URLs the new deploy no
@@ -8,31 +8,49 @@
   // fetches the current HTML and its current, matching chunk set, which
   // resolves it. Guarded by a timestamp (not a one-shot flag) so a genuinely
   // broken deploy can't reload-loop the tab: at most one recovery attempt
-  // per 10 seconds.
-  (function () {
-    var KEY = 'sb-chunk-reload-at';
-    function reloadOnce() {
-      var last = Number(sessionStorage.getItem(KEY) || 0);
-      if (Date.now() - last < 10000) return;
-      sessionStorage.setItem(KEY, String(Date.now()));
-      location.reload();
-    }
-    // Vite's own build emits this event when a dynamic import() it
-    // generated fails to load, in both dev and a static build.
-    window.addEventListener('vite:preloadError', function (event) {
-      event.preventDefault();
-      reloadOnce();
-    });
-    // Belt-and-braces: match the failure by message too, in case a chunk
-    // fails in a way that doesn't surface as vite:preloadError (e.g. a
-    // dynamic import triggered from manager -> preview messaging rather
-    // than Vite's own preload machinery).
-    window.addEventListener('unhandledrejection', function (event) {
-      var reason = event && event.reason;
-      var message = reason && (reason.message || String(reason));
-      if (message && /Failed to fetch dynamically imported module/i.test(message)) {
-        reloadOnce();
+  // per 10 seconds — and when that guard skips the reload, the original
+  // fetch error is left to surface rather than swallowed.
+  //
+  // `import.meta.hot` only exists under Vite's dev server, never in a
+  // static build — a stale CONTENT-HASHED chunk is a published-build-only
+  // failure mode (dev serves source, unhashed, straight off disk), and
+  // reload-on-error while actively developing would just mask a real error
+  // behind a refresh.
+  if (!import.meta.hot) {
+    (function () {
+      var KEY = 'sb-chunk-reload-at';
+      function canReload() {
+        var last = Number(sessionStorage.getItem(KEY) || 0);
+        return Date.now() - last >= 10000;
       }
-    });
-  })();
+      function reload() {
+        sessionStorage.setItem(KEY, String(Date.now()));
+        location.reload();
+      }
+      // Vite's own build emits this event when a dynamic import() it
+      // generated fails to load, in both dev and a static build. Only
+      // `preventDefault()` when a reload is actually about to happen —
+      // otherwise Vite's own default (rethrowing the failure) is left
+      // alone, so the original "Failed to fetch dynamically imported
+      // module" error still surfaces instead of being swallowed silently.
+      window.addEventListener('vite:preloadError', function (event) {
+        if (!canReload()) return;
+        event.preventDefault();
+        reload();
+      });
+      // Belt-and-braces: match the failure by message too, in case a chunk
+      // fails in a way that doesn't surface as vite:preloadError (e.g. a
+      // dynamic import triggered from manager -> preview messaging rather
+      // than Vite's own preload machinery). Same "don't swallow unless
+      // actually reloading" rule applies.
+      window.addEventListener('unhandledrejection', function (event) {
+        var reason = event && event.reason;
+        var message = reason && (reason.message || String(reason));
+        if (!(message && /Failed to fetch dynamically imported module/i.test(message))) return;
+        if (!canReload()) return;
+        event.preventDefault();
+        reload();
+      });
+    })();
+  }
 </script>

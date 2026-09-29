@@ -36,7 +36,7 @@ function Swatch({
 }): React.JSX.Element {
   const isCssColor = /^#|^rgb|^hsl|^color-mix/.test(value);
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
       {isCssColor && (
         <span
           style={{
@@ -51,7 +51,17 @@ function Swatch({
           aria-hidden="true"
         />
       )}
-      <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.8rem' }}>
+      <span
+        style={{
+          fontFamily: 'ui-monospace, monospace',
+          fontSize: '0.8rem',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          minWidth: 0,
+        }}
+        title={`${name}: ${value}${provisional ? ' (PROVISIONAL)' : ''}`}
+      >
         {name}: {value}
         {provisional ? ' (PROVISIONAL)' : ''}
       </span>
@@ -63,7 +73,13 @@ function Swatch({
 export function DesignTokensDocs({ tokens }: Readonly<DesignTokensDocsProps>): React.JSX.Element {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: '48rem' }}>
-      <h1 style={{ fontSize: '1.5rem', marginBlockEnd: '0.25rem' }}>
+      <h1
+        style={{
+          fontFamily: tokens.type.faces.display.fallbackStack,
+          fontSize: '1.5rem',
+          marginBlockEnd: '0.25rem',
+        }}
+      >
         {tokens.brand.toUpperCase()} DESIGN TOKENS
       </h1>
 
@@ -75,9 +91,25 @@ export function DesignTokensDocs({ tokens }: Readonly<DesignTokensDocsProps>): R
               <Swatch
                 name={`${name} · light`}
                 value={value.light}
-                provisional={value.provisional}
+                provisional={value.lightProvisional ?? value.provisional}
               />
-              <Swatch name={`${name} · dark`} value={value.dark} provisional={value.provisional} />
+              <Swatch
+                name={`${name} · dark`}
+                value={value.dark}
+                provisional={value.darkProvisional ?? value.provisional}
+              />
+              {value.note && (
+                <p
+                  style={{
+                    gridColumn: '1 / -1',
+                    fontSize: '0.75rem',
+                    opacity: 0.7,
+                    margin: '-0.25rem 0 0.25rem',
+                  }}
+                >
+                  {value.note}
+                </p>
+              )}
             </React.Fragment>
           ))}
         </div>
@@ -98,7 +130,15 @@ export function DesignTokensDocs({ tokens }: Readonly<DesignTokensDocsProps>): R
                 {role.toUpperCase()} — {face.family} ({face.weights.join(', ')})
                 {face.provisional ? ' [PROVISIONAL]' : ''}
               </div>
-              <div style={{ fontSize: '0.75rem', opacity: 0.6 }}>{face.source}</div>
+              <div
+                style={{
+                  fontFamily: tokens.type.faces.body.fallbackStack,
+                  fontSize: '0.75rem',
+                  opacity: 0.6,
+                }}
+              >
+                {face.source}
+              </div>
             </div>
           ))}
         </div>
@@ -114,7 +154,11 @@ export function DesignTokensDocs({ tokens }: Readonly<DesignTokensDocsProps>): R
                 fontFamily: tokens.type.faces.display.fallbackStack,
                 fontSize: step.fontSize,
                 lineHeight: step.lineHeight,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
+              title={`${step.name.toUpperCase()} — ${step.fontSize} / ${step.lineHeight}${step.provisional ? ' [PROVISIONAL]' : ''}`}
             >
               {step.name.toUpperCase()} — {step.fontSize} / {step.lineHeight}
               {step.provisional ? ' [PROVISIONAL]' : ''}
@@ -127,7 +171,27 @@ export function DesignTokensDocs({ tokens }: Readonly<DesignTokensDocsProps>): R
         <h2 style={headingStyle}>Spacing</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
           {tokens.spacing.map((step) => (
-            <div key={step.name} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div
+              key={step.name}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '7rem 1fr',
+                alignItems: 'center',
+                gap: '0.75rem',
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: 'ui-monospace, monospace',
+                  fontSize: '0.8rem',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {step.name}: {step.value}
+                {step.provisional ? ' (PROVISIONAL)' : ''}
+              </span>
               <span
                 style={{
                   display: 'inline-block',
@@ -139,10 +203,6 @@ export function DesignTokensDocs({ tokens }: Readonly<DesignTokensDocsProps>): R
                 }}
                 aria-hidden="true"
               />
-              <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.8rem' }}>
-                {step.name}: {step.value}
-                {step.provisional ? ' (PROVISIONAL)' : ''}
-              </span>
             </div>
           ))}
         </div>
@@ -163,15 +223,23 @@ export function DesignTokensDocs({ tokens }: Readonly<DesignTokensDocsProps>): R
             >
               <span
                 style={{
-                  display: 'inline-block',
+                  display: 'block',
                   width: '3rem',
                   height: '3rem',
                   border: '1px solid rgba(128,128,128,0.4)',
                   borderRadius: step.value,
+                  boxSizing: 'border-box',
                 }}
                 aria-hidden="true"
               />
-              <span style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.75rem' }}>
+              <span
+                style={{
+                  fontFamily: 'ui-monospace, monospace',
+                  fontSize: '0.75rem',
+                  whiteSpace: 'nowrap',
+                  textAlign: 'center',
+                }}
+              >
                 {step.name}: {step.value}
                 {step.provisional ? ' (PROVISIONAL)' : ''}
               </span>

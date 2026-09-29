@@ -22,6 +22,15 @@ const STATIC_DIR = path.join(ROOT, 'storybook-static');
 const PORT = 6474;
 const THEMES = ['dark', 'light'];
 
+// Nothing below is allowed to hang the process indefinitely — every page
+// load/wait already carries its own bounded timeout (see below), and this
+// is the backstop: if the whole run somehow still exceeds it (a browser
+// that stops responding, a hung close()), the process is killed outright
+// rather than left running unattended. Sized well above every entries x
+// themes x per-entry-timeout worst case for this repo's current story
+// count, with headroom for it to grow.
+const OVERALL_TIMEOUT_MS = 10 * 60 * 1000;
+
 const CONTENT_TYPES = {
   '.html': 'text/html',
   '.js': 'text/javascript',
@@ -97,7 +106,15 @@ async function analyzeColorContrast(page) {
   const ALREADY_RUNNING = 'Axe is already running';
   for (let attempt = 1; attempt <= 5; attempt += 1) {
     try {
-      return await new AxeBuilder({ page }).withRules(['color-contrast']).analyze();
+      // `analyze()` runs axe-core inside the page and has no timeout of its
+      // own — raced from the Node side so a stuck evaluation can't hang
+      // this script indefinitely either.
+      return await Promise.race([
+        new AxeBuilder({ page }).withRules(['color-contrast']).analyze(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('axe-core analyze() timed out after 20s')), 20_000)
+        ),
+      ]);
     } catch (err) {
       if (attempt === 5 || !String(err).includes(ALREADY_RUNNING)) throw err;
       await page.waitForTimeout(300 * attempt);
@@ -174,17 +191,36 @@ async function main() {
   const browser = await chromium.launch();
   const failures = [];
 
+  // The backstop described above `OVERALL_TIMEOUT_MS`: fires regardless of
+  // what the try/finally below is doing, since nothing inside it can clear
+  // or delay a `setTimeout` it never touches. Cleared once `main()` returns
+  // normally (or throws) via the `clearTimeout` in the outer `finally`.
+  const watchdog = setTimeout(() => {
+    console.error(
+      `Storybook a11y check: exceeded the overall ${OVERALL_TIMEOUT_MS}ms timeout — killing the process rather than hanging.`
+    );
+    process.exit(1);
+  }, OVERALL_TIMEOUT_MS);
+
   try {
     for (const theme of THEMES) {
       // One context per theme, not per entry (116 short-lived contexts
       // exhausted file descriptors on a constrained CI runner and surfaced
       // as an in-page Storybook error rather than a script failure) — a
       // fresh page per entry is enough isolation for a read-only visit.
-      const context = await browser.newContext({ viewport: { width: 1024, height: 900 } });
+      const context = await browser.newContext({
+        viewport: { width: 1024, height: 900 },
+        reducedMotion: 'reduce',
+      });
       try {
-        for (const entry of entries) {
+        for (const [entryIndex, entry] of entries.entries()) {
           const viewMode = entry.type === 'docs' ? 'docs' : 'story';
           const url = `http://127.0.0.1:${PORT}/iframe.html?id=${entry.id}&viewMode=${viewMode}&globals=theme:${theme}`;
+          // Printed before the visit, not just on failure — the one signal
+          // that tells a human watching a hung run where it stopped,
+          // without waiting for the (bounded, but real) per-entry timeouts
+          // to actually expire.
+          console.log(`[${theme}] (${entryIndex + 1}/${entries.length}) ${entry.id} — visiting…`);
           const page = await context.newPage();
           const pageErrors = [];
           page.on('pageerror', (err) => pageErrors.push(String(err)));
@@ -194,25 +230,111 @@ async function main() {
 
           try {
             await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
-            // Longer than any token's `motion.duration` (500ms, the
-            // slowest) — PageTransition's own fade-in is still mid-animation
-            // (genuinely low opacity, not a colour-token defect) at 250ms.
-            await page.waitForTimeout(700);
+
+            const rootSelector = viewMode === 'docs' ? '#storybook-docs' : '#storybook-root';
+            let rendered = true;
+            try {
+              // A real "the story is actually on screen" signal, not a
+              // fixed delay tuned to one animation: the root Storybook
+              // mounts into has at least one child, and every requested
+              // font has finished loading (a font swap after the wait
+              // would still count as "rendered" for our purposes, but
+              // waiting for it removes one more source of a flaky
+              // contrast read against fallback-font metrics). Reduced
+              // motion (this context's own setting) makes framer-motion's
+              // own components skip to their end state immediately, so
+              // this resolves right away for a working story rather than
+              // needing its own animation-specific wait.
+              await page.waitForFunction(
+                (selector) => {
+                  const root = document.querySelector(selector);
+                  return Boolean(root && root.childElementCount > 0);
+                },
+                rootSelector,
+                { timeout: 10_000 }
+              );
+              // Raced against a hard timeout INSIDE the page, not just
+              // awaited from Node: `document.fonts.ready` is a promise this
+              // script doesn't control, and a stalled font fetch (or a
+              // network-less sandbox) would otherwise leave this `evaluate`
+              // pending forever — the one gap that let a previous run hang
+              // with nothing to show for it.
+              await page.evaluate(
+                () =>
+                  new Promise((resolve) => {
+                    const timer = setTimeout(resolve, 5000);
+                    document.fonts.ready.then(() => {
+                      clearTimeout(timer);
+                      resolve();
+                    });
+                  })
+              );
+              // "Has children" alone only proves an INITIAL render — a
+              // story whose real content lands later (a timer, a delayed
+              // fetch) would still get scanned while still showing a
+              // placeholder; a mutation-quiet check alone doesn't catch
+              // that either, since a story that mutates once, waits, then
+              // mutates again looks "quiet" in between. A 2s floor —
+              // comfortably past this suite's own sabotage case (a story
+              // whose low-contrast content appears at 1.5s) — plus the
+              // quiet-DOM wait below for anything slower still.
+              await page.waitForTimeout(2000);
+              await page.evaluate(
+                () =>
+                  new Promise((resolve) => {
+                    const root = document.querySelector('#storybook-root, #storybook-docs');
+                    if (!root) {
+                      resolve(undefined);
+                      return;
+                    }
+                    let quietTimer;
+                    const hardCap = setTimeout(() => {
+                      observer.disconnect();
+                      clearTimeout(quietTimer);
+                      resolve(undefined);
+                    }, 3000);
+                    const settle = () => {
+                      clearTimeout(quietTimer);
+                      quietTimer = setTimeout(() => {
+                        observer.disconnect();
+                        clearTimeout(hardCap);
+                        resolve(undefined);
+                      }, 400);
+                    };
+                    const observer = new MutationObserver(settle);
+                    observer.observe(root, { childList: true, subtree: true, attributes: true });
+                    settle();
+                  })
+              );
+            } catch {
+              rendered = false;
+            }
+
+            if (!rendered) {
+              failures.push({
+                id: entry.id,
+                theme,
+                kind: 'empty-render',
+                detail: [`${rootSelector} has no children after 10s — the story never rendered`],
+              });
+            }
 
             if (pageErrors.length > 0) {
               failures.push({ id: entry.id, theme, kind: 'render-error', detail: pageErrors });
             }
 
-            const results = await analyzeColorContrast(page);
-            if (results.violations.length > 0) {
-              failures.push({
-                id: entry.id,
-                theme,
-                kind: 'color-contrast',
-                detail: results.violations.map((v) => ({
-                  targets: v.nodes.map((n) => n.target.join(' ')),
-                })),
-              });
+            if (rendered) {
+              const results = await analyzeColorContrast(page);
+              if (results.violations.length > 0) {
+                failures.push({
+                  id: entry.id,
+                  theme,
+                  kind: 'color-contrast',
+                  detail: results.violations.map((v) => ({
+                    targets: v.nodes.map((n) => n.target.join(' ')),
+                  })),
+                });
+              }
             }
           } catch (err) {
             failures.push({ id: entry.id, theme, kind: 'navigation-error', detail: String(err) });
@@ -227,6 +349,7 @@ async function main() {
   } finally {
     await browser.close();
     server.close();
+    clearTimeout(watchdog);
   }
 
   if (failures.length > 0) {

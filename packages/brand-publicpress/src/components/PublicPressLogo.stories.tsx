@@ -9,10 +9,10 @@ const meta = {
   },
   tags: ['autodocs'],
   argTypes: {
-    color: {
-      control: { type: 'inline-radio' },
-      options: ['blue', 'black', 'pink', 'yellow'],
-    },
+    // No editable `color` control by default — see
+    // PublicPressWordmark.stories.tsx's identical comment for why.
+    // `Playground` below re-enables it at the story level, on purpose.
+    color: { control: false },
     height: { control: 'text' },
     title: { control: 'text' },
     decorative: { control: 'boolean' },
@@ -21,6 +21,24 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+/**
+ * Every colour, with the interactive `color` control — the only story
+ * here where changing it is the point. Every other story below pins its
+ * own colour and cannot be changed via args/the URL.
+ */
+export const Playground: Story = {
+  argTypes: {
+    color: {
+      control: { type: 'inline-radio' },
+      options: ['blue', 'black', 'pink', 'yellow'],
+    },
+  },
+  args: {
+    color: 'blue',
+    height: 96,
+  },
+};
 
 /** The default presentation: blue block, paper pilcrow P. */
 export const Blue: Story = {

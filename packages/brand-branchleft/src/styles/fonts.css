@@ -14,11 +14,14 @@
   font-family: 'Syne';
   src: url('./fonts/Syne/Syne-VariableFont_wght.woff2') format('woff2');
   /* Capped at 500 (the weight the branchLeft wordmark itself uses,
-   * `--bl-weight-wordmark`) — Syne gets visibly wider as it gets heavier,
-   * and nothing in this stylesheet is ruled to ask for more than the
-   * wordmark's own weight. Capping the face's own range means a consumer
-   * asking for a heavier `font-weight` renders at 500, the truthfully
-   * loaded weight, rather than the browser's synthetic ("faux") bold. */
+   * `--bl-weight-wordmark`) — Syne gets visibly wider AND visibly heavier
+   * as it gets heavier, and nothing in this stylesheet is ruled to ask for
+   * more than the wordmark's own weight. This range alone does not stop a
+   * browser faking a heavier weight by drawing extra stroke width
+   * (synthetic/"faux" bold) on top of 500 when asked for more — every
+   * selector that sets `--bl-font-wordmark`/Syne also sets
+   * `font-synthesis-weight: none` (see `elements.css`'s `.bl-wordmark`) to
+   * stop that specifically. */
   font-weight: 400 500;
   font-style: normal;
   font-display: swap;

@@ -10,8 +10,24 @@
 export interface ColourValue {
   light: string;
   dark: string;
-  /** True when either `light` or `dark` (or both) is a guess, not a ruling. */
+  /**
+   * True when NEITHER `light` nor `dark` is settled. A mode-specific value
+   * is a guess only on the side `lightProvisional`/`darkProvisional` says
+   * so — those take precedence over this for their own side, so a token
+   * with one ruled mode and one guessed mode doesn't have to claim the
+   * ruled side is provisional just because the other one is.
+   */
   provisional?: boolean;
+  /** True when specifically `light` is a guess, not a ruling. */
+  lightProvisional?: boolean;
+  /** True when specifically `dark` is a guess, not a ruling. */
+  darkProvisional?: boolean;
+  /**
+   * A usage rule that belongs on the rendered token, not only in source —
+   * e.g. a colour that's ruled but restricted to one use (a fill, never
+   * text). Shown under the token's swatches in the docs page.
+   */
+  note?: string;
 }
 
 export interface ColourTokens {

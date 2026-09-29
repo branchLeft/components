@@ -46,14 +46,19 @@ export const publicPressTokens: DesignTokens = {
     // No hairline colour is ruled. Provisional guess only.
     hairline: { dark: '#FAFAF7', light: '#000000', provisional: true },
 
-    // Active/accent colour (links, hover, focus) — owner ruling on
-    // workspace#1596: the mark's own yellow ink, `dark` unchanged (16.79:1
-    // on black — see `publicPressTokens.test.ts`). That hex is only
-    // ~1.25:1 on white, so light mode never uses it as text/a thin line,
-    // only a fill behind dark text/icons (the mark's own knockout
-    // convention). `light` is a same-hue deeper variant for text use
-    // (~4.51:1 on white) — provisional, pending the owner's confirmation.
-    active: { dark: '#FFE800', light: '#837800', provisional: true },
+    // Active/accent colour (links, hover, focus) — owner-ruled, both
+    // modes. `dark` is the mark's own yellow ink (16.79:1 on black — see
+    // `publicPressTokens.test.ts`); that hex is only ~1.25:1 on
+    // `colour.background.light`, so it's the light-mode FILL only, never
+    // text/a thin line — the note below carries that into the rendered
+    // docs, not just here. `light` is the owner-ruled deeper variant for
+    // light-mode text (4.63:1 on `colour.background.light`, 4.84:1 on
+    // white).
+    active: {
+      dark: '#FFE800',
+      light: '#7e7300',
+      note: 'Pure #FFE800 is a light-mode fill only (behind dark text/icons) — never text or a thin line there. #7e7300 is the light-mode TEXT variant.',
+    },
   },
 
   type: {
@@ -99,17 +104,18 @@ export const publicPressTokens: DesignTokens = {
         provisional: true,
       },
     },
-    // No type scale exists for PublicPress. Provisional reuse of
-    // branchLeft's scale wholesale.
+    // Owner ruling: h1-h6 and small are settled (reused from branchLeft's
+    // scale as-is, not a placeholder) — only `body` remains an unruled
+    // reuse.
     scale: [
-      { name: 'h1', fontSize: '2.25rem', lineHeight: '2.5rem', provisional: true },
-      { name: 'h2', fontSize: '1.875rem', lineHeight: '2.25rem', provisional: true },
-      { name: 'h3', fontSize: '1.5rem', lineHeight: '2rem', provisional: true },
-      { name: 'h4', fontSize: '1.25rem', lineHeight: '1.75rem', provisional: true },
-      { name: 'h5', fontSize: '1.125rem', lineHeight: '1.75rem', provisional: true },
-      { name: 'h6', fontSize: '1rem', lineHeight: '1.5rem', provisional: true },
+      { name: 'h1', fontSize: '2.25rem', lineHeight: '2.5rem' },
+      { name: 'h2', fontSize: '1.875rem', lineHeight: '2.25rem' },
+      { name: 'h3', fontSize: '1.5rem', lineHeight: '2rem' },
+      { name: 'h4', fontSize: '1.25rem', lineHeight: '1.75rem' },
+      { name: 'h5', fontSize: '1.125rem', lineHeight: '1.75rem' },
+      { name: 'h6', fontSize: '1rem', lineHeight: '1.5rem' },
       { name: 'body', fontSize: '1rem', lineHeight: '1.6', provisional: true },
-      { name: 'small', fontSize: '0.875rem', lineHeight: '1.25rem', provisional: true },
+      { name: 'small', fontSize: '0.875rem', lineHeight: '1.25rem' },
     ],
   },
 

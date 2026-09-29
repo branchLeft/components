@@ -118,32 +118,54 @@ describe('PublicPress tokens', () => {
     expect(publicPressTokens.type.faces.mono.provisional).toBe(true);
   });
 
-  it('marks its whole type scale, spacing and radius as provisional (none ruled)', () => {
-    expect(publicPressTokens.type.scale.every((step) => step.provisional)).toBe(true);
+  it('settles h1-h6 and small (owner ruling) but leaves spacing, radius and body provisional', () => {
+    const settledNames = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'small']);
+    for (const step of publicPressTokens.type.scale) {
+      expect(Boolean(step.provisional), step.name).toBe(!settledNames.has(step.name));
+    }
     expect(publicPressTokens.spacing.every((step) => step.provisional)).toBe(true);
     expect(publicPressTokens.radius.every((step) => step.provisional)).toBe(true);
   });
 
-  it('rules the active/accent colour as the mark yellow, dark-mode only as text/lines', () => {
+  it('rules the active/accent colour as the mark yellow, both modes, no provisional flag', () => {
     const active = publicPressTokens.colour.active;
     expect(active).toBeDefined();
     expect(active?.dark).toBe('#FFE800');
-    // Owner ruling: the mark's own yellow ink, ruled as active/accent on
-    // workspace#1596 — clears the 4.5:1 text/UI-component floor on black by
-    // a wide margin.
+    expect(active?.light).toBe('#7e7300');
+    expect(active?.provisional).toBeFalsy();
+    expect(active?.lightProvisional).toBeFalsy();
+    expect(active?.darkProvisional).toBeFalsy();
+    // Owner ruling: the mark's own yellow ink as active/accent — clears the
+    // 4.5:1 text/UI-component floor on black by a wide margin.
     expect(contrastRatio(active!.dark, '#000000')).toBeGreaterThan(15);
   });
 
-  it('derives a light-mode active variant that actually clears 4.5:1 on white', () => {
+  it("rules the light-mode active variant against the token set's OWN light background, not a hand-picked white", () => {
     const active = publicPressTokens.colour.active!;
-    // The ruled yellow itself fails badly on white — this is exactly why a
-    // separate, deeper light-mode value exists at all.
-    expect(contrastRatio(active.dark, '#ffffff')).toBeLessThan(1.5);
-    expect(contrastRatio(active.light, '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    const backgroundLight = publicPressTokens.colour.background.light;
+    // The ruled dark-mode yellow itself fails badly on the light background
+    // — this is exactly why a separate, deeper light-mode value exists.
+    expect(contrastRatio(active.dark, backgroundLight)).toBeLessThan(1.5);
+    expect(contrastRatio(active.light, backgroundLight)).toBeGreaterThanOrEqual(4.5);
   });
 
-  it('marks the derived light-mode active variant provisional (not yet an owner ruling)', () => {
-    expect(publicPressTokens.colour.active?.provisional).toBe(true);
+  it('documents the fill-only rule on the token itself, not only in a source comment', () => {
+    expect(publicPressTokens.colour.active?.note).toMatch(/fill only/i);
+    expect(publicPressTokens.colour.active?.note).toMatch(/never text/i);
+  });
+
+  it('has no stylesheet to compare colour values against (unlike branchLeft)', () => {
+    // branchLeftTokens.stylesheet-parity.test.ts compares every colour
+    // token against `@branchleft/brand-branchleft`'s built stylesheet
+    // (`styles/tokens.css`) — the one thing that actually ships a page
+    // theme today. This package ships no equivalent CSS: PublicPress has
+    // no settled site-wide theme yet (see this file's own top-of-file
+    // comment), so there is nothing for a parity test to check `active`,
+    // `brand`, `brandAccent` or any other colour against. Recorded here so
+    // that gap is a stated fact, not a silent omission — once a
+    // PublicPress stylesheet exists, add the same comparison this file's
+    // sibling runs for branchLeft.
+    expect(true).toBe(true);
   });
 });
 

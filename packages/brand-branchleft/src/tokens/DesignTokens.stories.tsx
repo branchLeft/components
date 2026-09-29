@@ -30,11 +30,9 @@ type Story = StoryObj<typeof meta>;
 
 /**
  * The full branchLeft token set — colour (light/dark), type faces and
- * scale, spacing, radius and motion — extracted from `website/app/styles/`.
- * Entries marked PROVISIONAL are not settled by any written source (most
- * notably: the site is dark-only, so every "light" colour value here is a
- * guess, not a ruling) — see the components PR body's "Open questions for
- * the brand owner".
+ * scale, spacing, radius and motion — extracted from `website/app/styles/`
+ * and this package's own settled stylesheet. Entries still marked
+ * PROVISIONAL are not settled by any written source or ruling yet.
  */
 export const Tokens: Story = {
   args: {

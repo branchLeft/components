@@ -442,6 +442,11 @@
   .bl-wordmark {
     font-family: var(--bl-font-wordmark);
     font-weight: var(--bl-weight-wordmark);
+    /* Stops the browser faking a heavier Syne by drawing extra stroke
+     * width on top of the loaded weight (fonts.css's `@font-face` range
+     * alone only stops the face itself rendering above 500 — it doesn't
+     * stop synthetic bold). */
+    font-synthesis-weight: none;
   }
 
   .bl-wordmark--hero {
