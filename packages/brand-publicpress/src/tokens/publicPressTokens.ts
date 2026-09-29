@@ -114,7 +114,7 @@ export const publicPressTokens: DesignTokens = {
       { name: 'h4', fontSize: '1.25rem', lineHeight: '1.75rem' },
       { name: 'h5', fontSize: '1.125rem', lineHeight: '1.75rem' },
       { name: 'h6', fontSize: '1rem', lineHeight: '1.5rem' },
-      { name: 'body', fontSize: '1rem', lineHeight: '1.6', provisional: true },
+      { name: 'body', fontSize: '1rem', lineHeight: '1.6' },
       { name: 'small', fontSize: '0.875rem', lineHeight: '1.25rem' },
     ],
   },

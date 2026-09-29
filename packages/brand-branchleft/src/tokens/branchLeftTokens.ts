@@ -23,11 +23,9 @@ export const branchLeftTokens: DesignTokens = {
     background: { dark: '#000000', light: '#ffffff' },
     foreground: { dark: '#ffffff', light: '#000000' },
 
-    // theme.css: `--color-brand: #b31761`. Same value both modes in
-    // `styles/tokens.css`'s `--bl-color-button-fill` — no distinct
-    // light-mode brand colour is ruled, so `light` here is a structural
-    // reuse, not an independent ruling.
-    brand: { dark: '#b31761', light: '#b31761', provisional: true },
+    // The stylesheet's `--bl-color-button-fill`, the same value in both
+    // modes (white text on it clears 4.5:1 in either).
+    brand: { dark: '#b31761', light: '#b31761' },
     // Ruled, both modes — `styles/tokens.css`'s `--bl-color-active`: dark
     // unchanged (`#ff006e`, 5.48:1 on `--bl-color-bg`); light is the
     // owner's deeper ruling (`#d6005c`, 5.23:1 — `#ff006e` alone is only

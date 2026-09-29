@@ -118,10 +118,9 @@ describe('PublicPress tokens', () => {
     expect(publicPressTokens.type.faces.mono.provisional).toBe(true);
   });
 
-  it('settles h1-h6 and small (owner ruling) but leaves spacing, radius and body provisional', () => {
-    const settledNames = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'small']);
+  it('settles every type-scale size (owner ruling) but leaves spacing and radius provisional', () => {
     for (const step of publicPressTokens.type.scale) {
-      expect(Boolean(step.provisional), step.name).toBe(!settledNames.has(step.name));
+      expect(Boolean(step.provisional), step.name).toBe(false);
     }
     expect(publicPressTokens.spacing.every((step) => step.provisional)).toBe(true);
     expect(publicPressTokens.radius.every((step) => step.provisional)).toBe(true);
