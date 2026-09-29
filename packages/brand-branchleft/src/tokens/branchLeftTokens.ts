@@ -1,18 +1,10 @@
 import type { DesignTokens } from '@branchleft/components';
 
 /**
- * branchLeft design tokens, extracted from the website repo's live styling
- * source of truth: `website/app/styles/theme.css` (imported by `app.css`),
- * `fonts.css` (@font-face weight ranges), `primitives.css`
- * (spacing/radius/motion) and `website/brand/README.md` (source assets,
- * no values), plus this package's own settled, tested stylesheet
- * (`styles/tokens.css`) where a colour has since been ruled beyond that
- * initial extraction. `website/app/theme.css` — no `styles/` segment — is
- * a stale, unimported pre-#41 leftover and NOT a source here. Every
- * non-provisional value is a literal copy from one of those files; see
- * `branchLeftTokens.test.ts`'s stylesheet-comparison test, which is what
- * actually keeps this honest against `styles/tokens.css` rather than a
- * hand-checked comment.
+ * branchLeft design tokens. Colours mirror this package's stylesheet
+ * (`styles/tokens.css`); the stylesheet-parity test fails if they drift.
+ * Type, spacing, radius and motion come from the website's live styles
+ * (`app/styles/theme.css`, `fonts.css`, `primitives.css`).
  */
 export const branchLeftTokens: DesignTokens = {
   brand: 'branchLeft',
