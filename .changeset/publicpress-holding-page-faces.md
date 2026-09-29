@@ -1,5 +1,5 @@
 ---
-'@branchleft/brand-publicpress': patch
+'@branchleft/brand-publicpress': minor
 ---
 
-PublicPress design tokens now use the typefaces the owner chose for the publicpress.co.uk holding page: Futura (with fallbacks to Century Gothic, Avenir Next, and system sans-serif) for display and body, and Courier Prime (with fallbacks to Courier New, Courier, and system monospace) for mono. All three faces are now settled, system fonts only, with no font files loaded.
+`@branchleft/brand-publicpress` now self-hosts the owner's chosen PublicPress typefaces: Jost (SIL OFL 1.1) as the text face, with the holding page's own Futura stack kept behind it as the fallback chain, and Courier Prime (SIL OFL 1.1) as the mono face. Both ship as latin-subset woff2 files with their OFL.txt licence text, loaded via a new `./css` export (`src/styles/fonts.css`) and served from a new `./fonts/*` export. `publicPressTokens`' `display`, `body` and `mono` faces are updated to match and are no longer provisional.

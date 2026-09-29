@@ -1,0 +1,56 @@
+/* ─── PublicPress fonts ───────────────────────────────────────────────────
+ * Jost + Courier Prime, latin-subset woff2, pinned from jsDelivr:
+ * cdn.jsdelivr.net/npm/@fontsource-variable/jost@5.3.0/files/jost-latin-
+ * wght-{normal,italic}.woff2 and cdn.jsdelivr.net/npm/@fontsource/
+ * courier-prime@5.3.0/files/courier-prime-latin-{400,700}-{normal,italic}.
+ * woff2. Both SIL OFL 1.1 — each family's OFL.txt ships alongside its
+ * woff2 (fonts/<Family>/OFL.txt), from google/fonts' canonical text.
+ */
+
+@font-face {
+  font-family: 'Jost';
+  src: url('./fonts/Jost/Jost-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Jost';
+  src: url('./fonts/Jost/Jost-Italic-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Courier Prime';
+  src: url('./fonts/CourierPrime/CourierPrime-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Courier Prime';
+  src: url('./fonts/CourierPrime/CourierPrime-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Courier Prime';
+  src: url('./fonts/CourierPrime/CourierPrime-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Courier Prime';
+  src: url('./fonts/CourierPrime/CourierPrime-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}

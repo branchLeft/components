@@ -15,7 +15,8 @@ export const publicPressInks = PUBLIC_PRESS_INKS;
 /**
  * PublicPress design tokens. The wordmark/logo (four fixed ink blocks,
  * Libre Franklin Bold), the yellow active colour, the three typefaces
- * (Futura for display and body, Courier Prime for mono), and the type
+ * (self-hosted Jost with the holding page's Futura stack behind it for
+ * display and body, self-hosted Courier Prime for mono), and the type
  * scale are settled visual rulings. Everything else is provisional,
  * mostly borrowed from branchLeft's tokens.
  */
@@ -61,15 +62,17 @@ export const publicPressTokens: DesignTokens = {
 
   type: {
     faces: {
-      // Owner-chosen stack from publicpress.co.uk holding page, system
-      // fonts only, no font file loaded. Futura is the primary; fallbacks
-      // include Century Gothic, Avenir Next, and system sans-serif.
+      // Owner-ruled text face (workspace#1615): self-hosted Jost (SIL OFL
+      // 1.1), with the holding page's own Futura stack kept behind it as
+      // the fallback chain. Font files ship in this package
+      // (styles/fonts/Jost/, loaded via styles/fonts.css) —
+      // @fontsource-variable/jost@5.3.0, latin subset.
       display: {
-        family: 'Futura',
-        fallbackStack: "'Futura', 'Century Gothic', 'Avenir Next', system-ui, sans-serif",
-        weights: [400],
+        family: 'Jost',
+        fallbackStack: "'Jost', 'Futura', 'Century Gothic', 'Avenir Next', system-ui, sans-serif",
+        weights: [400, 500, 600, 700],
         source:
-          'Owner-chosen stack from publicpress.co.uk holding page, system fonts only, no font file loaded',
+          'Self-hosted Jost (SIL OFL 1.1) — @fontsource-variable/jost@5.3.0 latin-subset woff2, styles/fonts/Jost/, loaded by styles/fonts.css; falls back to the holding page’s own Futura stack',
       },
       // Settled: the wordmark/logo glyph outlines are Libre Franklin Bold
       // (SIL OFL 1.1), vectorised into static SVG paths — see the README
@@ -83,24 +86,25 @@ export const publicPressTokens: DesignTokens = {
         source:
           'Google Fonts family "Libre Franklin" (SIL OFL 1.1) — glyph outlines only, vectorised into SVG path data in PublicPressWordmark/PublicPressLogo; no web font file is loaded at runtime',
       },
-      // Owner-chosen stack from publicpress.co.uk holding page, system
-      // fonts only, no font file loaded. Same Futura stack as display face.
+      // Same ruling and files as display (workspace#1615) — self-hosted
+      // Jost, Futura stack behind it as fallback.
       body: {
-        family: 'Futura',
-        fallbackStack: "'Futura', 'Century Gothic', 'Avenir Next', system-ui, sans-serif",
-        weights: [400],
+        family: 'Jost',
+        fallbackStack: "'Jost', 'Futura', 'Century Gothic', 'Avenir Next', system-ui, sans-serif",
+        weights: [400, 500, 600, 700],
         source:
-          'Owner-chosen stack from publicpress.co.uk holding page, system fonts only, no font file loaded',
+          'Self-hosted Jost (SIL OFL 1.1) — @fontsource-variable/jost@5.3.0 latin-subset woff2, styles/fonts/Jost/, loaded by styles/fonts.css; falls back to the holding page’s own Futura stack',
       },
-      // Owner-chosen stack from publicpress.co.uk holding page (footer),
-      // system fonts only, no font file loaded. Courier Prime is the primary;
-      // fallbacks include Courier New, Courier, and system monospace.
+      // Owner-ruled mono face (workspace#1615): self-hosted Courier Prime
+      // (SIL OFL 1.1). Font files ship in this package
+      // (styles/fonts/CourierPrime/, loaded via styles/fonts.css) —
+      // @fontsource/courier-prime@5.3.0, latin subset.
       mono: {
         family: 'Courier Prime',
         fallbackStack: "'Courier Prime', 'Courier New', Courier, monospace",
-        weights: [400],
+        weights: [400, 700],
         source:
-          'Owner-chosen stack from publicpress.co.uk holding page, system fonts only, no font file loaded',
+          'Self-hosted Courier Prime (SIL OFL 1.1) — @fontsource/courier-prime@5.3.0 latin-subset woff2, styles/fonts/CourierPrime/, loaded by styles/fonts.css',
       },
     },
     // Owner ruling: h1-h6 and small are settled (reused from branchLeft's
