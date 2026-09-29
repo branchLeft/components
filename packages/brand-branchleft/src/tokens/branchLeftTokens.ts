@@ -2,23 +2,13 @@ import type { DesignTokens } from '@branchleft/components';
 
 /**
  * branchLeft design tokens, extracted from the website repo's live styling
- * source of truth:
- *   - `website/app/styles/theme.css` (the imported, active entry point —
- *     see its own header comment; `website/app/app.css` imports it)
- *   - `website/app/styles/fonts.css` (@font-face weight ranges)
- *   - `website/app/styles/primitives.css` (spacing/radius/motion as used by
- *     shared component classes)
- *   - `website/brand/README.md` (logo/wordmark source assets, no token
- *     values)
- *
- * `website/app/theme.css` (no `styles/` segment) is a stale, unimported
- * leftover from the initial release (last touched pre-#41; nothing in
- * `app.css`/`root.tsx` references it) and is NOT a source here.
- *
- * Every non-provisional value below is a literal copy of a value written in
- * one of those files. See the top of each provisional entry for why it
- * isn't settled, and the PR body's "Open questions for the brand owner"
- * for the full list.
+ * source of truth: `website/app/styles/theme.css` (imported by `app.css`),
+ * `fonts.css` (@font-face weight ranges), `primitives.css`
+ * (spacing/radius/motion) and `website/brand/README.md` (source assets,
+ * no values). `website/app/theme.css` — no `styles/` segment — is a stale,
+ * unimported pre-#41 leftover and NOT a source here. Every non-provisional
+ * value is a literal copy from one of those files; see each provisional
+ * entry's own comment for why it isn't settled.
  */
 export const branchLeftTokens: DesignTokens = {
   brand: 'branchLeft',
@@ -97,15 +87,12 @@ export const branchLeftTokens: DesignTokens = {
     },
     // theme.css's @layer base applies Tailwind utilities (`text-4xl` …
     // `text-base`) to h1–h6, with no font-size override anywhere in @theme
-    // — so these are Tailwind v4's own built-in default scale for those
-    // utility class names (confirmed: website/package.json pins
-    // `tailwindcss: ^4.3.3`, and no tailwind config file exists — Tailwind
-    // v4 is configured entirely via the `@theme` block already read, which
-    // only touches colour/font/spacing tokens, not font-size). The pixel
-    // values themselves are not written literally anywhere in this repo,
-    // only inferred from the Tailwind version — marked provisional on that
-    // basis. `body`/`li` line-height 1.6 is a literal from base.css's
-    // `p`/`li` rules.
+    // — Tailwind v4's own built-in scale for those class names (confirmed:
+    // website/package.json pins `tailwindcss: ^4.3.3`, no tailwind config
+    // file — `@theme` only touches colour/font/spacing). Pixel values are
+    // inferred from the Tailwind version, not written literally anywhere
+    // here — marked provisional on that basis. `body`/`li` 1.6 is literal,
+    // from base.css's `p`/`li` rules.
     scale: [
       { name: 'h1', fontSize: '2.25rem', lineHeight: '2.5rem', provisional: true },
       { name: 'h2', fontSize: '1.875rem', lineHeight: '2.25rem', provisional: true },

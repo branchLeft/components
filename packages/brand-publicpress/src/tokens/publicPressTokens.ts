@@ -13,26 +13,13 @@ import type { DesignTokens } from '@branchleft/components';
 export const publicPressInks = PUBLIC_PRESS_INKS;
 
 /**
- * PublicPress design tokens.
- *
- * Unlike branchLeft, PublicPress has no settled site-wide theme yet — the
- * brand owner's brand sketch (referenced in workspace#1436) is in progress
- * and not final, and a search of `ghost-platform-docs` (the
- * `19-try-it-now-design/*` documents and `OPEN-QUESTIONS.md`) turns up
- * product-name/domain rulings (D10: the name "PublicPress",
- * `publicpress.co.uk`) but no colour, type, spacing, radius, shadow or
- * motion decisions.
- *
- * The only settled PublicPress *visual* ruling that exists anywhere is the
- * wordmark/logo mark itself, from `components` PR #92, built against the
- * owner ruling on workspace#1313: the reversed-pilcrow "P" glyph, in Libre
- * Franklin Bold, knocked out of one of four fixed ink blocks
- * (`scripts/publicpress-mark-spec.json`, `inks`). That PR's own body is
- * explicit that "every colour, the glyph outline, and the block geometry
- * are the design ruling" — so those four inks and Libre Franklin Bold are
- * the only non-provisional entries below. Everything else is a placeholder,
- * mostly borrowed from branchLeft's tokens so the shared structure has
- * *something* to hold, and is marked provisional.
+ * PublicPress design tokens. Unlike branchLeft, PublicPress has no settled
+ * site-wide theme yet (brand owner's sketch, workspace#1436, in progress —
+ * see `ghost-platform-docs`'s `19-try-it-now-design/*`/`OPEN-QUESTIONS.md`).
+ * The wordmark/logo (`components` PR #92, workspace#1313 ruling: the four
+ * fixed ink blocks, Libre Franklin Bold) is the only settled *visual*
+ * ruling anywhere — those entries are non-provisional; everything else is
+ * a placeholder, mostly borrowed from branchLeft's tokens.
  */
 export const publicPressTokens: DesignTokens = {
   brand: 'PublicPress',
@@ -60,17 +47,12 @@ export const publicPressTokens: DesignTokens = {
     hairline: { dark: '#FAFAF7', light: '#000000', provisional: true },
 
     // Active/accent colour (links, hover, focus) — owner ruling on
-    // workspace#1596: the mark's own yellow ink is PublicPress's
-    // active/accent colour. `dark` is that ruled hex, unchanged
-    // (16.79:1 on black — see `publicPressTokens.test.ts`).
-    //
-    // That same hex is only ~1.25:1 on white, so it can never be text or a
-    // thin line in light mode — only a fill sitting behind dark text/icons
-    // (the mark's own block-and-knockout convention). `light` below is a
-    // deeper variant for light-mode TEXT use: same hue, the smallest
-    // lightness reduction that still clears 4.5:1 on white (~4.51:1).
-    // Marked provisional as a whole — this derived value is not yet a
-    // ruling, and needs the owner's confirmation.
+    // workspace#1596: the mark's own yellow ink, `dark` unchanged (16.79:1
+    // on black — see `publicPressTokens.test.ts`). That hex is only
+    // ~1.25:1 on white, so light mode never uses it as text/a thin line,
+    // only a fill behind dark text/icons (the mark's own knockout
+    // convention). `light` is a same-hue deeper variant for text use
+    // (~4.51:1 on white) — provisional, pending the owner's confirmation.
     active: { dark: '#FFE800', light: '#837800', provisional: true },
   },
 
