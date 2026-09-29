@@ -22,8 +22,23 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * Every colour, with the interactive `color` control. The four stories
+ * named after a colour pin their own and ignore it.
+ */
+export const Playground: Story = {
+  args: {
+    color: 'blue',
+    height: 64,
+  },
+};
+
 /** The default presentation: blue block, paper letters. */
 export const Blue: Story = {
+  // Renders its own colour whatever the args say, so a URL's
+  // `args=color:...` cannot repaint a story named after a colour.
+  argTypes: { color: { control: false } },
+  render: (args) => <PublicPressWordmark {...args} color="blue" />,
   args: {
     color: 'blue',
     height: 64,
@@ -32,6 +47,10 @@ export const Blue: Story = {
 
 /** Black block, paper letters. */
 export const Black: Story = {
+  // Renders its own colour whatever the args say, so a URL's
+  // `args=color:...` cannot repaint a story named after a colour.
+  argTypes: { color: { control: false } },
+  render: (args) => <PublicPressWordmark {...args} color="black" />,
   args: {
     color: 'black',
     height: 64,
@@ -40,6 +59,10 @@ export const Black: Story = {
 
 /** Fluorescent pink block, white letters — not black-on-pink. */
 export const Pink: Story = {
+  // Renders its own colour whatever the args say, so a URL's
+  // `args=color:...` cannot repaint a story named after a colour.
+  argTypes: { color: { control: false } },
+  render: (args) => <PublicPressWordmark {...args} color="pink" />,
   args: {
     color: 'pink',
     height: 64,
@@ -48,6 +71,10 @@ export const Pink: Story = {
 
 /** Yellow block, black letters. */
 export const Yellow: Story = {
+  // Renders its own colour whatever the args say, so a URL's
+  // `args=color:...` cannot repaint a story named after a colour.
+  argTypes: { color: { control: false } },
+  render: (args) => <PublicPressWordmark {...args} color="yellow" />,
   args: {
     color: 'yellow',
     height: 64,

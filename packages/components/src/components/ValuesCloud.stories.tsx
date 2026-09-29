@@ -21,6 +21,13 @@ const meta = {
     layout: 'padded',
   },
   tags: ['autodocs'],
+  argTypes: {
+    // Fixed per-story fixture data, not meant for interactive editing — the
+    // Controls addon's default JSON-tree renderer for a non-primitive value
+    // also fails color-contrast in both themes, so this hides that row
+    // rather than trying to re-theme a renderer this package doesn't own.
+    values: { table: { disable: true } },
+  },
 } satisfies Meta<typeof ValuesCloud>;
 
 export default meta;

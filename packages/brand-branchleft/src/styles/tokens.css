@@ -10,8 +10,8 @@
  * deliberately no `prefers-color-scheme` branch here — dark is brand, not a
  * fallback, so the OS preference never overrides the toggle/default.
  *
- * Every literal colour value below is reproduced from the branchLeft brief
- * (workspace#1560 / #1480) — nothing here is invented. Contrast ratios are
+ * Every literal colour value below is the brand owner's ruling — nothing
+ * here is invented. Contrast ratios are
  * computed against the built stylesheet by this package's own test, not
  * hand-checked comments; see `branchleft.contrast.test.ts`.
  */
@@ -39,12 +39,9 @@
    * head rule) reuses --bl-color-muted, which already clears the stricter
    * 4.5:1 text floor and so clears 3:1 by construction. */
   --bl-color-border: var(--bl-color-muted);
-  /* Dedicated error/danger colour, deliberately NOT a ValuesColour —
-   * cycle-1 review found that aliasing form `:invalid` to
-   * `--bl-value-redlines` broke the brand owner's own scoping of
-   * ValuesColours to "describing things related to those values"
-   * (workspace#1480 comment 5872329905). Ruled by the brand owner
-   * (workspace#1560 comment 5875516039): 5.95:1 on --bl-color-bg (clears
+  /* Dedicated error/danger colour, deliberately NOT a ValuesColour: the
+   * brand owner scopes ValuesColours to "describing things related to
+   * those values". Ruled by the brand owner: 5.95:1 on --bl-color-bg (clears
    * both the 3:1 border floor and the 4.5:1 text floor), replacing an
    * earlier candidate that clashed with `--bl-value-agility` under a
    * deuteranopia simulation and with `--bl-color-active` under a
@@ -53,8 +50,7 @@
 
   /* ── ValuesColours (dark) — 4.5:1+ on --bl-color-bg ─────────────────── */
   --bl-value-sustainability: #d4a72c;
-  /* Ruled by the brand owner (workspace#1560 comment 5876482719),
-   * replacing #3fae5c: a change imperceptible to ordinary vision, chosen
+  /* Ruled by the brand owner, replacing #3fae5c: a change imperceptible to ordinary vision, chosen
    * because the original clashed with --bl-color-active under a
    * deuteranopia simulation (see branchleft.colour-vision.test.ts). */
   --bl-value-environment: #40b25e;
@@ -62,9 +58,8 @@
   --bl-value-society: #e8637a;
   --bl-value-opensource: #3b9fd6;
   --bl-value-agility: #e07a2c;
-  /* Closest ValuesColour pair to `society` in both modes — see the PR body
-   * for the OKLab distance and why it still clears the distinguishability
-   * floor. */
+  /* Closest ValuesColour pair to `society` in both modes; it still clears
+   * the distinguishability floor (branchleft.distinguishability.test.ts). */
   --bl-value-redlines: #d73838;
 
   /* ── Type: families ──────────────────────────────────────────────────
@@ -129,8 +124,8 @@
 
   --bl-color-bg: #ffffff;
   --bl-color-fg: #000000;
-  /* Deeper pink than the dark-mode active colour — Rob's ruling
-   * (workspace#1480 comment 5872329905): "#ff006e" alone is only 3.83:1 on
+  /* Deeper pink than the dark-mode active colour, by the brand owner's
+   * ruling: "#ff006e" alone is only 3.83:1 on
    * white, so light mode gets its own value at 5.23:1. */
   --bl-color-active: #d6005c;
   --bl-color-button-fill: #b31761;
@@ -139,7 +134,7 @@
   --bl-color-muted: #404040;
   --bl-color-hairline: rgba(0, 0, 0, 0.12);
   --bl-color-border: var(--bl-color-muted);
-  /* Ruled by the brand owner (workspace#1560 comment 5875516039): kept
+  /* Ruled by the brand owner: kept
    * unchanged from the earlier candidate — 10.87:1 on --bl-color-bg
    * (light), clears the distinguishability floor against every
    * ValuesColour and --bl-color-active under all three CVD simulations
@@ -152,8 +147,7 @@
   --bl-value-ai: #8163d3;
   --bl-value-society: #e02b4b;
   --bl-value-opensource: #247cad;
-  /* Ruled by the brand owner (workspace#1560 comment 5875516039),
-   * replacing #b75e1b: 5.71:1 on --bl-color-bg, clears the
+  /* Ruled by the brand owner, replacing #b75e1b: 5.71:1 on --bl-color-bg, clears the
    * distinguishability floor against --bl-value-sustainability under a
    * deuteranopia simulation, where the earlier value did not. */
   --bl-value-agility: #a15018;

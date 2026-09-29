@@ -13,26 +13,12 @@ import type { DesignTokens } from '@branchleft/components';
 export const publicPressInks = PUBLIC_PRESS_INKS;
 
 /**
- * PublicPress design tokens.
- *
- * Unlike branchLeft, PublicPress has no settled site-wide theme yet — the
- * brand owner's brand sketch (referenced in workspace#1436) is in progress
- * and not final, and a search of `ghost-platform-docs` (the
- * `19-try-it-now-design/*` documents and `OPEN-QUESTIONS.md`) turns up
- * product-name/domain rulings (D10: the name "PublicPress",
- * `publicpress.co.uk`) but no colour, type, spacing, radius, shadow or
- * motion decisions.
- *
- * The only settled PublicPress *visual* ruling that exists anywhere is the
- * wordmark/logo mark itself, from `components` PR #92, built against the
- * owner ruling on workspace#1313: the reversed-pilcrow "P" glyph, in Libre
- * Franklin Bold, knocked out of one of four fixed ink blocks
- * (`scripts/publicpress-mark-spec.json`, `inks`). That PR's own body is
- * explicit that "every colour, the glyph outline, and the block geometry
- * are the design ruling" — so those four inks and Libre Franklin Bold are
- * the only non-provisional entries below. Everything else is a placeholder,
- * mostly borrowed from branchLeft's tokens so the shared structure has
- * *something* to hold, and is marked provisional.
+ * PublicPress design tokens. Unlike branchLeft, PublicPress has no settled
+ * site-wide theme yet; the brand owner's sketch is in progress. The
+ * wordmark/logo (the four fixed ink blocks, Libre Franklin Bold) and the
+ * yellow active colour are the only settled visual rulings — those entries
+ * are non-provisional; everything else is
+ * a placeholder, mostly borrowed from branchLeft's tokens.
  */
 export const publicPressTokens: DesignTokens = {
   brand: 'PublicPress',
@@ -45,7 +31,7 @@ export const publicPressTokens: DesignTokens = {
     background: { dark: '#000000', light: '#FAFAF7', provisional: true },
     foreground: { dark: '#FAFAF7', light: '#000000', provisional: true },
 
-    // The primary ("blue") ink — settled, PR #92 / workspace#1313 ruling,
+    // The primary ("blue") ink — settled by the brand owner's mark ruling,
     // scripts/publicpress-mark-spec.json → inks.blue.block. No light/dark
     // variants are ruled, so the same value is used for both; that's a
     // structural fill, not a claim that a dark-mode variant was decided.
@@ -58,6 +44,20 @@ export const publicPressTokens: DesignTokens = {
     muted: { dark: '#FAFAF7', light: '#000000', provisional: true },
     // No hairline colour is ruled. Provisional guess only.
     hairline: { dark: '#FAFAF7', light: '#000000', provisional: true },
+
+    // Active/accent colour (links, hover, focus) — owner-ruled, both
+    // modes. `dark` is the mark's own yellow ink (16.79:1 on black — see
+    // `publicPressTokens.test.ts`); that hex is only ~1.25:1 on
+    // `colour.background.light`, so it's the light-mode FILL only, never
+    // text/a thin line — the note below carries that into the rendered
+    // docs, not just here. `light` is the owner-ruled deeper variant for
+    // light-mode text (4.63:1 on `colour.background.light`, 4.84:1 on
+    // white).
+    active: {
+      dark: '#FFE800',
+      light: '#7e7300',
+      note: 'Pure #FFE800 is a light-mode fill only (behind dark text/icons) — never text or a thin line there. #7e7300 is the light-mode TEXT variant.',
+    },
   },
 
   type: {
@@ -73,9 +73,8 @@ export const publicPressTokens: DesignTokens = {
         provisional: true,
       },
       // Settled: the wordmark/logo glyph outlines are Libre Franklin Bold
-      // (SIL OFL 1.1), vectorised into static SVG paths — see PR #92's
-      // README addition and scripts/publicpress-mark-spec.json's `note`
-      // field. Only weight 700 (Bold) is used; no web font is loaded by the
+      // (SIL OFL 1.1), vectorised into static SVG paths — see the README
+      // and scripts/publicpress-mark-spec.json's `note` field. Only weight 700 (Bold) is used; no web font is loaded by the
       // components (the outlines are pre-baked paths), so `source` names
       // the origin typeface rather than a font file the app loads.
       wordmark: {
@@ -103,17 +102,18 @@ export const publicPressTokens: DesignTokens = {
         provisional: true,
       },
     },
-    // No type scale exists for PublicPress. Provisional reuse of
-    // branchLeft's scale wholesale.
+    // Owner ruling: h1-h6 and small are settled (reused from branchLeft's
+    // scale as-is, not a placeholder) — only `body` remains an unruled
+    // reuse.
     scale: [
-      { name: 'h1', fontSize: '2.25rem', lineHeight: '2.5rem', provisional: true },
-      { name: 'h2', fontSize: '1.875rem', lineHeight: '2.25rem', provisional: true },
-      { name: 'h3', fontSize: '1.5rem', lineHeight: '2rem', provisional: true },
-      { name: 'h4', fontSize: '1.25rem', lineHeight: '1.75rem', provisional: true },
-      { name: 'h5', fontSize: '1.125rem', lineHeight: '1.75rem', provisional: true },
-      { name: 'h6', fontSize: '1rem', lineHeight: '1.5rem', provisional: true },
-      { name: 'body', fontSize: '1rem', lineHeight: '1.6', provisional: true },
-      { name: 'small', fontSize: '0.875rem', lineHeight: '1.25rem', provisional: true },
+      { name: 'h1', fontSize: '2.25rem', lineHeight: '2.5rem' },
+      { name: 'h2', fontSize: '1.875rem', lineHeight: '2.25rem' },
+      { name: 'h3', fontSize: '1.5rem', lineHeight: '2rem' },
+      { name: 'h4', fontSize: '1.25rem', lineHeight: '1.75rem' },
+      { name: 'h5', fontSize: '1.125rem', lineHeight: '1.75rem' },
+      { name: 'h6', fontSize: '1rem', lineHeight: '1.5rem' },
+      { name: 'body', fontSize: '1rem', lineHeight: '1.6' },
+      { name: 'small', fontSize: '0.875rem', lineHeight: '1.25rem' },
     ],
   },
 

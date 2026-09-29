@@ -10,8 +10,24 @@
 export interface ColourValue {
   light: string;
   dark: string;
-  /** True when either `light` or `dark` (or both) is a guess, not a ruling. */
+  /**
+   * True when NEITHER `light` nor `dark` is settled. A mode-specific value
+   * is a guess only on the side `lightProvisional`/`darkProvisional` says
+   * so — those take precedence over this for their own side, so a token
+   * with one ruled mode and one guessed mode doesn't have to claim the
+   * ruled side is provisional just because the other one is.
+   */
   provisional?: boolean;
+  /** True when specifically `light` is a guess, not a ruling. */
+  lightProvisional?: boolean;
+  /** True when specifically `dark` is a guess, not a ruling. */
+  darkProvisional?: boolean;
+  /**
+   * A usage rule that belongs on the rendered token, not only in source —
+   * e.g. a colour that's ruled but restricted to one use (a fill, never
+   * text). Shown under the token's swatches in the docs page.
+   */
+  note?: string;
 }
 
 export interface ColourTokens {
@@ -25,6 +41,13 @@ export interface ColourTokens {
   muted: ColourValue;
   /** Hairline border/divider colour. */
   hairline: ColourValue;
+  /**
+   * Active/accent colour — links, hover, focus. Optional: not every brand
+   * has ruled a distinct one yet (a brand may still fold this role into
+   * `brandAccent`), but the shape exists here so a brand that HAS ruled one
+   * (see `publicPressTokens`) doesn't need its own one-off colour key.
+   */
+  active?: ColourValue;
 }
 
 export interface TypeFace {
@@ -88,8 +111,7 @@ export interface MotionTokens {
 /**
  * The structure every brand's token set must provide. `shadow` and
  * `motion` are optional at this level because a brand may genuinely have
- * no ruling either way yet (see the "shadow if present, motion if
- * present" scoping in workspace#1435/#1436) — `REQUIRED_TOKEN_KEYS` below
+ * no ruling either way yet — `REQUIRED_TOKEN_KEYS` below
  * lists only the keys every brand must have.
  */
 export interface DesignTokens {

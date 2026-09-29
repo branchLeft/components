@@ -88,6 +88,19 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Build Storybook
+        run: pnpm build:storybook
+
+      # Runs in the same fast job (not the separate GitHub Pages deploy job,
+      # which only runs on `main`) so a PR that regresses a story's contrast
+      # or breaks a PublicPress story's load fails CI before merge, not after
+      # a deploy.
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Storybook accessibility check
+        run: node scripts/storybook-a11y-check.mjs
+
   deploy-storybook:
     name: Deploy Storybook to GitHub Pages
     runs-on: ubuntu-latest

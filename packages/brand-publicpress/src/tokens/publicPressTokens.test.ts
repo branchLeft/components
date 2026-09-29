@@ -7,6 +7,36 @@ import {
 } from '@branchleft/components';
 import { publicPressTokens } from './publicPressTokens';
 
+// Local WCAG 2.x contrast helper — deliberately not shared with
+// brand-branchleft's own copy (`styles/testUtils/colourMath.ts`): brand
+// packages don't depend on each other (see the workspace CLAUDE.md), and
+// this is the only contrast check this package needs.
+function hexToRgb(hex: string): readonly [number, number, number] {
+  const match = /^#([0-9a-fA-F]{6})$/.exec(hex.trim());
+  if (!match) {
+    throw new Error(`Expected a #rrggbb hex colour, got: ${hex}`);
+  }
+  const n = parseInt(match[1], 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function srgbChannelToLinear(channel8bit: number): number {
+  const c = channel8bit / 255;
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
+
+function relativeLuminance([r, g, b]: readonly [number, number, number]): number {
+  const [rl, gl, bl] = [r, g, b].map(srgbChannelToLinear);
+  return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
+}
+
+function contrastRatio(hexA: string, hexB: string): number {
+  const lumA = relativeLuminance(hexToRgb(hexA));
+  const lumB = relativeLuminance(hexToRgb(hexB));
+  const [lighter, darker] = lumA > lumB ? [lumA, lumB] : [lumB, lumA];
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 const brands: { name: string; tokens: DesignTokens }[] = [
   { name: 'PublicPress', tokens: publicPressTokens },
 ];
@@ -88,10 +118,53 @@ describe('PublicPress tokens', () => {
     expect(publicPressTokens.type.faces.mono.provisional).toBe(true);
   });
 
-  it('marks its whole type scale, spacing and radius as provisional (none ruled)', () => {
-    expect(publicPressTokens.type.scale.every((step) => step.provisional)).toBe(true);
+  it('settles every type-scale size (owner ruling) but leaves spacing and radius provisional', () => {
+    for (const step of publicPressTokens.type.scale) {
+      expect(Boolean(step.provisional), step.name).toBe(false);
+    }
     expect(publicPressTokens.spacing.every((step) => step.provisional)).toBe(true);
     expect(publicPressTokens.radius.every((step) => step.provisional)).toBe(true);
+  });
+
+  it('rules the active/accent colour as the mark yellow, both modes, no provisional flag', () => {
+    const active = publicPressTokens.colour.active;
+    expect(active).toBeDefined();
+    expect(active?.dark).toBe('#FFE800');
+    expect(active?.light).toBe('#7e7300');
+    expect(active?.provisional).toBeFalsy();
+    expect(active?.lightProvisional).toBeFalsy();
+    expect(active?.darkProvisional).toBeFalsy();
+    // Owner ruling: the mark's own yellow ink as active/accent — clears the
+    // 4.5:1 text/UI-component floor on black by a wide margin.
+    expect(contrastRatio(active!.dark, '#000000')).toBeGreaterThan(15);
+  });
+
+  it("rules the light-mode active variant against the token set's OWN light background, not a hand-picked white", () => {
+    const active = publicPressTokens.colour.active!;
+    const backgroundLight = publicPressTokens.colour.background.light;
+    // The ruled dark-mode yellow itself fails badly on the light background
+    // — this is exactly why a separate, deeper light-mode value exists.
+    expect(contrastRatio(active.dark, backgroundLight)).toBeLessThan(1.5);
+    expect(contrastRatio(active.light, backgroundLight)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('documents the fill-only rule on the token itself, not only in a source comment', () => {
+    expect(publicPressTokens.colour.active?.note).toMatch(/fill only/i);
+    expect(publicPressTokens.colour.active?.note).toMatch(/never text/i);
+  });
+
+  it('has no stylesheet to compare colour values against (unlike branchLeft)', () => {
+    // branchLeftTokens.stylesheet-parity.test.ts compares every colour
+    // token against `@branchleft/brand-branchleft`'s built stylesheet
+    // (`styles/tokens.css`) — the one thing that actually ships a page
+    // theme today. This package ships no equivalent CSS: PublicPress has
+    // no settled site-wide theme yet (see this file's own top-of-file
+    // comment), so there is nothing for a parity test to check `active`,
+    // `brand`, `brandAccent` or any other colour against. Recorded here so
+    // that gap is a stated fact, not a silent omission — once a
+    // PublicPress stylesheet exists, add the same comparison this file's
+    // sibling runs for branchLeft.
+    expect(true).toBe(true);
   });
 });
 

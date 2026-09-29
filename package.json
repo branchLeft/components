@@ -8,6 +8,7 @@
   "scripts": {
     "build": "pnpm -r --if-present run build",
     "build:storybook": "storybook build",
+    "test:storybook-a11y": "storybook build && node scripts/storybook-a11y-check.mjs",
     "dev": "storybook dev -p 6006",
     "type-check": "tsc --noEmit -p tsconfig.node.json && pnpm -r --if-present run type-check",
     "test:unit": "pnpm -r --if-present run test:unit",
@@ -21,12 +22,14 @@
     "prepare": "[ \"$CI\" = \"true\" ] || pre-commit install"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@branchleft/prettier-config": "^0.6.0",
     "@branchleft/tsconfig": "^0.6.0",
     "@changesets/assemble-release-plan": "^6.0.10",
     "@changesets/cli": "^2.29.7",
     "@changesets/config": "^3.1.4",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
     "@storybook/addon-a11y": "^8.6.18",
     "@storybook/addon-essentials": "^8.6.18",
     "@storybook/addon-interactions": "^8.6.18",

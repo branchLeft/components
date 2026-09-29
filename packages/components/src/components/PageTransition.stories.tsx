@@ -9,6 +9,20 @@ const meta = {
     layout: 'padded',
   },
   tags: ['autodocs'],
+  argTypes: {
+    // A JSX fixture, not meant for interactive editing — the Controls
+    // addon's default JSON-tree renderer for a non-primitive value also
+    // fails color-contrast in both themes. Overriding the type/default
+    // columns to plain text avoids that renderer entirely; disabling the
+    // row outright (`table.disable`) isn't an option here — `children` is
+    // this component's only prop, so an empty Args table falls back to
+    // Storybook's own "couldn't be auto-generated" notice, which has the
+    // same colour-contrast bug.
+    children: {
+      control: false,
+      table: { type: { summary: 'ReactNode' }, defaultValue: { summary: undefined } },
+    },
+  },
 } satisfies Meta<typeof PageTransition>;
 
 export default meta;

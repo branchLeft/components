@@ -1,56 +1,37 @@
 import type { DesignTokens } from '@branchleft/components';
 
 /**
- * branchLeft design tokens, extracted from the website repo's live styling
- * source of truth:
- *   - `website/app/styles/theme.css` (the imported, active entry point —
- *     see its own header comment; `website/app/app.css` imports it)
- *   - `website/app/styles/fonts.css` (@font-face weight ranges)
- *   - `website/app/styles/primitives.css` (spacing/radius/motion as used by
- *     shared component classes)
- *   - `website/brand/README.md` (logo/wordmark source assets, no token
- *     values)
- *
- * `website/app/theme.css` (no `styles/` segment) is a stale, unimported
- * leftover from the initial release (last touched pre-#41; nothing in
- * `app.css`/`root.tsx` references it) and is NOT a source here.
- *
- * Every non-provisional value below is a literal copy of a value written in
- * one of those files. See the top of each provisional entry for why it
- * isn't settled, and the PR body's "Open questions for the brand owner"
- * for the full list.
+ * branchLeft design tokens. Colours mirror this package's stylesheet
+ * (`styles/tokens.css`); the stylesheet-parity test fails if they drift.
+ * Type, spacing, radius and motion come from the website's live styles
+ * (`app/styles/theme.css`, `fonts.css`, `primitives.css`).
  */
 export const branchLeftTokens: DesignTokens = {
   brand: 'branchLeft',
 
   colour: {
-    // theme.css: `--color-bg: #000000` / `--color-fg: #ffffff`. The site is
-    // dark-only (`color-scheme: dark` in @layer base) — no light variant is
-    // written anywhere, so `light` here is a naive inversion, not a ruling.
-    background: { dark: '#000000', light: '#ffffff', provisional: true },
-    foreground: { dark: '#ffffff', light: '#000000', provisional: true },
+    // Ruled, both modes — `styles/tokens.css`'s `--bl-color-bg`/`--bl-color-fg`
+    // (dark, the default `:root` block, and light, `:root[data-theme='light']`).
+    background: { dark: '#000000', light: '#ffffff' },
+    foreground: { dark: '#ffffff', light: '#000000' },
 
-    // theme.css: `--color-brand: #b31761`. Same "no light mode" caveat as
-    // background/foreground — the hex itself is sourced, but using it
-    // unchanged against a light background is unverified.
-    brand: { dark: '#b31761', light: '#b31761', provisional: true },
-    // theme.css: `--color-brand-bright: #ff006e`.
-    brandAccent: { dark: '#ff006e', light: '#ff006e', provisional: true },
+    // The stylesheet's `--bl-color-button-fill`, the same value in both
+    // modes (white text on it clears 4.5:1 in either).
+    brand: { dark: '#b31761', light: '#b31761' },
+    // Ruled, both modes — `styles/tokens.css`'s `--bl-color-active`: dark
+    // unchanged (`#ff006e`, 5.48:1 on `--bl-color-bg`); light is the
+    // owner's deeper ruling (`#d6005c`, 5.23:1 — `#ff006e` alone is only
+    // 3.83:1 on white).
+    brandAccent: { dark: '#ff006e', light: '#d6005c' },
 
-    // theme.css: `--colour-fg-muted: color-mix(in srgb, var(--color-fg) 75%, var(--color-bg))`.
-    // Stored as the literal CSS expression, resolved for the dark values
-    // above; no light-theme equivalent is written.
-    muted: {
-      dark: 'color-mix(in srgb, #ffffff 75%, #000000)',
-      light: 'color-mix(in srgb, #000000 75%, #ffffff)',
-      provisional: true,
-    },
-    // theme.css: `--color-hairline: color-mix(in srgb, var(--color-fg) 12%, transparent)`.
-    hairline: {
-      dark: 'color-mix(in srgb, #ffffff 12%, transparent)',
-      light: 'color-mix(in srgb, #000000 12%, transparent)',
-      provisional: true,
-    },
+    // Ruled, both modes — `styles/tokens.css`'s `--bl-color-muted`,
+    // resolved to the literal hex the contrast test checks (the source
+    // `color-mix()` expression evaluates to the same value).
+    muted: { dark: '#bfbfbf', light: '#404040' },
+    // Ruled, both modes — `styles/tokens.css`'s `--bl-color-hairline`.
+    // Decorative only (dividers, card outlines) — never a boundary that
+    // must be seen; see that file's own comment.
+    hairline: { dark: 'rgba(255, 255, 255, 0.12)', light: 'rgba(0, 0, 0, 0.12)' },
   },
 
   type: {
@@ -64,11 +45,14 @@ export const branchLeftTokens: DesignTokens = {
         source:
           'Self-hosted variable font (website /fonts/SpaceGrotesk/*.woff2+.ttf); Google Fonts family "Space Grotesk"',
       },
-      // theme.css: `--font-wordmark: 'Syne', ...`. fonts.css: variable 400–800.
+      // theme.css: `--font-wordmark: 'Syne', ...`. fonts.css caps the loaded
+      // face's own variable range at 400–500 — the wordmark itself
+      // (`--bl-weight-wordmark`) never asks for more, and Syne reads as a
+      // visibly different, wider letterform above 500.
       wordmark: {
         family: 'Syne',
         fallbackStack: "'Syne', ui-sans-serif, system-ui, sans-serif",
-        weights: [400, 500, 600, 700, 800],
+        weights: [400, 500],
         source:
           'Self-hosted variable font (website /fonts/Syne/*.woff2+.ttf); Google Fonts family "Syne"',
       },
@@ -92,28 +76,25 @@ export const branchLeftTokens: DesignTokens = {
           'Self-hosted variable font (website /fonts/RobotoMono/*.woff2+.ttf); Google Fonts family "Roboto Mono"',
       },
     },
-    // theme.css's @layer base applies Tailwind utilities (`text-4xl` …
-    // `text-base`) to h1–h6, with no font-size override anywhere in @theme
-    // — so these are Tailwind v4's own built-in default scale for those
-    // utility class names (confirmed: website/package.json pins
-    // `tailwindcss: ^4.3.3`, and no tailwind config file exists — Tailwind
-    // v4 is configured entirely via the `@theme` block already read, which
-    // only touches colour/font/spacing tokens, not font-size). The pixel
-    // values themselves are not written literally anywhere in this repo,
-    // only inferred from the Tailwind version — marked provisional on that
-    // basis. `body`/`li` line-height 1.6 is a literal from base.css's
-    // `p`/`li` rules.
+    // h1–h6 are Tailwind v4's default sizes for the utilities the site's
+    // base layer applies (`text-4xl` … `text-base`); the owner accepted them
+    // as the scale. Body line-height 1.6 is the site's own `p`/`li` value.
     scale: [
-      { name: 'h1', fontSize: '2.25rem', lineHeight: '2.5rem', provisional: true },
-      { name: 'h2', fontSize: '1.875rem', lineHeight: '2.25rem', provisional: true },
-      { name: 'h3', fontSize: '1.5rem', lineHeight: '2rem', provisional: true },
-      { name: 'h4', fontSize: '1.25rem', lineHeight: '1.75rem', provisional: true },
-      { name: 'h5', fontSize: '1.125rem', lineHeight: '1.75rem', provisional: true },
-      { name: 'h6', fontSize: '1rem', lineHeight: '1.5rem', provisional: true },
+      { name: 'h1', fontSize: '2.25rem', lineHeight: '2.5rem' },
+      { name: 'h2', fontSize: '1.875rem', lineHeight: '2.25rem' },
+      { name: 'h3', fontSize: '1.5rem', lineHeight: '2rem' },
+      { name: 'h4', fontSize: '1.25rem', lineHeight: '1.75rem' },
+      { name: 'h5', fontSize: '1.125rem', lineHeight: '1.75rem' },
+      { name: 'h6', fontSize: '1rem', lineHeight: '1.5rem' },
       { name: 'body', fontSize: '1rem', lineHeight: '1.6' },
-      { name: 'small', fontSize: '0.875rem', lineHeight: '1.25rem', provisional: true },
-      // hero-wordmark: `@apply text-6xl` with an explicit `line-height: 1` override.
-      { name: 'hero-wordmark', fontSize: '3.75rem', lineHeight: '1', provisional: true },
+      { name: 'small', fontSize: '0.875rem', lineHeight: '1.25rem' },
+      // The website title-page wordmark size — `@apply text-6xl` with an
+      // explicit `line-height: 1` override, settled from the live site
+      // (`--bl-text-wordmark-hero`/`--bl-leading-wordmark-hero` in this
+      // package's own stylesheet, `styles/tokens.css`). Not a generic
+      // heading step: it's the one size used for the brand name itself on
+      // the site's title page.
+      { name: 'hero-wordmark', fontSize: '3.75rem', lineHeight: '1' },
     ],
   },
 
