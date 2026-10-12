@@ -11,7 +11,7 @@ This repo follows the [org-wide contribution guide](https://github.com/branchLef
 
 ```bash
 nvm use
-pnpm install --frozen-lockfile
+command pnpm install --frozen-lockfile
 ```
 
 ## Checks CI runs on every PR
@@ -19,12 +19,12 @@ pnpm install --frozen-lockfile
 These are exactly what [.github/workflows/ci.yml](.github/workflows/ci.yml) runs, fanning out across all three packages under `packages/`:
 
 ```bash
-pnpm format:check
-pnpm lint
-pnpm type-check
-pnpm test:unit
-pnpm test:scripts   # the publish-selection logic under scripts/
-pnpm build
+command pnpm format:check
+command pnpm lint
+command pnpm type-check
+command pnpm test:unit
+command pnpm test:scripts   # the publish-selection logic under scripts/
+command pnpm build
 ```
 
 ## Pre-commit hooks

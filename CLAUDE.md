@@ -24,14 +24,14 @@ A brand package may depend on `@branchleft/components` (via `workspace:^`) for t
 Run at the workspace root; each fans out to every package that defines the underlying script:
 
 ```bash
-pnpm build             # build all three packages' dist/
-pnpm build:storybook   # build the single, cross-package Storybook to storybook-static/
-pnpm type-check        # tsc --noEmit, per package, plus the root tooling files
-pnpm test:unit         # single vitest pass, per package
-pnpm test:scripts      # single vitest pass over scripts/ (the publish-selection logic)
-pnpm lint              # eslint across packages/*/src
-pnpm format            # prettier --write
-pnpm dev               # Storybook dev server on :6006 — async terminal only
+command pnpm build             # build all three packages' dist/
+command pnpm build:storybook   # build the single, cross-package Storybook to storybook-static/
+command pnpm type-check        # tsc --noEmit, per package, plus the root tooling files
+command pnpm test:unit         # single vitest pass, per package
+command pnpm test:scripts      # single vitest pass over scripts/ (the publish-selection logic)
+command pnpm lint              # eslint across packages/*/src
+command pnpm format            # prettier --write
+command pnpm dev               # Storybook dev server on :6006 — async terminal only
 ```
 
 To verify Storybook output non-interactively, use `pnpm build:storybook` — never run `pnpm dev` synchronously to check it.

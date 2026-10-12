@@ -14,9 +14,9 @@ A pnpm workspace publishing three packages to [GitHub Packages](https://github.c
 #   @branchleft:registry=https://npm.pkg.github.com
 #   //npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT
 
-pnpm add @branchleft/components
-pnpm add @branchleft/brand-branchleft   # if you use the branchLeft mark/tokens
-pnpm add @branchleft/brand-publicpress  # if you use the PublicPress mark/tokens
+command pnpm add @branchleft/components
+command pnpm add @branchleft/brand-branchleft   # if you use the branchLeft mark/tokens
+command pnpm add @branchleft/brand-publicpress  # if you use the PublicPress mark/tokens
 ```
 
 Peer deps (each package): `react` and `react-dom` >= 18.
@@ -398,10 +398,10 @@ License 1.1.
 ## Development
 
 ```sh
-pnpm install
-pnpm dev            # Storybook on :6006, covering all three packages
-pnpm test:unit
-pnpm build           # builds all three packages' dist/
+command pnpm install
+command pnpm dev            # Storybook on :6006, covering all three packages
+command pnpm test:unit
+command pnpm build           # builds all three packages' dist/
 ```
 
 See [`CLAUDE.md`](./CLAUDE.md) for conventions.
