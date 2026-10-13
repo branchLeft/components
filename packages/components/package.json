@@ -60,6 +60,6 @@
   },
   "dependencies": {
     "framer-motion": "^13.0.0",
-    "lucide-react": "^1.50.0"
+    "lucide-react": "^1.55.0"
   }
 }
