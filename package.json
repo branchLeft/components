@@ -27,7 +27,7 @@
     "@branchleft/tsconfig": "^0.8.3",
     "@changesets/assemble-release-plan": "^6.0.10",
     "@changesets/cli": "^2.29.7",
-    "@changesets/config": "^3.1.4",
+    "@changesets/config": "^4.0.1",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.63.0",
     "@storybook/addon-a11y": "^8.6.18",
