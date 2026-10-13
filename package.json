@@ -25,7 +25,7 @@
     "@axe-core/playwright": "^4.13.0",
     "@branchleft/prettier-config": "^0.8.3",
     "@branchleft/tsconfig": "^0.8.3",
-    "@changesets/assemble-release-plan": "^6.0.10",
+    "@changesets/assemble-release-plan": "^7.0.0",
     "@changesets/cli": "^2.29.7",
     "@changesets/config": "^3.1.4",
     "@eslint/js": "^10.0.1",
