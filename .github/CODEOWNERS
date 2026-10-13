@@ -1,8 +1,59 @@
-* @branchLeft/branchleft-admin
+# Owners for gating files only (m14, branchLeft/workspace#2265). Every other
+# path needs no owner review. Each group below says why it gates a merge or a
+# deploy; the merge script's four-repo list is the reference.
 
+# Standards entries, unchanged.
 /.standardsignore        @branchLeft/branchleft-admin
 /.standards.mode         @branchLeft/branchleft-admin
 /.docs-lint*             @branchLeft/branchleft-admin
 /tools/floors.tsv        @branchLeft/branchleft-admin
 /.standards-db-tooling   @branchLeft/branchleft-admin
 /.github/                @branchLeft/branchleft-admin
+
+# CI workflows and actions decide pass or fail for every PR and every deploy.
+/.github/workflows/      @branchLeft/branchleft-admin
+/.github/actions/        @branchLeft/branchleft-admin
+
+# CODEOWNERS decides who must approve a change, at any depth GitHub reads it from.
+**/CODEOWNERS            @branchLeft/branchleft-admin
+
+# Rulesets and branch-protection files set which checks and approvals a merge needs.
+**/*ruleset*             @branchLeft/branchleft-admin
+**/*branch-protection*   @branchLeft/branchleft-admin
+**/*branch_protection*   @branchLeft/branchleft-admin
+
+# Files named for a guard, an approval or a deploy: CI gate and deploy scripts.
+**/*guard*               @branchLeft/branchleft-admin
+**/*approv*              @branchLeft/branchleft-admin
+**/*deploy*              @branchLeft/branchleft-admin
+
+# CI gate scripts (storybook accessibility check, release plan and their tests) and package build scripts, at any depth.
+**/scripts/              @branchLeft/branchleft-admin
+
+# Changesets: .changeset/ sets what the release plan publishes.
+/.changeset/             @branchLeft/branchleft-admin
+
+# Test runner, coverage and build configs: they set the floors and the skip rules CI runs under.
+**/vitest.config.ts      @branchLeft/branchleft-admin
+**/vite.config.ts        @branchLeft/branchleft-admin
+/test-utils/             @branchLeft/branchleft-admin
+
+# Pins and floors: tests that fix a value CI must keep (matrices, hashes, asset sizes, generated output).
+**/*.pin.test.ts         @branchLeft/branchleft-admin
+**/*hash.test.ts         @branchLeft/branchleft-admin
+**/*.asset-size.test.ts  @branchLeft/branchleft-admin
+**/*.generated.test.ts   @branchLeft/branchleft-admin
+
+# Lint, format and type-check rules CI runs: eslint config, prettier ignore list, tsconfig files.
+/eslint.config.js        @branchLeft/branchleft-admin
+/.prettierignore         @branchLeft/branchleft-admin
+**/tsconfig*.json        @branchLeft/branchleft-admin
+
+# Pre-commit hooks: CI runs these exact hooks through pre-commit/action.
+/.pre-commit-config.yaml @branchLeft/branchleft-admin
+
+# Package scripts: the commands CI runs (test:unit, type-check, build, release-plan).
+/package.json            @branchLeft/branchleft-admin
+
+# Storybook configuration: CI builds it and the accessibility check scans its stories.
+/.storybook/             @branchLeft/branchleft-admin
