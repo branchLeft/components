@@ -2,14 +2,6 @@
 # path needs no owner review. Each group below says why it gates a merge or a
 # deploy; the merge script's four-repo list is the reference.
 
-# Standards entries, unchanged.
-/.standardsignore        @branchLeft/branchleft-admin
-/.standards.mode         @branchLeft/branchleft-admin
-/.docs-lint*             @branchLeft/branchleft-admin
-/tools/floors.tsv        @branchLeft/branchleft-admin
-/.standards-db-tooling   @branchLeft/branchleft-admin
-/.github/                @branchLeft/branchleft-admin
-
 # CI workflows and actions decide pass or fail for every PR and every deploy.
 /.github/workflows/      @branchLeft/branchleft-admin
 /.github/actions/        @branchLeft/branchleft-admin
@@ -55,5 +47,20 @@
 # Package scripts: the commands CI runs (test:unit, type-check, build, release-plan).
 /package.json            @branchLeft/branchleft-admin
 
+# Per-package manifests: the test:unit, type-check and build scripts CI runs through pnpm -r, and each package's dependency versions.
+**/package.json          @branchLeft/branchleft-admin
+
+# Workspace and ignore files: pnpm-workspace.yaml picks the packages pnpm -r runs and holds the install-time supply-chain controls; .gitignore is the skip list the format check reads.
+/pnpm-workspace.yaml     @branchLeft/branchleft-admin
+**/.gitignore            @branchLeft/branchleft-admin
+
 # Storybook configuration: CI builds it and the accessibility check scans its stories.
 /.storybook/             @branchLeft/branchleft-admin
+
+# Standards entries (SYNC-1): these six template lines stay the final lines of this file.
+/.standardsignore        @branchLeft/branchleft-admin
+/.standards.mode         @branchLeft/branchleft-admin
+/.docs-lint*             @branchLeft/branchleft-admin
+/tools/floors.tsv        @branchLeft/branchleft-admin
+/.standards-db-tooling   @branchLeft/branchleft-admin
+/.github/                @branchLeft/branchleft-admin
