@@ -50,8 +50,8 @@
   },
   "devDependencies": {
     "@branchleft/components": "workspace:^",
-    "@branchleft/prettier-config": "^0.8.3",
-    "@branchleft/tsconfig": "^0.8.3",
+    "@branchleft/prettier-config": "^0.8.8",
+    "@branchleft/tsconfig": "^0.8.8",
     "@storybook/react": "^8.6.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.0.1",
