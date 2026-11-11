@@ -9,14 +9,18 @@
 // Usage: node scripts/assert-dist.mjs <packageDir> [tarball]
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, realpathSync, statSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+// The spellings that name the dist directory: dist, ./dist, dist/, dist/*, dist/**, dist/**/*
+// (each with an optional leading ./ and trailing /).
+const DIST_ENTRY = /^\.?\/?dist(\/(\*\*?|\*\*\/\*))?\/?$/;
 
 /** True when the package's `files` list names the `dist` directory. */
 export function distIsPackaged(pkg) {
   if (!Array.isArray(pkg.files)) return false;
-  return pkg.files.some((entry) => /^\.?\/?dist\/?$/.test(entry));
+  return pkg.files.some((entry) => DIST_ENTRY.test(entry));
 }
 
 function listFilesRecursively(dir) {
@@ -74,6 +78,16 @@ function main(argv) {
   return 0;
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+// Compare real paths: a symlinked invocation must still run the check.
+function isEntryPoint() {
+  if (!process.argv[1]) return false;
+  try {
+    return realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1]);
+  } catch {
+    return false;
+  }
+}
+
+if (isEntryPoint()) {
   process.exitCode = main(process.argv.slice(2));
 }
