@@ -26,6 +26,39 @@ function stepBlock(name) {
   return body.join('\n');
 }
 
+// The shell lines of one named step: the lines under its `run: |`, trimmed and
+// with blank lines dropped.
+function runScript(name) {
+  const lines = stepBlock(name).split('\n');
+  const at = lines.findIndex((line) => line.trim() === 'run: |');
+  if (at === -1) throw new Error(`step "${name}" has no run: | script`);
+  return lines
+    .slice(at + 1)
+    .map((line) => line.trim())
+    .filter((line) => line !== '');
+}
+
+// A retry loop fails closed when, after its final `done`, only the `::error::`
+// echo and `exit 1` remain; its one `exit 0` is the success exit inside the `if`
+// that wraps the install; and it has no other exit.
+function expectRetryFailsClosed(name, installCommand, errorText) {
+  const script = runScript(name);
+  const loopOpen = script.indexOf('for attempt in 1 2 3; do');
+  const loopDone = script.indexOf('done');
+  expect(loopOpen).toBeGreaterThanOrEqual(0);
+  expect(loopDone).toBeGreaterThan(loopOpen);
+
+  expect(script.slice(loopDone + 1)).toEqual([`echo "::error::${errorText}"`, 'exit 1']);
+
+  const exits = script.filter((line) => /^exit\b/.test(line));
+  expect(exits).toEqual(['exit 0', 'exit 1']);
+
+  const successExit = script.indexOf('exit 0');
+  expect(successExit).toBeGreaterThan(loopOpen);
+  expect(successExit).toBeLessThan(loopDone);
+  expect(script[successExit - 1]).toBe(`if timeout 120 ${installCommand}; then`);
+}
+
 describe('ci.yml Playwright steps', () => {
   it('pins every uses: line to a 40-character commit SHA', () => {
     const refs = [...ci.matchAll(/^\s*(?:- )?uses:\s*(\S+)/gm)].map((m) => m[1]);
@@ -59,5 +92,21 @@ describe('ci.yml Playwright steps', () => {
     expect(block).toContain('npx playwright install chromium');
     expect(block).not.toContain('--with-deps');
     expect(block).not.toContain('install-deps');
+  });
+
+  it('system-dependency retry fails closed: its last failed attempt prints ::error:: and exits 1', () => {
+    expectRetryFailsClosed(
+      'Install Playwright system dependencies',
+      'npx playwright install-deps chromium',
+      'install-deps failed after 3 attempts'
+    );
+  });
+
+  it('browser retry fails closed: its last failed attempt prints ::error:: and exits 1', () => {
+    expectRetryFailsClosed(
+      'Install Playwright Chromium',
+      'npx playwright install chromium',
+      'browser install failed after 3 attempts'
+    );
   });
 });
