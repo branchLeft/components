@@ -38,26 +38,10 @@ beforeAll(async () => {
 }, 30_000);
 
 /**
- * Every contrast pairing this stylesheet makes a claim about, in one place
- * per the brief ("keep the pairing list in one place in the test"). `fg`/
- * `bg` are `--bl-*` custom-property names, resolved against whichever
- * mode's map is active when the pairing runs.
- *
- * `minRatio` is WCAG's own floor for the pairing's category: 4.5:1 for
- * text (including the ValuesColours, which are used as text/icon colour,
- * filled-button text, and the danger colour's error-text use), 3:1 for
- * non-text UI graphics (the focus ring, a control border that must be
- * seen — including the danger colour's own border use).
- *
- * Cycle-1 review found this list didn't cover `--bl-color-invalid`
- * (now `--bl-color-danger`) at all, and the whole 105-test suite stayed
- * green with that border set to a near-invisible value — a real, provable
- * blind spot. `COLOUR_COMPLETENESS` below closes that class of gap by
- * construction: it reads every `--bl-color-*`/`--bl-value-*` property the
- * built CSS actually declares and fails if one isn't covered by a pairing
- * here (or isn't in `CONTRAST_EXEMPT`, for the one property — the
- * decorative hairline — that's deliberately never held to a contrast
- * floor), rather than trusting this list to have been kept in sync by hand.
+ * Every contrast pairing the stylesheet claims, in one list. `fg` and `bg` are
+ * `--bl-*` names resolved against the active mode. `minRatio` is WCAG's floor:
+ * 4.5:1 for text, 3:1 for non-text UI such as focus rings and borders.
+ * COLOUR_COMPLETENESS below fails on any declared colour with no pairing here.
  */
 const TEXT_PAIRINGS: ReadonlyArray<{ name: string; fg: string; bg: string; minRatio: number }> = [
   {
@@ -122,15 +106,11 @@ const UI_GRAPHIC_PAIRINGS: ReadonlyArray<{
 const ALL_PAIRINGS = [...TEXT_PAIRINGS, ...UI_GRAPHIC_PAIRINGS];
 
 /**
- * Colour custom properties that never carry their own contrast floor and
- * are deliberately left out of `ALL_PAIRINGS`. Kept to exactly one entry,
- * each requiring its own one-line justification here — an addition to
- * this list is a claim this test then never checks, so it must be
- * defensible, not a convenient way to silence the completeness check.
+ * Colour properties deliberately left out of `ALL_PAIRINGS`. Keep this to one
+ * justified entry: each addition is a claim this test never checks.
  *
- * `--bl-color-hairline`: decorative only (dividers, `hr`, table row
- * rules) — `elements.css`'s own comments say it's "never a meaningful
- * boundary," so it has no contrast obligation to check.
+ * `--bl-color-hairline` is decorative only (dividers, rules), so it has no
+ * contrast obligation.
  */
 const CONTRAST_EXEMPT = new Set<string>(['--bl-color-hairline']);
 

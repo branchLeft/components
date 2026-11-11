@@ -39,18 +39,10 @@ function propertyFor(name: ColourName): string {
 }
 
 /**
- * Floor for OKLab distance AFTER Machado et al. 2009 CVD simulation.
- * Deliberately lower than `branchleft.distinguishability.test.ts`'s 0.05:
- * that number already carries a ~2x margin over the bare "just noticeable
- * difference" estimate (~0.01-0.02) for ordinary vision. Full-severity CVD
- * simulation collapses real chroma information the palette relies on to
- * differ (hue becomes far less informative under dichromacy), so
- * requiring the same comfortable margin post-simulation would fail most
- * of the palette, not just the pairs that are genuinely hard to tell
- * apart. 0.02 is the bare JND itself: below it, two colours are not
- * reliably told apart even in principle; at or above it, a CVD viewer has
- * at least some signal to work with, even if less comfortable than an
- * ordinary-vision viewer's.
+ * Floor for OKLab distance after Machado et al. 2009 CVD simulation. Lower than
+ * the 0.05 in branchleft.distinguishability.test.ts: full-severity CVD collapses
+ * the chroma the palette relies on, so the ordinary margin would fail most
+ * pairs. 0.02 is the bare JND: below it, two colours cannot be told apart.
  */
 const MIN_DISTANCE = 0.02;
 
