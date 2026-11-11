@@ -19,6 +19,9 @@ jobs:
       contents: read
       checks: read
       packages: write
+      # The two scopes the attest steps below need, held by this one job.
+      id-token: write
+      attestations: write
     # Observed 0.37-0.5min over the last 7 successful runs (p95 0.5min) --
     # small sample, this job only fires on a signed release tag.
     timeout-minutes: 10
@@ -134,27 +137,105 @@ jobs:
       - name: Build every workspace package
         run: pnpm -r build
 
-      # `pnpm -r publish` on its own recomputes, from the registry, its own
-      # opinion of what's unpublished — a second decision that could in
-      # principle disagree with the plan step above (a registry write
-      # between the two steps, for one). One `--filter <name>` per package
-      # the plan approved binds the two: this can publish only what
-      # release-plan already checked against the tag, never a wider set
-      # pnpm's own lookup happens to pick.
+      # Publishing recomputes, from the registry, its own opinion of what's
+      # unpublished — a second decision that could in principle disagree with
+      # the plan step above (a registry write between the two steps, for one).
+      # Packing one `--filter <name>` per package the plan approved binds the
+      # two: only what release-plan already checked against the tag is packed,
+      # so only that can be attested and published, never a wider set pnpm's
+      # own lookup happens to pick. Each tarball goes in its own directory
+      # named for the package, so the steps below find exactly the file packed.
+      - name: Pack exactly the checked release plan
+        id: pack
+        if: steps.plan.outputs.packages != ''
+        run: |
+          set -euo pipefail
+          IFS=',' read -ra names <<< "$PLAN_PACKAGES"
+          for name in "${names[@]}"; do
+            short="${name#@branchleft/}"
+            case "$short" in
+              components | brand-branchleft | brand-publicpress) ;;
+              *)
+                echo "::error::$name is in the release plan but has no attest step below. Add one before it can be published."
+                exit 1
+                ;;
+            esac
+            dir="$RUNNER_TEMP/tarballs/$short"
+            mkdir -p "$dir"
+            pnpm --filter "$name" pack --pack-destination "$dir"
+            files=("$dir"/*.tgz)
+            if [ "${#files[@]}" -ne 1 ] || [ ! -f "${files[0]}" ]; then
+              echo "::error::Expected exactly one tarball for $name in $dir."
+              exit 1
+            fi
+            echo "$short=${files[0]}" >> "$GITHUB_OUTPUT"
+          done
+        env:
+          PLAN_PACKAGES: ${{ steps.plan.outputs.packages }}
+
+      # One attest step per publishable package, each on the tarball packed
+      # above and published unchanged below. The expected identity is a
+      # literal: the repository, this workflow file, and the tag that
+      # triggered the run. The tag is a release-train counter, not a package
+      # version (see the note at the top), so it cannot be derived from the
+      # version being published. A failed step fails the job, so the publish
+      # step never runs for a tarball that was not attested.
+      - name: Attest @branchleft/components
+        id: attest_components
+        if: steps.pack.outputs.components != ''
+        uses: branchLeft/github-workflows/.github/actions/attest-npm-tarball@a2175a416b57f950fed891837f88f2d1a31e00f4 # v1.2.0
+        with:
+          tarball: ${{ steps.pack.outputs.components }}
+          repo: branchLeft/components
+          signer-workflow: branchLeft/components/.github/workflows/publish.yml
+          ref: ${{ github.ref }}
+
+      - name: Attest @branchleft/brand-branchleft
+        id: attest_brand_branchleft
+        if: steps.pack.outputs.brand-branchleft != ''
+        uses: branchLeft/github-workflows/.github/actions/attest-npm-tarball@a2175a416b57f950fed891837f88f2d1a31e00f4 # v1.2.0
+        with:
+          tarball: ${{ steps.pack.outputs.brand-branchleft }}
+          repo: branchLeft/components
+          signer-workflow: branchLeft/components/.github/workflows/publish.yml
+          ref: ${{ github.ref }}
+
+      - name: Attest @branchleft/brand-publicpress
+        id: attest_brand_publicpress
+        if: steps.pack.outputs.brand-publicpress != ''
+        uses: branchLeft/github-workflows/.github/actions/attest-npm-tarball@a2175a416b57f950fed891837f88f2d1a31e00f4 # v1.2.0
+        with:
+          tarball: ${{ steps.pack.outputs.brand-publicpress }}
+          repo: branchLeft/components
+          signer-workflow: branchLeft/components/.github/workflows/publish.yml
+          ref: ${{ github.ref }}
+
+      # Publishes the packed tarballs, components first (the brand packages
+      # build against it), and only one whose attest step succeeded. When the
+      # plan is empty, this step is skipped — the job still succeeds, and
+      # release-plan.mjs already wrote the "nothing to publish" line to the
+      # job summary above.
       - name: Publish exactly the checked release plan
         if: steps.plan.outputs.packages != ''
         run: |
           set -euo pipefail
-          filters=()
-          IFS=',' read -ra names <<< "$PLAN_PACKAGES"
-          for name in "${names[@]}"; do
-            filters+=(--filter "$name")
+          for short in components brand-branchleft brand-publicpress; do
+            files=("$RUNNER_TEMP/tarballs/$short"/*.tgz)
+            tarball="${files[0]}"
+            [ -f "$tarball" ] || continue
+            case "$short" in
+              components) outcome="$ATTEST_COMPONENTS" ;;
+              brand-branchleft) outcome="$ATTEST_BRAND_BRANCHLEFT" ;;
+              brand-publicpress) outcome="$ATTEST_BRAND_PUBLICPRESS" ;;
+            esac
+            if [ "$outcome" != "success" ]; then
+              echo "::error::$short was packed but its attestation did not succeed ($outcome). Not publishing it."
+              exit 1
+            fi
+            pnpm publish "$tarball" --no-git-checks
           done
-          pnpm "${filters[@]}" -r publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PLAN_PACKAGES: ${{ steps.plan.outputs.packages }}
-        # When the plan is empty, this step is skipped rather than run with
-        # zero `--filter` flags (which would fall back to every package) —
-        # the job still succeeds, and release-plan.mjs already wrote the
-        # "nothing to publish" line to the job summary above.
+          ATTEST_COMPONENTS: ${{ steps.attest_components.outcome }}
+          ATTEST_BRAND_BRANCHLEFT: ${{ steps.attest_brand_branchleft.outcome }}
+          ATTEST_BRAND_PUBLICPRESS: ${{ steps.attest_brand_publicpress.outcome }}
