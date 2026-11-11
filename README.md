@@ -14,12 +14,13 @@ A pnpm workspace publishing three packages to [GitHub Packages](https://github.c
 #   @branchleft:registry=https://npm.pkg.github.com
 #   //npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT
 
-pnpm add @branchleft/components
+pnpm add @branchleft/components framer-motion@^13.0.0 lucide-react@^1.70.0
 pnpm add @branchleft/brand-branchleft   # if you use the branchLeft mark/tokens
 pnpm add @branchleft/brand-publicpress  # if you use the PublicPress mark/tokens
 ```
 
 Peer deps (each package): `react` and `react-dom` >= 18.
+`@branchleft/components` also peers on `framer-motion` (^13.0.0) and `lucide-react` (^1.70.0): install them alongside it. They are not bundled into the package.
 
 ## Usage
 
