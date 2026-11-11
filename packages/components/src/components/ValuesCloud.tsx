@@ -40,28 +40,12 @@ const SPEECH_BODY_ID = 'bl-values-cloud-speech-body';
 const ACCORDION_NAME = 'bl-values-cloud-accordion';
 
 /**
- * Cloud of orbiting value icons around a central hint (desktop, above
- * ~425px), falling back to a collapsed accordion (`AccordionItem`) on
- * small mobile. Both views share a single `openValueId` state — selecting
- * a value is a plain disclosure toggle, not a modal:
- *   - Desktop: the selected bubble animates to a fixed spot at the centre
- *     of the ring (replacing the hint text), the rest of the cloud dims,
- *     and a boxy speech-bubble panel grows out of it with the full text.
- *     Above 768px the whole cloud additionally slides to sit alongside the
- *     speech bubble rather than on top of it. Toggled via
- *     `aria-expanded`/`aria-controls` on a plain button.
- *   - Small mobile: the same state expands an `AccordionItem` panel in
- *     place — native `<details>`/`<summary>` semantics, no explicit ARIA
- *     needed, and works with JavaScript disabled.
- * Nothing is inert and there's no focus trap — background bubbles stay
- * clickable so switching the selection is a direct, one-click action.
- *
- * Ships structural CSS via `@branchleft/components/css` (see
- * `ValuesCloud.css`) — the layout/positioning isn't reasonable to ask every
- * consumer to reimplement. Colour comes from a `data-accent` attribute on
- * each node/panel, keyed off `Value.accent` (an opaque string — this
- * package assigns it no meaning of its own) so the consumer's CSS can map
- * it to a `--value-accent` colour.
+ * Values as orbiting icons around a centre hint on desktop, collapsing to an
+ * `AccordionItem` on small screens. Both views share one `openValueId`, and
+ * selecting a value is a plain toggle, not a modal. Nothing is inert and there
+ * is no focus trap, so background bubbles stay clickable. Structural CSS ships
+ * in `@branchleft/components/css`; colour comes from the `data-accent` attribute
+ * keyed off the opaque `Value.accent`.
  */
 export function ValuesCloud({
   values,

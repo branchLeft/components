@@ -40,24 +40,11 @@ function propertyFor(name: ColourName): string {
 }
 
 /**
- * OKLab distance floor for "reliably tells two colours apart at a glance
- * under ordinary (non colour-vision-deficient) vision". There's no single
- * canonical "just noticeable difference" constant for OKLab the way WCAG
- * gives one for contrast, so this is a judgement call, not a cited
- * standard: informal OKLab JND estimates put a bare-minimum detectable
- * difference around 0.01-0.02 for a side-by-side swatch under ideal
- * conditions. 0.05 is roughly double that — a margin meant to survive a
- * real UI's smaller swatches, imperfect displays and non-ideal viewing
- * conditions, not just a lab-condition JND.
- *
- * This metric — plain Euclidean OKLab distance under ordinary vision —
- * proves distinguishability for ordinary vision only. It models no colour
- * vision deficiency: `branchleft.colour-vision.test.ts` is the test that
- * actually simulates protanopia/deuteranopia/tritanopia (Machado et al.
- * 2009) and checks distance under each. Cycle-1 review correctly found an
- * earlier version of this file's comment claimed CVD relevance for a plain
- * OKLab number that didn't establish it — this comment now claims only
- * what this file's metric proves.
+ * OKLab distance floor for telling two colours apart at a glance under ordinary
+ * vision. No canonical OKLab JND exists, so this is a judgement: the bare
+ * estimate is about 0.01-0.02, and 0.05 leaves margin for small swatches and
+ * imperfect displays. This proves ordinary vision only; the CVD simulation is
+ * in branchleft.colour-vision.test.ts.
  */
 const MIN_DISTANCE = 0.05;
 

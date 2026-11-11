@@ -17,16 +17,9 @@ type Matrix3 = readonly [
 ];
 
 /**
- * Exported (not just a local const) so `cvdMatrices.pin.test.ts` can pin
- * these exact coefficients against the paper's published table — cycle-2
- * review found the deuteranopia matrix below had been miscopied (three
- * transcription errors) and it produced a valid-looking but WRONG
- * simulation: every row still summed to ~1 (a real Machado matrix
- * property, and the sanity check the earlier version of this test relied
- * on), so nothing caught it until someone checked the actual coefficients
- * against the paper. A row-sum check alone cannot catch a transcription
- * error that happens to preserve the row sum — only pinning the literal
- * values can.
+ * Exported so cvdMatrices.pin.test.ts can pin these literal coefficients to the
+ * paper's table. A row-sum check cannot catch a transcription error that keeps
+ * the row sum; only pinning the values can.
  */
 export const MACHADO_2009_SEVERITY_1: Readonly<Record<CvdKind, Matrix3>> = {
   protanopia: [

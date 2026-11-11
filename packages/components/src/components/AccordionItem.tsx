@@ -24,28 +24,11 @@ export interface AccordionItemProps extends Omit<
 }
 
 /**
- * A single disclosure item built on native `<details>`/`<summary>` — no
- * `aria-expanded`/`aria-controls` needed, the browser conveys expanded
- * state and the trigger/panel relationship to assistive tech for free.
- *
- * Fully controlled (`open`/`onOpenChange`) and holds no state-management
- * opinion of its own: render several with independent `open` state for a
- * multi-open accordion, or drive them all from one shared value for
- * one-open-at-a-time.
- *
- * Works with zero JavaScript — clicking `<summary>` toggles the native
- * `open` attribute regardless of whether React ever hydrates, and the
- * reveal/collapse is a plain CSS transition, not JS-driven.
- *
- * Ships structural CSS via `@branchleft/components/css` (see
- * `AccordionItem.css`) — the reveal animation isn't reasonable to ask
- * every consumer to reimplement, and doing it correctly requires
- * overriding a newer browser default that's easy to miss (see the CSS
- * file's header comment). Colour comes from `--bl-accordion-accent`
- * (falls back to `--bl-color-fg`); class-name hooks
- * (`bl-accordion-item`, `bl-accordion-item__summary`,
- * `bl-accordion-item__chevron`, `bl-accordion-item__panel`,
- * `bl-accordion-item__panel-inner`) are available for anything further.
+ * Disclosure item on native `<details>`/`<summary>`: the browser supplies the
+ * expanded state and trigger/panel link, with zero JavaScript. Fully controlled
+ * via `open`/`onOpenChange`. Structural CSS ships in `@branchleft/components/css`
+ * and overrides a newer browser default, see AccordionItem.css. Colour comes
+ * from `--bl-accordion-accent`, falling back to `--bl-color-fg`.
  */
 export function AccordionItem({
   summary,

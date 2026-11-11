@@ -186,15 +186,10 @@ function formatPackage(pkg) {
 }
 
 /**
- * The release-plan gate itself: computes which packages are actually due
- * for release, compares that against what the tag's message declares, and
- * throws on any mismatch — in either direction — before returning the
- * approved list. This is the one function a tag-triggered release must
- * never get past on a mismatch, so it takes its registry lookup and its tag
- * reader as parameters rather than reaching for the network or `git`
- * itself, and is exercised end to end (real git tag, stubbed registry) in
- * release-plan.test.mjs rather than only through `compareReleaseSets`'s own
- * unit tests.
+ * The release-plan gate: computes which packages are due, compares that with
+ * the tag's declared list, and throws on a mismatch in either direction. The
+ * registry lookup and tag reader are parameters, so the gate needs no network
+ * or git to test; release-plan.test.mjs runs it end to end.
  */
 export async function runReleasePlan({
   packages,

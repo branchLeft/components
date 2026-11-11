@@ -9,18 +9,10 @@ import { createHash } from 'node:crypto';
 import { themeInitScript, themeInitScriptHash } from './ThemeToggle';
 
 /**
- * `themeInitScriptHash` is a literal constant (see its own doc comment in
- * ThemeToggle.tsx for why: it must never depend on `node:crypto` at
- * runtime, since this package ships to browsers). This test is what keeps
- * that literal honest — it recomputes the real SHA-256 hash of
- * `themeInitScript`'s current content and fails if it no longer matches
- * the committed constant, which is exactly what happens the moment
- * `themeInitScript` changes without someone updating the constant by hand.
- *
- * To regenerate after a deliberate change to `themeInitScript`: run this
- * test, read the failure's "Received" value (already in the
- * `'sha256-<base64>'` form `themeInitScriptHash` expects), and paste it
- * into that constant's declaration in ThemeToggle.tsx.
+ * `themeInitScriptHash` is a literal so the shipped browser code never needs
+ * node:crypto. This test recomputes the SHA-256 of `themeInitScript` and fails
+ * when the literal goes stale. After a deliberate change, paste the failure's
+ * "Received" value into that constant in ThemeToggle.tsx.
  */
 describe('themeInitScriptHash', () => {
   it('matches a fresh SHA-256 hash of the current themeInitScript', () => {
