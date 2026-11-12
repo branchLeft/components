@@ -3,8 +3,11 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
 
-// The two font families this package ships (see styles/fonts.css), in the order their @font-face rules declare them:
-// `extractFontsPlugin` relies on that order to match each base64 data URI Vite produces back to its source file.
+// The two font families this package ships (see styles/fonts.css), in the
+// exact order their @font-face rules declare them there —
+// `extractFontsPlugin` below relies on that order to match each base64 data
+// URI Vite produces back to the real source file it came from. Mirrors
+// @branchleft/brand-branchleft's own vite.config.ts.
 const FONT_FILES = [
   'Jost/Jost-Variable.woff2',
   'Jost/Jost-Italic-Variable.woff2',
@@ -21,13 +24,21 @@ const FONT_LICENCE_FILES = Array.from(
 );
 
 /**
- * Emits each font as its own file under `dist/fonts/`, addressed by a relative `url()`: Vite's library mode
- * always base64-inlines assets whatever `assetsInlineLimit` says, and has no "don't inline" switch.
+ * Emits every font as its own file under `dist/fonts/`, addressed by a
+ * plain relative `url()` from `dist/publicpress.css` — Vite's library mode
+ * always base64-inlines assets regardless of `assetsInlineLimit` (its docs
+ * say so; confirmed by testing `0` directly, which made no difference).
+ * There is no library-mode "don't inline" switch to reach for.
  */
 
 /**
- * Runs in `writeBundle`, not `generateBundle` (the CSS chunk isn't in the bundle map yet
- * in lib mode); rewrites inlined font `url()`s to copied files. See vite.config.md.
+ * Runs in `writeBundle` (once the real files exist on disk — NOT
+ * `generateBundle`, where the CSS chunk isn't in the bundle map yet in lib
+ * mode), reading the written CSS back and replacing each inlined font
+ * `url()` with a real relative path, in declaration order, to a font file
+ * copied alongside it. Filenames aren't content-hashed — a font's bytes
+ * never change between releases — so an unrelated tweak only touches
+ * `publicpress.css`, never re-fetches untouched font bytes.
  */
 function extractFontsPlugin(): Plugin {
   const fontsDir = path.resolve(__dirname, 'src/styles/fonts');
@@ -35,8 +46,11 @@ function extractFontsPlugin(): Plugin {
   return {
     name: 'publicpress-extract-fonts',
     writeBundle(outputOptions) {
-      // `build.lib`'s two formats (es, cjs) each render and write publicpress.css to this same path afresh (still
-      // base64-inlined), so this hook must process every pass rather than skip after the first.
+      // `build.lib`'s two formats (es, cjs) each run a fully independent
+      // render+write of publicpress.css to this same path — NOT the same
+      // file re-visited, a fresh (still base64-inlined) one each time, so
+      // this hook must process every pass rather than skip after the
+      // first.
       const outDir = outputOptions.dir;
       if (!outDir) throw new Error('extractFontsPlugin requires build.rollupOptions.output.dir');
 
@@ -84,9 +98,12 @@ export default defineConfig({
   plugins: [react(), extractFontsPlugin()],
   build: {
     lib: {
-      // Two entries: `index` is the JS API; `styles` exists only to pull the fonts into the build graph so Vite
-      // extracts them to dist/publicpress.css for the `./css` export, producing a throwaway styles.{js,cjs} chunk
-      // nothing references. Mirrors brand-branchleft's vite.config.ts.
+      // Two entries: `index` is the real JS API. `styles` exists only to
+      // pull the PublicPress fonts into the build graph so Vite extracts
+      // them to dist/publicpress.css (see assetFileNames below) for the
+      // `./css` export — it produces a throwaway styles.{js,cjs} chunk
+      // that nothing in package.json references. Mirrors
+      // @branchleft/brand-branchleft's own vite.config.ts.
       entry: {
         index: path.resolve(__dirname, 'src/index.ts'),
         styles: path.resolve(__dirname, 'src/styles.ts'),

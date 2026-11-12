@@ -18,21 +18,31 @@ const FONT_FILES = [
   'IBMPlexSans/IBMPlexSans-SemiBold.woff2',
 ];
 
-// Every family's SIL OFL 1.1 licence text (`src/styles/fonts/<Family>/OFL.txt`), one per family directory in FONT_FILES
-// (RobotoMono and IBMPlexSans have several entries, one licence). Derived, not hand-listed, so a new family can't be
-// added to one list and forgotten in the other.
+// Every family's own SIL OFL 1.1 licence text (`src/styles/fonts/<Family>/
+// OFL.txt`), one per family directory in FONT_FILES (RobotoMono and
+// IBMPlexSans each contribute more than one FONT_FILES entry but only one
+// licence file). Derived from FONT_FILES rather than hand-listed, so a new
+// family can't be added to one list and forgotten in the other.
 const FONT_LICENCE_FILES = Array.from(
   new Set(FONT_FILES.map((relativePath) => path.dirname(relativePath) + '/OFL.txt'))
 );
 
 /**
- * Emits each font as its own file under `dist/fonts/`, addressed by a relative `url()`: Vite's library mode
- * always base64-inlines assets whatever `assetsInlineLimit` says, and has no "don't inline" switch.
+ * Emits every font as its own file under `dist/fonts/`, addressed by a
+ * plain relative `url()` from `dist/branchleft.css` — Vite's library mode
+ * always base64-inlines assets regardless of `assetsInlineLimit` (its docs
+ * say so; confirmed by testing `0` directly, which made no difference).
+ * There is no library-mode "don't inline" switch to reach for.
  */
 
 /**
- * Runs in `writeBundle`, not `generateBundle` (the CSS chunk isn't in the bundle map yet
- * in lib mode); rewrites inlined font `url()`s to copied files. See vite.config.md.
+ * Runs in `writeBundle` (once the real files exist on disk — NOT
+ * `generateBundle`, where the CSS chunk isn't in the bundle map yet in lib
+ * mode), reading the written CSS back and replacing each inlined font
+ * `url()` with a real relative path, in declaration order, to a font file
+ * copied alongside it. Filenames aren't content-hashed — a font's bytes
+ * never change between releases — so an unrelated colour/spacing tweak
+ * only touches `branchleft.css`, never re-fetches untouched font bytes.
  */
 function extractFontsPlugin(): Plugin {
   const fontsDir = path.resolve(__dirname, 'src/styles/fonts');
@@ -40,9 +50,13 @@ function extractFontsPlugin(): Plugin {
   return {
     name: 'branchleft-extract-fonts',
     writeBundle(outputOptions) {
-      // `build.lib`'s two formats (es, cjs) each render and write branchleft.css to this same path afresh (still
-      // base64-inlined), so this hook must process every pass: skipping after the first let the second pass
-      // overwrite the fix with its own inlined output.
+      // `build.lib`'s two formats (es, cjs) each run a fully independent
+      // render+write of branchleft.css to this same path — NOT the same
+      // file re-visited, a fresh (still base64-inlined) one each time, so
+      // this hook must process every pass rather than skip after the
+      // first (confirmed by testing: skipping left the second format's
+      // pass overwriting the first pass's fix with its own untouched
+      // inlined output).
       const outDir = outputOptions.dir;
       if (!outDir) throw new Error('extractFontsPlugin requires build.rollupOptions.output.dir');
 
@@ -73,9 +87,13 @@ function extractFontsPlugin(): Plugin {
 
       fs.writeFileSync(cssPath, rewritten);
 
-      // Every font family is SIL OFL 1.1 (see fonts.css): its licence text ships beside the woff2 it covers in
-      // dist/fonts/<Family>/, as the package's MIT LICENSE grants no rights over font bytes. Copied here, not left to
-      // `files: ["dist"]`, so a missing source file fails the build instead of shipping a font with no licence text.
+      // Every font family is SIL OFL 1.1 (see fonts.css's header comment) —
+      // its licence text ships alongside the woff2 it covers, in the same
+      // dist/fonts/<Family>/ directory, rather than assuming the package's
+      // own MIT LICENSE file covers font bytes it never granted rights to.
+      // Copied here (not left to package.json's `files: ["dist"]` alone to
+      // discover) so a missing source file fails the build loudly instead
+      // of silently shipping a font with no licence text next to it.
       for (const relativePath of FONT_LICENCE_FILES) {
         const destPath = path.join(outDir, 'fonts', relativePath);
         fs.mkdirSync(path.dirname(destPath), { recursive: true });
@@ -89,9 +107,12 @@ export default defineConfig({
   plugins: [react(), extractFontsPlugin()],
   build: {
     lib: {
-      // Two entries: `index` is the JS API; `styles` exists only to pull the stylesheet into the build graph so Vite
-      // extracts it to dist/branchleft.css for the `./css` export, producing a throwaway styles.{js,cjs} chunk nothing
-      // references. Mirrors @branchleft/components's vite.config.ts.
+      // Two entries: `index` is the real JS API. `styles` exists only to
+      // pull the branchLeft stylesheet (tokens/fonts/elements) into the
+      // build graph so Vite extracts it to dist/branchleft.css (see
+      // assetFileNames below) for the `./css` export — it produces a
+      // throwaway styles.{js,cjs} chunk that nothing in package.json
+      // references. Mirrors @branchleft/components's own vite.config.ts.
       entry: {
         index: path.resolve(__dirname, 'src/index.ts'),
         styles: path.resolve(__dirname, 'src/styles.ts'),

@@ -1,7 +1,11 @@
 import * as React from 'react';
 import type { DesignTokens } from '@branchleft/components';
 
-/** Storybook-only token docs for a brand; not exported. Renders ALL_CAPS placeholders where real copy would go. */
+/**
+ * Storybook-only documentation view of a brand's token set. Not exported
+ * from any package: it exists so `pnpm build:storybook` shows both brands'
+ * tokens, and renders ALL_CAPS placeholders wherever real copy would go.
+ */
 export interface DesignTokensDocsProps {
   readonly tokens: DesignTokens;
 }
