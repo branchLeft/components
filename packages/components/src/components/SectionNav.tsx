@@ -8,10 +8,8 @@ export interface SectionNavProps {
 }
 
 /**
- * Sticky in-page section nav with scrollspy: smooth scroll to `#id` anchors
- * (reduced motion respected), one IntersectionObserver for the active section,
- * and `aria-current` on it. Ships no CSS. Under a fixed header the consumer sets
- * `top` on `.bl-section-nav`.
+ * Sticky in-page nav with scrollspy (smooth `#id` scroll respecting reduced motion, one IntersectionObserver,
+ * `aria-current`). Ships no CSS: under a fixed header, set `top` on `.bl-section-nav`.
  */
 export function SectionNav({
   sections,

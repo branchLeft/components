@@ -1,9 +1,6 @@
 // @vitest-environment node
-//
-// Runs `vite build()` (esbuild under the hood) to get the real built CSS —
-// esbuild's native bridge relies on a `TextEncoder`/`Uint8Array` invariant
-// that jsdom's polyfills break, so this file needs the plain Node
-// environment rather than the package's jsdom default.
+// Plain Node, not the jsdom default: vite's esbuild breaks under jsdom's TextEncoder
+// polyfill (see README.md).
 import { describe, it, expect, beforeAll } from 'vitest';
 import {
   buildStylesheet,
@@ -23,13 +20,9 @@ const VALUE_NAMES = [
   'redlines',
 ] as const;
 
-// `danger` and `active` are both real, rendered colours that appear
-// alongside the ValuesColours on screen (a form error next to a
-// ValuesColour badge; a link next to one) — cycle-2 review's own
-// undetected gap (the old dark danger colour was 0.004 from active under
-// a tritanopia simulation) is exactly what omitting them from this
-// pairwise sweep let through. Every member is now checked against every
-// other member, not just against the 7 ValuesColours.
+// `danger` and `active` render alongside the ValuesColours (a form error next to a
+// badge; a link next to one), so the pairwise sweep covers them too: every member is
+// checked against every other, not just against the 7 ValuesColours.
 const ALL_COLOUR_NAMES = [...VALUE_NAMES, 'danger', 'active'] as const;
 type ColourName = (typeof ALL_COLOUR_NAMES)[number];
 
@@ -40,11 +33,8 @@ function propertyFor(name: ColourName): string {
 }
 
 /**
- * OKLab distance floor for telling two colours apart at a glance under ordinary
- * vision. No canonical OKLab JND exists, so this is a judgement: the bare
- * estimate is about 0.01-0.02, and 0.05 leaves margin for small swatches and
- * imperfect displays. This proves ordinary vision only; the CVD simulation is
- * in branchleft.colour-vision.test.ts.
+ * OKLab floor for telling colours apart at a glance, ordinary vision only (CVD: branchleft.colour-vision.test.ts).
+ * No canonical JND exists: the bare estimate is ~0.01-0.02, and 0.05 leaves margin for small swatches and displays.
  */
 const MIN_DISTANCE = 0.05;
 
@@ -84,11 +74,8 @@ describe.each([
     expect(distance).toBeGreaterThanOrEqual(MIN_DISTANCE);
   });
 
-  // Called out on its own per the brief: society and redlines are the two
-  // reds in the palette, so they're the closest ValuesColours pair by this
-  // metric in both modes (see the PR body for the numbers) — worth
-  // asserting on its own even though the generic pairwise loop above
-  // already covers it.
+  // Society and redlines are the two reds in the palette, so the closest ValuesColours pair by this metric in both
+  // modes; asserted on its own though the pairwise loop above already covers it.
   it('society vs redlines — the pair Rob asked to have flagged — still clears the floor', () => {
     const props = getProps();
     const distance = oklabDistance(

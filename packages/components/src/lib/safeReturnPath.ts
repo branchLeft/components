@@ -1,27 +1,16 @@
 /**
- * Resolves a candidate redirect target (a form field, a `Referer` header,
- * or any other attacker-influenced string) against `origin`, and returns a
- * same-origin `pathname + search + hash` — or `'/'` for anything missing,
- * unparseable, off-origin, not `http:`/`https:`, too long, or that fails
- * the output check below.
+ * Resolves a candidate redirect target (any attacker-influenced string) against `origin` to a same-origin
+ * `pathname + search + hash`, or `'/'` if missing, unparseable, off-origin, not http(s), too long, or failing the output check.
  */
 
 /**
- * Checking the RESOLVED URL's origin is not enough on its own: the URL
- * parser normalises dot segments (`/../`, `/./`, `%2e` decoded as a dot)
- * and backslash-as-slash, and that normalisation can leave a same-origin
- * `pathname` that itself STARTS WITH `//` — which is protocol-relative
- * when the returned string is later used on its own (a `Location` value,
- * a client-side redirect target). `/.//evil.example` resolves on-origin
- * against any `origin`, yet its `pathname` is `//evil.example`.
+ * An on-origin check is not enough: dot-segment, `%2e` and backslash normalisation can leave a
+ * `pathname` STARTING WITH `//`, protocol-relative on its own (`/.//evil.example`).
  */
 
 /**
- * The property this function guarantees is on the OUTPUT: collapse any
- * leading run of `/`/`\` to one `/`, reject anything still containing a
- * backslash or a control character, then require that RE-PARSING that
- * exact string against `origin` lands back on `origin` — not "the input
- * looked safe", "the first parse resolved on-origin".
+ * What this function guarantees is on the OUTPUT: collapse any leading run of slashes or backslashes to one `/`,
+ * reject any backslash or control character, then require that RE-PARSING that string against `origin` lands on `origin`.
  */
 const MAX_LENGTH = 2048;
 

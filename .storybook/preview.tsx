@@ -11,11 +11,8 @@ const preview: Preview = {
       },
     },
   },
-  // A brand-neutral "which mode" toolbar — every story gets it, but it only
-  // does anything once a brand stylesheet keying off `data-theme` (e.g.
-  // `@branchleft/brand-branchleft/css`) is loaded, which is exactly the
-  // "HTML elements"/"ValuesColours" stories in that package's own
-  // `src/styles/` — everything else simply ignores the attribute.
+  // Brand-neutral "mode" toolbar: it only takes effect once a brand stylesheet keyed
+  // off `data-theme` is loaded; every other story ignores the attribute.
   globalTypes: {
     theme: {
       description: 'Colour mode (only affects stories that load a brand stylesheet)',

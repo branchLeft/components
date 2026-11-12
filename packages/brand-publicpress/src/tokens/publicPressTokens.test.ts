@@ -169,16 +169,9 @@ describe('PublicPress tokens', () => {
   });
 
   it('has no stylesheet to compare colour values against (unlike branchLeft)', () => {
-    // branchLeftTokens.stylesheet-parity.test.ts compares every colour
-    // token against `@branchleft/brand-branchleft`'s built stylesheet
-    // (`styles/tokens.css`) — the one thing that actually ships a page
-    // theme today. This package ships no equivalent CSS: PublicPress has
-    // no settled site-wide theme yet (see this file's own top-of-file
-    // comment), so there is nothing for a parity test to check `active`,
-    // `brand`, `brandAccent` or any other colour against. Recorded here so
-    // that gap is a stated fact, not a silent omission — once a
-    // PublicPress stylesheet exists, add the same comparison this file's
-    // sibling runs for branchLeft.
+    // No stylesheet to compare against (unlike branchLeft): PublicPress has no settled
+    // site-wide theme yet. Once one exists, add the comparison that
+    // branchLeftTokens.stylesheet-parity.test.ts runs.
     expect(true).toBe(true);
   });
 });

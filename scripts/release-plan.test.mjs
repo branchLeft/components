@@ -277,25 +277,14 @@ describe('readTagMessageFromGit and runReleasePlan, against a real (throwaway, l
   });
 
   /**
-   * A disposable git repo with one commit and one unsigned annotated tag,
-   * whose message puts its `name@version` lines after a subject line and a
-   * blank line — the same shape RELEASING.md asks a real signed tag to
-   * have. Created fresh per test, under the OS temp dir, and removed in
-   * `afterEach`; nothing here ever touches this repo's own git state or a
-   * remote.
+   * A disposable git repo with one commit and one unsigned annotated tag whose message puts its `name@version`
+   * lines after a subject and blank line, as RELEASING.md asks. Created per test under the OS temp dir.
    */
   function makeTaggedRepo(tagMessage) {
     const dir = mkdtempSync(path.join(tmpdir(), 'release-plan-probe-'));
-    // When this suite itself runs from a git hook (pre-commit's own vitest
-    // hook, for one), the parent `git` invocation has already set
-    // GIT_DIR/GIT_WORK_TREE/GIT_INDEX_FILE for that hook's own process
-    // environment, and a plain `execFileSync` inherits them — silently
-    // pointing every `git` call below at THAT repository instead of the
-    // fresh one just created (an earlier version of this fixture found this
-    // out by actually committing "probe commit" onto this repo's real
-    // history). `isolatedGitArgs` — the same helper release-plan.mjs's own
-    // `readTagMessageFromGit` uses — is what makes this fixture safe to run
-    // from inside a hook.
+    // Inside a git hook (pre-commit's vitest) git has set GIT_DIR/GIT_WORK_TREE/GIT_INDEX_FILE, and a
+    // plain `execFileSync` would inherit them and aim every call below at THAT repository, not the fresh
+    // one; `isolatedGitArgs` (as `readTagMessageFromGit` uses) makes the fixture safe to run from a hook.
     const git = (args) => {
       const isolated = isolatedGitArgs(dir, args);
       return execFileSync('git', isolated.args, {

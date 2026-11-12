@@ -1,12 +1,6 @@
-// Node's own experimental `globalThis.localStorage` (SQLite-backed, only
-// live with a `--localstorage-file` flag this repo's test run doesn't pass)
-// shadows jsdom's working implementation on the Node version pinned by
-// `.nvmrc` — jsdom's environment setup skips installing its own once it
-// sees the name already exists on `globalThis`, so `window.localStorage` in
-// a test is Node's inert placeholder, not a real Storage. A minimal
-// in-memory polyfill, forced on regardless of what's already there, is a
-// smaller and more portable fix than asking every future dev/CI run to pass
-// that flag.
+// Node's experimental `globalThis.localStorage` (live only with `--localstorage-file`, which this
+// repo's tests don't pass) shadows jsdom's on the `.nvmrc` Node: jsdom skips installing its own when the
+// name exists, leaving an inert placeholder. A minimal in-memory polyfill, forced on, is more portable than a flag.
 class MemoryStorage implements Storage {
   private readonly store = new Map<string, string>();
 
@@ -31,12 +25,8 @@ class MemoryStorage implements Storage {
 }
 
 /**
- * Installs the polyfill on `globalThis`. Exported (not just run as a
- * side effect below) so a test that installs jsdom's globals itself, at a
- * point in time this module's own top-level side effect can't reach — see
- * `branchleft.a11y.test.tsx`, which needs jsdom installed AFTER an esbuild
- * step that jsdom's globals would otherwise break — can call it again once
- * jsdom is in place.
+ * Installs the polyfill on `globalThis`. Exported so a test that installs jsdom's globals itself, after an esbuild
+ * step jsdom would break (`branchleft.a11y.test.tsx`), can call it again once jsdom is in place.
  */
 export function installLocalStorage(target: typeof globalThis = globalThis): void {
   Object.defineProperty(target, 'localStorage', {

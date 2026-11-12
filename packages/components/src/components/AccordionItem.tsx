@@ -10,25 +10,16 @@ export interface AccordionItemProps extends Omit<
   readonly open: boolean;
   readonly onOpenChange: (open: boolean) => void;
   /**
-   * Passed straight through to the native `<details name>` attribute.
-   *
-   * Give a group of items the same `name` to additionally opt into the
-   * browser's built-in mutual-exclusion behaviour (only one open at a
-   * time), enforced by the browser itself with no JS required — a no-JS
-   * fallback layered on top of whatever state management `open`/
-   * `onOpenChange` are wired to. The browser fires a `toggle` event on any
-   * sibling it auto-closes, so a controlled consumer stays in sync.
+   * Passed to the native `<details name>`: items sharing a `name` get browser-enforced
+   * exclusivity with no JS (a `toggle` event fires on any auto-closed sibling).
    */
   readonly name?: string;
   readonly className?: string;
 }
 
 /**
- * Disclosure item on native `<details>`/`<summary>`: the browser supplies the
- * expanded state and trigger/panel link, with zero JavaScript. Fully controlled
- * via `open`/`onOpenChange`. Structural CSS ships in `@branchleft/components/css`
- * and overrides a newer browser default, see AccordionItem.css. Colour comes
- * from `--bl-accordion-accent`, falling back to `--bl-color-fg`.
+ * Disclosure item on native `<details>`/`<summary>` (no JS), fully controlled via `open`/`onOpenChange`. CSS ships
+ * in `@branchleft/components/css` (see AccordionItem.css); colour from `--bl-accordion-accent`, else `--bl-color-fg`.
  */
 export function AccordionItem({
   summary,

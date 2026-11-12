@@ -1,8 +1,6 @@
-// The library source is deliberately typed against `vite/client`, not
-// `node` (see tsconfig.node.json's header comment), so this test — which
-// genuinely needs the filesystem to read the spec independently of the
-// generated module — pulls in Node's ambient types for itself only, rather
-// than widening that boundary for every file under src/.
+// The library source is typed against `vite/client`, not `node` (see tsconfig.node.json), so this test,
+// which needs the filesystem to read the spec independently of the generated module, pulls in Node's
+// types for itself only.
 /// <reference types="node" />
 
 import { describe, it, expect } from 'vitest';
@@ -20,11 +18,8 @@ import {
   PUBLIC_PRESS_INKS,
 } from './publicPressMark.generated';
 
-// Read the spec independently of publicPressMark.generated.ts (the module
-// under test), via the filesystem rather than an import of it — a test that
-// imported its own expected values from the generated module would only
-// prove internal self-consistency, never that generation preserved the
-// spec's actual content. This is the control for that gap.
+// Read the spec from the filesystem, not by importing publicPressMark.generated.ts (the module under test): a test
+// importing its own expected values would only prove self-consistency, never that generation preserved the spec.
 const specPath = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   '..',
@@ -77,13 +72,9 @@ describe('publicPressMark.generated (parity with scripts/publicpress-mark-spec.j
   });
 });
 
-// Computed once, offline, from the approved pilcrow P outline as it stands
-// in scripts/publicpress-mark-spec.json at the time this test was written
-// (`shasum -a 256`). Deliberately not derived at runtime — the point of this
-// test is to force a human to notice and re-approve any change to the
-// glyph, not to always agree with whatever the spec currently says. If this
-// assertion ever needs to change, that change to the mark itself must be
-// deliberate and reviewed, not incidental.
+// Computed once, offline, from the approved pilcrow P outline in
+// scripts/publicpress-mark-spec.json (`shasum -a 256`). Deliberately not derived at
+// runtime: any change to the glyph must be noticed, deliberate and re-approved.
 const APPROVED_PILCROW_P_SHA256 =
   '6090500bf604ec7ef9f259c939be4f7642f2ec4997ed6acbf922d8b0b1d4e20f';
 

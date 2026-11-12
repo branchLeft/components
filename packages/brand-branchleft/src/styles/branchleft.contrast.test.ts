@@ -1,9 +1,6 @@
 // @vitest-environment node
-//
-// Runs `vite build()` (esbuild under the hood) to get the real built CSS —
-// esbuild's native bridge relies on a `TextEncoder`/`Uint8Array` invariant
-// that jsdom's polyfills break, so this file needs the plain Node
-// environment rather than the package's jsdom default.
+// Plain Node, not the jsdom default: vite's esbuild breaks under jsdom's TextEncoder
+// polyfill (see README.md).
 import { describe, it, expect, beforeAll } from 'vitest';
 import {
   buildStylesheet,
@@ -38,10 +35,8 @@ beforeAll(async () => {
 }, 30_000);
 
 /**
- * Every contrast pairing the stylesheet claims, in one list. `fg` and `bg` are
- * `--bl-*` names resolved against the active mode. `minRatio` is WCAG's floor:
- * 4.5:1 for text, 3:1 for non-text UI such as focus rings and borders.
- * COLOUR_COMPLETENESS below fails on any declared colour with no pairing here.
+ * Every contrast pairing the stylesheet claims. `fg`/`bg` are `--bl-*` names resolved against the active mode;
+ * `minRatio` is WCAG's floor (4.5:1 text, 3:1 non-text UI). COLOUR_COMPLETENESS fails on any colour with no pairing.
  */
 const TEXT_PAIRINGS: ReadonlyArray<{ name: string; fg: string; bg: string; minRatio: number }> = [
   {
@@ -106,11 +101,8 @@ const UI_GRAPHIC_PAIRINGS: ReadonlyArray<{
 const ALL_PAIRINGS = [...TEXT_PAIRINGS, ...UI_GRAPHIC_PAIRINGS];
 
 /**
- * Colour properties deliberately left out of `ALL_PAIRINGS`. Keep this to one
- * justified entry: each addition is a claim this test never checks.
- *
- * `--bl-color-hairline` is decorative only (dividers, rules), so it has no
- * contrast obligation.
+ * Properties left out of `ALL_PAIRINGS`; each is a claim never checked, so keep this to
+ * one. `--bl-color-hairline` is decorative (rules): no contrast obligation.
  */
 const CONTRAST_EXEMPT = new Set<string>(['--bl-color-hairline']);
 

@@ -7,12 +7,8 @@ export interface PageTransitionProps {
 }
 
 /**
- * Wraps page content with a minimal fade + slide-up entrance animation.
- * Use inside an `<AnimatePresence mode="wait">` keyed by route path so
- * each navigation triggers a fresh transition.
- *
- * Ships no CSS beyond the `bl-page-transition` class hook — consumers
- * supply layout (e.g. `display: flex; flex: 1`) themselves.
+ * Fade + slide-up entrance for page content; use inside an `<AnimatePresence
+ * mode="wait">` keyed by route. Ships only the `bl-page-transition` class hook.
  */
 export function PageTransition({ children }: Readonly<PageTransitionProps>): React.JSX.Element {
   const prefersReduced = usePrefersReducedMotion();

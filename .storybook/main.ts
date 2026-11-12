@@ -22,26 +22,17 @@ const config: StorybookConfig = {
     autodocs: 'tag',
   },
   async viteFinal(viteConfig) {
-    // esbuild picks a JSX transform by walking up from each source file for
-    // the nearest literal `tsconfig.json` — this repo's root has none (only
-    // `tsconfig.node.json`, a different filename esbuild doesn't look for),
-    // so a `.tsx` file with no closer one of its own (a decorator directly
-    // under `.storybook/`) silently gets the classic transform, which
-    // needs `React` in scope and throws `ReferenceError: React is not
-    // defined` when it isn't. Forced explicitly so this never again depends
-    // on tsconfig discovery succeeding, in any checkout layout.
+    // esbuild finds no root `tsconfig.json` (only `tsconfig.node.json`), so a `.tsx`
+    // with no closer one gets the classic JSX transform and throws `React is not
+    // defined`; forced explicitly here. See .storybook/README.md.
     viteConfig.esbuild = {
       ...viteConfig.esbuild,
       jsx: 'automatic',
     };
 
-    // Every workspace package gets aliased to its own source, not just
-    // `@branchleft/components` — CI's job order builds each package's
-    // `dist/` (`pnpm build`) before building Storybook, so without this a
-    // package-name import here can resolve to a STALE or differently
-    // externalised build artifact instead of the source Storybook actually
-    // compiles everything else from. Matches each brand package's own
-    // vitest.config.ts alias and tsconfig.json `paths` override.
+    // Every workspace package is aliased to its own source: CI builds each `dist/` before
+    // Storybook, so a package-name import could resolve to a STALE or differently externalised
+    // artifact. Matches each brand's vitest alias and tsconfig `paths` override.
     viteConfig.resolve ??= {};
     viteConfig.resolve.alias = {
       ...viteConfig.resolve.alias,

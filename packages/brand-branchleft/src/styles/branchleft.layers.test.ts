@@ -1,18 +1,12 @@
 // @vitest-environment node
-//
-// Runs `vite build()` (esbuild under the hood) to get the real built CSS —
-// esbuild's native bridge relies on a `TextEncoder`/`Uint8Array` invariant
-// that jsdom's polyfills break, so this file needs the plain Node
-// environment rather than the package's jsdom default.
+// Plain Node, not the jsdom default: vite's esbuild breaks under jsdom's TextEncoder
+// polyfill (see README.md).
 import { describe, it, expect, beforeAll } from 'vitest';
 import { buildStylesheet } from './testUtils/buildStylesheet';
 
 /**
- * Finds a top-level `@layer <name> { ... }` block in the built (minified,
- * single-line) stylesheet and returns its body, using brace counting
- * rather than a single non-greedy regex — `elements.css` nests further
- * `{}` (rules, `@media`) inside each of these two blocks, which a naive
- * `\{([^}]*)\}` match would truncate at the first nested `}`.
+ * Finds a top-level `@layer <name> { ... }` block in the built single-line CSS and returns its body by
+ * brace counting: a non-greedy `\{([^}]*)\}` regex would stop at the first nested `}` (rules, `@media`).
  */
 function namedLayerBody(css: string, name: string): string {
   const opener = `@layer ${name}{`;
@@ -41,19 +35,13 @@ beforeAll(async () => {
 
 describe('branchleft.css cascade layers', () => {
   /**
-   * A dotted name (`branchleft.base`) registers as a SUB-layer of one
-   * parent layer, whose position among top-level siblings is fixed by the
-   * PARENT's first appearance, not by where either child is listed — a
-   * real Tailwind v4 build in a real browser found no achievable order
-   * made a component class beat a same-priority site rule while a plain
-   * element default still lost to it, with that naming.
+   * A dotted layer name (`branchleft.base`) is a SUB-layer positioned by its PARENT's
+   * first appearance, so no order satisfies both cascade needs (see README.md).
    */
 
   /**
-   * This is the single fact that made the whole design unfixable by
-   * reordering — a check that dotted names are absent from every `@layer`
-   * statement in the built CSS is what would have failed on that design,
-   * and must keep failing if it's ever reintroduced.
+   * The single fact that made the old design unfixable by reordering: this check that no dotted name appears in
+   * any `@layer` statement must keep failing if that design is ever reintroduced.
    */
   it('never declares a dotted (sub-)layer name anywhere in the built CSS', () => {
     const layerStatements = css.match(/@layer\s+[^;{]+[;{]/g) ?? [];
