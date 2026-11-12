@@ -107,6 +107,33 @@ describe('CODEOWNERS file shape', () => {
   });
 });
 
+// Sabotage: delete the one line that owns each path of the publish gate and the
+// path must turn free, which proves the line is what owns it (not a later line).
+const SABOTAGE: ReadonlyArray<readonly [string, string]> = [
+  ['/.changeset/', '.changeset/config.json'],
+  ['**/.npmrc', '.npmrc'],
+  ['/scripts/release-plan.test.mjs', 'scripts/release-plan.test.mjs'],
+  ['/scripts/peer-bump-safety*', 'scripts/peer-bump-safety.test.mjs'],
+  ['/scripts/publish-workflow.test.mjs', 'scripts/publish-workflow.test.mjs'],
+  ['/scripts/verify-attestations-job.test.mjs', 'scripts/verify-attestations-job.test.mjs'],
+  ['/scripts/ci-workflow.test.mjs', 'scripts/ci-workflow.test.mjs'],
+  ['/scripts/storybook-a11y-check*', 'scripts/storybook-a11y-check.mjs'],
+  ['/scripts/storybook-a11y-check*', 'scripts/storybook-a11y-check.test.mjs'],
+  ['/.pre-commit-config.yaml', '.pre-commit-config.yaml'],
+  ['/eslint.config.js', 'eslint.config.js'],
+  ['/.prettierignore', '.prettierignore'],
+  ['**/.gitignore', '.gitignore'],
+];
+
+describe('CODEOWNERS sabotage', () => {
+  it.each(SABOTAGE)('deleting %s releases %s', (pattern, samplePath) => {
+    expect(isOwned(rules, samplePath)).toBe(true);
+    const without = rules.filter((r) => r.pattern !== pattern);
+    expect(without.length).toBe(rules.length - 1);
+    expect(isOwned(without, samplePath)).toBe(false);
+  });
+});
+
 describe('CODEOWNERS matcher', () => {
   it('anchors a leading slash and lets a bare name match at any depth', () => {
     expect(patternToRegExp('/a.txt').test('a.txt')).toBe(true);

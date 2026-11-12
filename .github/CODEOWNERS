@@ -26,6 +26,23 @@
 # holds the pages and id-token permissions.
 /.storybook/             @branchLeft/branchleft-admin
 
+# The checks that gate publishing and the Pages deploy. The ci job holds the
+# run's GITHUB_TOKEN and runs the Storybook accessibility check and the script
+# tests; its result is a required check for deploy-storybook and publish. So
+# the gate scripts and the tests of the publish gate, of the workflow
+# invariants and of the release plan stay owned, as do the lint, format and
+# ignore files that run in that job or decide what it skips.
+/scripts/release-plan.test.mjs        @branchLeft/branchleft-admin
+/scripts/peer-bump-safety*            @branchLeft/branchleft-admin
+/scripts/publish-workflow.test.mjs    @branchLeft/branchleft-admin
+/scripts/verify-attestations-job.test.mjs @branchLeft/branchleft-admin
+/scripts/ci-workflow.test.mjs         @branchLeft/branchleft-admin
+/scripts/storybook-a11y-check*        @branchLeft/branchleft-admin
+/.pre-commit-config.yaml              @branchLeft/branchleft-admin
+/eslint.config.js                     @branchLeft/branchleft-admin
+/.prettierignore                      @branchLeft/branchleft-admin
+**/.gitignore                         @branchLeft/branchleft-admin
+
 # The rules themselves: the root test config decides whether the CODEOWNERS
 # proof test runs at all, and that test, its matcher and its samples are the
 # proof of this file. Agent rules and ruleset or branch-protection definitions
