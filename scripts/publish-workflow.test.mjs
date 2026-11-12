@@ -8,7 +8,9 @@
 // than at the next real release, which this repo cannot rehearse.
 
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readWorkspacePackages } from './release-plan.mjs';
@@ -152,5 +154,86 @@ describe('publish workflow attestation', () => {
       expect(step.body).not.toContain('NODE_AUTH_TOKEN');
       expect(step.body).not.toContain('github-token');
     }
+  });
+});
+
+/** The bash `run:` block of one step: its lines at ten-space indent, dedented. */
+export function readRunScript(stepBody) {
+  const lines = stepBody.split('\n');
+  const start = lines.findIndex((line) => /^ {8}run: \|\s*$/.test(line));
+  if (start === -1) return null;
+  const body = [];
+  for (const line of lines.slice(start + 1)) {
+    if (/^ {8}\S/.test(line)) break;
+    body.push(line.replace(/^ {10}/, ''));
+  }
+  return body.join('\n');
+}
+
+/**
+ * Runs the pack step's bash against a fake `pnpm` that tars a fixture package
+ * the way `pnpm pack` would: with whatever `dist/` the fixture holds.
+ */
+function runPackStep(fixtureSetup) {
+  const work = mkdtempSync(path.join(tmpdir(), 'publish-pack-'));
+  const fixture = path.join(work, 'fixture');
+  const bin = path.join(work, 'bin');
+  const runnerTemp = path.join(work, 'runner');
+  const output = path.join(work, 'github-output');
+  mkdirSync(path.join(fixture, 'package'), { recursive: true });
+  mkdirSync(bin);
+  mkdirSync(runnerTemp);
+  writeFileSync(output, '');
+  writeFileSync(path.join(fixture, 'package', 'package.json'), '{"name":"fixture"}\n');
+  fixtureSetup(path.join(fixture, 'package'));
+  writeFileSync(
+    path.join(bin, 'pnpm'),
+    '#!/bin/sh\n# args: --filter NAME pack --pack-destination DIR\ntar -czf "$5/fixture.tgz" -C "$FIXTURE" package\n'
+  );
+  chmodSync(path.join(bin, 'pnpm'), 0o755);
+  const packStep = readSteps(workflowText).find(
+    (step) => step.name === 'Pack exactly the checked release plan'
+  );
+  const script = readRunScript(packStep.body);
+  const result = spawnSync('bash', ['-c', script], {
+    encoding: 'utf8',
+    env: {
+      PATH: `${bin}${path.delimiter}${process.env.PATH}`,
+      FIXTURE: fixture,
+      RUNNER_TEMP: runnerTemp,
+      GITHUB_OUTPUT: output,
+      PLAN_PACKAGES: '@branchleft/components',
+    },
+  });
+  return { ...result, output: readFileSync(output, 'utf8') };
+}
+
+describe('publish workflow pack step asserts dist/ is packed', () => {
+  it('reads the pack step run block', () => {
+    const packStep = readSteps(workflowText).find(
+      (step) => step.name === 'Pack exactly the checked release plan'
+    );
+    expect(readRunScript(packStep.body)).toContain('pnpm --filter "$name" pack');
+  });
+
+  it('fails when the packed package has no dist/ (dist not built)', () => {
+    const result = runPackStep(() => {});
+    expect(result.status).not.toBe(0);
+    expect(result.stdout + result.stderr).toContain('packed with no file under dist/');
+  });
+
+  it('fails when dist/ exists but holds no file', () => {
+    const result = runPackStep((pkg) => mkdirSync(path.join(pkg, 'dist')));
+    expect(result.status).not.toBe(0);
+    expect(result.stdout + result.stderr).toContain('packed with no file under dist/');
+  });
+
+  it('passes when dist/ is built and packed', () => {
+    const result = runPackStep((pkg) => {
+      mkdirSync(path.join(pkg, 'dist'));
+      writeFileSync(path.join(pkg, 'dist', 'index.js'), 'export {};\n');
+    });
+    expect(result.status, result.stderr).toBe(0);
+    expect(result.output).toMatch(/^components=.*fixture\.tgz\n$/);
   });
 });

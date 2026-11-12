@@ -168,6 +168,16 @@ jobs:
               echo "::error::Expected exactly one tarball for $name in $dir."
               exit 1
             fi
+            # Every package here lists dist in its files (the test holds that),
+            # so a tarball with no file under package/dist/ means dist/ was not
+            # built. Without this check, pack ships only package.json and nothing
+            # downstream notices.
+            listing=$(tar -tzf "${files[0]}")
+            dist_files=$(printf '%s\n' "$listing" | grep -cE '^package/dist/.*[^/]$' || true)
+            if [ "$dist_files" -eq 0 ]; then
+              echo "::error::$name packed with no file under dist/. Build it before packing."
+              exit 1
+            fi
             echo "$short=${files[0]}" >> "$GITHUB_OUTPUT"
           done
         env:
