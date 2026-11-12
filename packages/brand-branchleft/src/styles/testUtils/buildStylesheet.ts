@@ -7,16 +7,10 @@ import { fileURLToPath } from 'node:url';
 const PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
 /**
- * Builds the real `styles` entry via the package's own `vite.config.ts` —
- * the exact production build `pnpm build` runs, only redirected to a
- * throwaway temp directory — and returns the resulting `branchleft.css`
- * text.
- *
- * Deliberately does NOT read a pre-existing `packages/brand-branchleft/
- * dist/branchleft.css`: this package's `test:unit` can run before its own
- * `build` step (see the repo's CI job order), and the whole point of this
- * suite is to check what actually ships, not a hand-copied set of values
- * that could drift from `tokens.css` unnoticed.
+ * Builds the real `styles` entry through the package's own vite.config.ts, the
+ * production build redirected to a temp directory, and returns the CSS text.
+ * It does not read a pre-built dist file: test:unit can run before build in CI,
+ * and a stale copy could drift from tokens.css unnoticed.
  */
 export async function buildStylesheet(): Promise<string> {
   const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'branchleft-stylesheet-test-'));
@@ -60,15 +54,9 @@ export async function buildStylesheetDist(): Promise<string> {
 export type CustomProperties = ReadonlyMap<string, string>;
 
 /**
- * Extracts every `--name: value` declaration from one CSS rule's body,
- * given the block's opening selector text exactly as it appears in the
- * built (minified, single-line) stylesheet — e.g. `:root{` or
- * `:root[data-theme=light]{`.
- *
- * Deliberately simple (split on top-level `;`, no property nesting/at-rule
- * awareness): `tokens.css` only ever declares flat custom properties in
- * these two blocks, never a nested rule, so a full CSS parser would be
- * more machinery than the input needs.
+ * Extracts every `--name: value` declaration from one flat rule body, given the
+ * opener exactly as the minified CSS has it, e.g. `:root{`. Splits on top-level
+ * `;` with no nesting: tokens.css declares only flat custom properties here.
  */
 export function extractCustomProperties(css: string, blockOpener: string): CustomProperties {
   const start = css.indexOf(blockOpener);

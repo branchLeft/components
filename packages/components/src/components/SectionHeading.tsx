@@ -11,28 +11,18 @@ export interface SectionHeadingProps extends Omit<React.HTMLAttributes<HTMLHeadi
    */
   as?: SectionHeadingLevel;
   /**
-   * Fragment identifier this heading anchors.
-   *
-   * When provided:
-   *   - the heading receives `id={anchor}`
-   *   - its text is wrapped in an `<a href="#${anchor}">`
-   *   - a link icon is rendered after the text
-   *   - the root gets a `bl-section-heading--linked` class hook
-   *
-   * When omitted the heading renders as a plain, non-interactive element.
+   * Fragment identifier this heading anchors. When provided, the heading gets
+   * `id={anchor}`, its text is wrapped in a link with a link icon, and the root
+   * gets `bl-section-heading--linked`. When omitted, the heading is plain.
    */
   anchor?: string;
   children: React.ReactNode;
 }
 
 /**
- * A section heading with an optional anchor link.
- *
- * Ships structural CSS via `@branchleft/components/css` — spacing between the
- * icon and text. Everything else (colours, fonts, hover/focus states) is left
- * to the consumer via class-name hooks: `.bl-section-heading`,
- * `.bl-section-heading--linked`, `.bl-section-heading__link`,
- * `.bl-section-heading__icon`, and `.bl-section-heading__text`.
+ * Section heading with an optional anchor link. Structural CSS (icon and text
+ * spacing) ships in `@branchleft/components/css`; colours and states are left
+ * to the consumer through the `.bl-section-heading*` class hooks.
  *
  * @example
  * ```tsx
