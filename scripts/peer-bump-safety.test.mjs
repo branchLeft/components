@@ -1,6 +1,10 @@
-// Runs the real Changesets bump logic on this workspace to prove a components MINOR bump
-// cannot force a brand package to 1.0.0: below 1.0 a caret range treats a minor as breaking,
-// so `onlyUpdatePeerDependentsWhenOutOfRange` must be set and the peer range still cover it.
+// Runs the real Changesets bump logic against this workspace's package files,
+// to prove a components MINOR bump cannot force a brand package to 1.0.0.
+// Below 1.0 the caret range treats the minor as breaking, and Changesets bumps
+// peer dependents by major unless onlyUpdatePeerDependentsWhenOutOfRange is set
+// and the peer range still covers the new version. Both must hold together.
+// It calls the same functions the Changesets CLI calls, so a regression shows
+// here rather than at the next real release.
 
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -35,7 +39,11 @@ function buildConfig(packages) {
   return parseChangesetsConfig(rawConfig, packages);
 }
 
-/** Runs the real Changesets release-plan assembly for one synthetic changeset bumping `@branchleft/components` by `bumpType`. */
+/**
+ * Runs the real Changesets release-plan assembly for a single synthetic
+ * changeset bumping `@branchleft/components` by `bumpType`, using this
+ * workspace's actual packages and `.changeset/config.json`.
+ */
 function planFor(bumpType) {
   const packages = buildPackagesFixture();
   const config = buildConfig(packages);

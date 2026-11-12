@@ -1,7 +1,13 @@
 #!/usr/bin/env node
-// Computes which workspace packages a release tag should publish and checks it against what the tag's message
-// says it releases (three packages version independently, so the message is the record of intent). Writes the
-// checked names to `GITHUB_OUTPUT` so the publish step is filtered to exactly what this gate approved.
+// Computes which workspace packages a release tag should publish, and
+// checks that against what the tag itself says it releases. A single `v*`
+// tag no longer maps to one package's version (three packages version
+// independently), so the tag's own message is the release's record of
+// intent — this script is what holds it to that, before anything is
+// actually built or published. It also writes the checked list of package
+// names to `GITHUB_OUTPUT`, so the publish step can be filtered to exactly
+// what this gate approved, rather than trusting `pnpm -r publish` to agree
+// with a separately-computed decision.
 
 import { readFileSync, readdirSync, appendFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -11,8 +17,10 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const DEFAULT_REGISTRY = 'https://npm.pkg.github.com';
 
 /**
- * Reads every `packages/*` workspace member's `package.json`, plus the root's own: included so a private, unversioned
- * root is something the selection logic must explicitly exclude, not something never offered to it.
+ * Reads every `packages/*` workspace member's `package.json`, plus the
+ * workspace root's own (included so a private, unversioned root is
+ * something the selection logic explicitly has to exclude, not something
+ * that's simply never offered to it).
  */
 export function readWorkspacePackages(rootDir) {
   const packagesDir = path.join(rootDir, 'packages');
@@ -33,8 +41,12 @@ export function readWorkspacePackages(rootDir) {
 }
 
 /**
- * Looks up whether `name@version` exists on `registry` (GitHub Packages' npm-compatible metadata endpoint): 404 means
- * never published, 2xx without the version means published but not this one. Anything else throws: never read as "skip it".
+ * Looks up whether `name@version` already exists on `registry`, using the
+ * npm-registry-compatible metadata endpoint GitHub Packages exposes. A 404
+ * means the package name has never been published at all; a 2xx with the
+ * version absent from `versions` means published, but not this version.
+ * Anything else (auth failure, 5xx, network error) is a lookup failure and
+ * throws — the caller must not treat "I couldn't tell" as "skip it".
  */
 export async function isPublishedOnRegistry(name, version, { registry, token, fetchImpl = fetch }) {
   const url = `${registry}/${encodeURIComponent(name)}`;
@@ -59,8 +71,12 @@ export async function isPublishedOnRegistry(name, version, { registry, token, fe
 }
 
 /**
- * Selects which of `packages` to publish: skips a private or unversioned package without calling `isPublished`, and
- * propagates any error it throws: a lookup failure must fail the whole selection, never read as "already published".
+ * Selects which of `packages` should be published: skips a private or
+ * unversioned package without ever calling `isPublished` for it, publishes
+ * one `isPublished` reports as absent, skips one it reports as present, and
+ * propagates (rather than swallows) any error `isPublished` throws — a
+ * registry lookup failure must fail the whole selection, never silently
+ * fall back to "already published, leave it alone".
  */
 export async function selectPackagesToPublish(packages, isPublished) {
   const toPublish = [];
@@ -79,8 +95,11 @@ export async function selectPackagesToPublish(packages, isPublished) {
 const RELEASE_LINE = /^(.+)@(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?)$/;
 
 /**
- * Parses a signed tag's message for `name@version` lines, one per package released (RELEASING.md). Everything else
- * (subject, blank lines, prose) is ignored, not an error: the message can carry human context beside the machine-read lines.
+ * Parses a signed tag's message for `name@version` lines — one per package
+ * it releases, per RELEASING.md's tag-message rule. Everything else in the
+ * message (the subject line, blank lines, prose) is ignored, not treated as
+ * an error: the message can carry human context alongside the machine-read
+ * lines.
  */
 export function parseReleaseTagMessage(message) {
   return message
@@ -98,8 +117,11 @@ function releaseKey(pkg) {
 }
 
 /**
- * Compares the tag's declared release list (`expected`) with the computed set due for release (`actual`). `ok` only when
- * identical: a package due but missing from the tag message, or named but not due, both fail. Order doesn't matter.
+ * Compares the tag's declared release list (`expected`) against the
+ * actually-computed set of packages due for release (`actual`). `ok` is
+ * true only when the two sets are identical — a package due for release
+ * but missing from the tag message, or named in the tag message but not
+ * actually due for release, both fail it. Order doesn't matter.
  */
 export function compareReleaseSets(expected, actual) {
   const expectedKeys = new Set(expected.map(releaseKey));
@@ -116,8 +138,14 @@ export function compareReleaseSets(expected, actual) {
 }
 
 /**
- * Strips inherited `GIT_*` variables and points `--git-dir`/`--work-tree` at `repoDir`: under a git hook,
- * git's own `GIT_DIR` would otherwise silently redirect every call to the hook's repository.
+ * Strips every inherited `GIT_*` environment variable and instead points
+ * `--git-dir`/`--work-tree` explicitly at `repoDir` — belt and braces, not
+ * either alone: when this process is itself invoked from inside a git hook
+ * (a pre-commit run, for one), git has already set `GIT_DIR`/`GIT_WORK_TREE`/
+ * `GIT_INDEX_FILE` in the environment for that hook, and a plain
+ * `execFileSync` inherits them, silently pointing every `git` call below at
+ * the *hook's* repository instead of `repoDir` — no error, just the wrong
+ * repository read from or written to.
  */
 export function isolatedGitArgs(repoDir, args) {
   const env = { ...process.env };
@@ -131,8 +159,13 @@ export function isolatedGitArgs(repoDir, args) {
 }
 
 /**
- * Reads a local tag's message via `%(contents)`, not `%(subject)`, which silently drops every `name@version` line after
- * the first. `git tag -l` behaves the same on a full clone or the shallow, tag-only fetch the tag-push event gives CI.
+ * Reads a local tag's own message via `%(contents)`, deliberately not
+ * `%(subject)` — a signed tag's message is the subject line, a blank line,
+ * then the `name@version` lines RELEASING.md asks for, and `%(subject)`
+ * returns only that first line, silently discarding every package line
+ * after it. `git tag -l` (not `cat-file`/`for-each-ref`) works the same way
+ * whether the tag arrived as a full clone or the shallow, tag-only fetch
+ * the tag-push event actually gives CI.
  */
 export function readTagMessageFromGit(tagName, { cwd } = {}) {
   const { args, env } = isolatedGitArgs(cwd, ['tag', '-l', '--format=%(contents)', tagName]);
@@ -153,8 +186,10 @@ function formatPackage(pkg) {
 }
 
 /**
- * The release-plan gate: computes which packages are due, compares that with the tag's declared list, and throws on a
- * mismatch either way. The registry lookup and tag reader are parameters, so tests need no network or git (release-plan.test.mjs).
+ * The release-plan gate: computes which packages are due, compares that with
+ * the tag's declared list, and throws on a mismatch in either direction. The
+ * registry lookup and tag reader are parameters, so the gate needs no network
+ * or git to test; release-plan.test.mjs runs it end to end.
  */
 export async function runReleasePlan({
   packages,
@@ -234,8 +269,13 @@ async function main() {
 }
 
 /**
- * True when this module is the process's entry point. A hand-built `file://${argv1}` breaks silently for a path needing
- * URL-encoding (a space), so `main()` never runs and the process exits 0; `pathToFileURL` builds the matching URL.
+ * True when this module is the process's actual entry point. Comparing
+ * `import.meta.url` against a hand-built `file://${argv1}` string breaks
+ * silently for any path needing URL-encoding (a space, for one) — `main()`
+ * would then just never run, and the process would exit 0 having done
+ * nothing. `pathToFileURL` builds the same kind of URL `import.meta.url`
+ * actually is, so the comparison holds regardless of what characters the
+ * path contains.
  */
 export function isEntryPoint(metaUrl, argv1) {
   return Boolean(argv1) && metaUrl === pathToFileURL(argv1).href;

@@ -22,14 +22,22 @@ const STATIC_DIR = path.join(ROOT, 'storybook-static');
 const PORT = 6474;
 const THEMES = ['dark', 'light'];
 
-// Backstop for a hang: every page load/wait has its own bounded timeout, but if the run still exceeds this (a browser
-// that stops responding, a hung close()) the process is killed rather than left running. Sized well above the worst
-// case (entries x themes x per-entry timeout) with headroom for growth.
+// Nothing below is allowed to hang the process indefinitely — every page
+// load/wait already carries its own bounded timeout (see below), and this
+// is the backstop: if the whole run somehow still exceeds it (a browser
+// that stops responding, a hung close()), the process is killed outright
+// rather than left running unattended. Sized well above every entries x
+// themes x per-entry-timeout worst case for this repo's current story
+// count, with headroom for it to grow.
 const OVERALL_TIMEOUT_MS = 10 * 60 * 1000;
 
-// The bound the DOM-quiet wait enforces: watch each story's root for the full DOM_QUIET_CAP_MS after first render (no early
-// exit), then check for a mutation in the last QUIET_MS. Quiet: scanned as rendered; still mutating: `still-mutating`
-// failure. A story whose content appears only after DOM_QUIET_CAP_MS is not covered.
+// The explicit, documented bound the DOM-quiet wait below enforces: this
+// script always watches each story's root for the full DOM_QUIET_CAP_MS
+// after its initial render (no early exit), then checks whether anything
+// mutated in the last QUIET_MS of that window. Quiet by then: scanned as
+// rendered. Still mutating: the check fails (`still-mutating`) rather
+// than scanning content that might not be final. A story whose real
+// content only appears after DOM_QUIET_CAP_MS has elapsed is not covered.
 const QUIET_MS = 300;
 const DOM_QUIET_CAP_MS = 1500;
 
@@ -46,8 +54,13 @@ const CONTENT_TYPES = {
 };
 
 /**
- * Resolves a request path under `root`, refusing `../`, encoded `../`, absolute paths and NUL (returns
- * `null`; else an absolute path, existence unchecked). Pure, so a unit test exercises the guard itself.
+ * Resolves a request path against `root`, refusing anything that would
+ * escape it (`../`, an encoded `../`, an absolute path, a NUL byte). Pure
+ * and synchronous so the path guard itself — not the filesystem access
+ * around it — is what a unit test exercises.
+ *
+ * Returns `null` for a rejected path, otherwise an absolute path under
+ * `root` (not yet checked for existence).
  */
 export function resolveStaticPath(root, requestUrl) {
   const rawPath = requestUrl.split('?')[0];
@@ -59,8 +72,11 @@ export function resolveStaticPath(root, requestUrl) {
   } catch {
     return null;
   }
-  // Reject up front, before resolution, rather than rely only on the containment check below: a NUL byte, a `..` segment,
-  // a Windows drive letter (`C:`) and a backslash (meaningless to `path.posix`) are refused on sight.
+  // Reject up front, before resolution, rather than relying solely on the
+  // final containment check below: a NUL byte, a literal `..` segment, a
+  // Windows drive letter (`C:`) and a backslash (a Windows path separator,
+  // meaningless to `path.posix` but still worth refusing outright) are all
+  // rejected on sight.
   if (
     urlPath.includes('\0') ||
     urlPath.includes(':') ||
@@ -71,8 +87,11 @@ export function resolveStaticPath(root, requestUrl) {
   }
 
   const resolvedRoot = path.resolve(root);
-  // The leading `.${sep}` is load-bearing: without it `path.resolve` treats a `urlPath` starting with `/` as an ABSOLUTE
-  // second argument and returns it unchanged, discarding `resolvedRoot`: this, not the `..` check above, neutralises an absolute path.
+  // The leading `.${sep}` is load-bearing: without it, `path.resolve`
+  // treats a `urlPath` that starts with `/` as an ABSOLUTE second argument
+  // and returns it unchanged, discarding `resolvedRoot` entirely — this is
+  // what actually neutralises an absolute-path request, not the `..`
+  // check above.
   const resolved = path.resolve(
     resolvedRoot,
     `.${path.sep}${urlPath === '/' ? 'index.html' : urlPath}`
@@ -86,8 +105,12 @@ export function resolveStaticPath(root, requestUrl) {
 const STATIC_DIR_BOUNDARY = path.resolve(STATIC_DIR) + path.sep;
 
 /**
- * `@storybook/addon-a11y` runs its own axe pass on every story on a timer this script doesn't control, sometimes
- * still in flight when `analyze()` starts (axe-core rejects rather than queues). Retried: there is no way to skip it.
+ * `@storybook/addon-a11y` (already enabled, `.storybook/main.ts`) runs its
+ * own axe-core pass on every story in the background, on a timer this
+ * script doesn't control — occasionally still in flight when this script's
+ * own `analyze()` call starts, which axe-core rejects outright rather than
+ * queuing. Retried rather than avoided: there is no supported way to ask
+ * Storybook to skip its own scan for one visit.
  */
 async function analyzeColorContrast(page) {
   const ALREADY_RUNNING = 'Axe is already running';
@@ -126,9 +149,14 @@ async function serveStatic() {
     try {
       const st = await stat(requestedPath).catch(() => null);
 
-      // Only a missing, extensionless path (client-side routing, e.g. Storybook's manager deep links) falls back to
-      // index.html. A missing file WITH an extension (a JS/CSS chunk, a font) is a real 404: serving HTML as
-      // `text/javascript` turns one missing asset into a "Failed to parse/execute script" error nobody can read.
+      // Only a genuinely missing, extensionless path (client-side routing,
+      // e.g. Storybook's manager deep links) falls back to index.html. A
+      // missing file that DOES have an extension — a JS/CSS chunk, a font —
+      // is a real 404, never masked as HTML: serving index.html's markup
+      // back with a `Content-Type: text/javascript` (guessed from the
+      // requested path) is exactly how a single missing/mis-cased asset
+      // turns into a "Failed to parse/execute script" error inside the
+      // page, not a clean failure this script can see and report.
       let filePath = requestedPath;
       if (!st || st.isDirectory()) {
         if (path.extname(requestedPath)) {
@@ -224,8 +252,12 @@ async function main() {
             const rootSelector = viewMode === 'docs' ? '#storybook-docs' : '#storybook-root';
             let rendered = true;
             try {
-              // A real "the story is on screen" signal, not a delay tuned to one animation: Storybook's mount root has a child.
-              // Reduced motion (this context's setting) makes framer-motion skip to its end state, so a working story resolves at once.
+              // A real "the story is actually on screen" signal, not a
+              // fixed delay tuned to one animation: the root Storybook
+              // mounts into has at least one child. Reduced motion (this
+              // context's own setting) makes framer-motion components
+              // skip to their end state immediately, so this resolves
+              // right away for a working story.
               await page.waitForFunction(
                 (selector) => {
                   const root = document.querySelector(selector);
@@ -234,8 +266,12 @@ async function main() {
                 rootSelector,
                 { timeout: 10_000 }
               );
-              // Raced against a hard timeout INSIDE the page, not just awaited from Node: `document.fonts.ready` is not under
-              // this script's control, and a stalled font fetch would leave this `evaluate` pending forever (the gap that hung a run).
+              // Raced against a hard timeout INSIDE the page, not just
+              // awaited from Node: `document.fonts.ready` is a promise this
+              // script doesn't control, and a stalled font fetch (or a
+              // network-less sandbox) would otherwise leave this `evaluate`
+              // pending forever — the one gap that let a previous run hang
+              // with nothing to show for it.
               await page.evaluate(
                 () =>
                   new Promise((resolve) => {
@@ -259,9 +295,14 @@ async function main() {
               });
             }
 
-            // "Has children" alone only proves an INITIAL render: a story whose content lands later (a timer, a delayed
-            // fetch) would still be scanned showing a placeholder. No early exit on first sight of quiet, as a later mutation
-            // would not have happened yet; watches the full bound. See DOM_QUIET_CAP_MS above for what that covers.
+            // "Has children" alone only proves an INITIAL render — a story
+            // whose real content lands later (a timer, a delayed fetch)
+            // would still get scanned while still showing a placeholder.
+            // Deliberately no early exit on first sight of quiet: that
+            // would resolve before a later mutation had a chance to
+            // happen at all. Watches for the full bound instead; see
+            // DOM_QUIET_CAP_MS above for exactly what it does and doesn't
+            // cover.
             if (rendered) {
               const quiet = await page.evaluate(
                 ({ quietMs, capMs }) =>
