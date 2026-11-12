@@ -1,15 +1,24 @@
 #!/usr/bin/env node
-// Manual verification for the README's "Layer order in a Tailwind v4 app" section, NOT run in CI:
-// jsdom doesn't resolve cascade layers like a browser, and this repo has no sibling app to compile
-// Tailwind against.
+// Manual verification for the README's "Layer order in a Tailwind v4 app"
+// section — NOT run in CI. CSS Cascade Layers priority depends on how a
+// real browser resolves competing rules across layers; jsdom does not
+// implement this correctly, and this repo has no sibling app to compile
+// Tailwind against, so this is a documented script rather than a gate.
 
-// Needs a real Tailwind v4 install and Chromium, which this repo lacks: point it at a sibling checkout that
-// has both (e.g. `website/`):  node scripts/verify-layer-order.mjs /path/to/website/node_modules/.pnpm
+// Requires a real Tailwind v4 install and a real Chromium binary — this
+// repo has neither. Point it at a sibling checkout that does (e.g.
+// `website/`, which already installs both for its own e2e suite):
+//
+//   node scripts/verify-layer-order.mjs /path/to/website/node_modules/.pnpm
 
-// Builds this package's `dist/branchleft.css` (run `pnpm build` first) into three
-// Tailwind v4 fixtures (explicit `@layer` order; plain import order, both directions)
-// and prints computed styles from headless Chromium. Exits non-zero if the
-// recommended variant misses EXPECTED below.
+// It builds this package's own `dist/branchleft.css` (run `pnpm build`
+// first) into three small Tailwind v4 fixtures — the recommended explicit
+// `@layer` order, and both directions of a plain import order with no
+// explicit statement (package first, and Tailwind first) — and prints
+// real computed styles from a headless Chromium page for each. Exits
+// non-zero if the recommended variant doesn't match EXPECTED below. Run
+// this again whenever elements.css's layer structure changes, and paste
+// the new numbers into the README/PR body.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
