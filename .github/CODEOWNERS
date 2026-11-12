@@ -43,6 +43,16 @@
 /.prettierignore                      @branchLeft/branchleft-admin
 **/.gitignore                         @branchLeft/branchleft-admin
 
+# Code the ci job runs with the registry token in its environment: every vitest
+# config (its coverage floors and setup files decide whether the tests count),
+# the shared test setup and helpers those configs load, and the pnpm hook files
+# that run at install. The dist check is run by the publish job when it packs.
+**/vitest.config.*                    @branchLeft/branchleft-admin
+/test-utils/                          @branchLeft/branchleft-admin
+/.pnpmfile.cjs                        @branchLeft/branchleft-admin
+/.pnpmfile.mjs                        @branchLeft/branchleft-admin
+/scripts/assert-dist*                 @branchLeft/branchleft-admin
+
 # The rules themselves: the root test config decides whether the CODEOWNERS
 # proof test runs at all, and that test, its matcher and its samples are the
 # proof of this file. Agent rules and ruleset or branch-protection definitions

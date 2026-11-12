@@ -123,6 +123,13 @@ const SABOTAGE: ReadonlyArray<readonly [string, string]> = [
   ['/eslint.config.js', 'eslint.config.js'],
   ['/.prettierignore', '.prettierignore'],
   ['**/.gitignore', '.gitignore'],
+  ['**/vitest.config.*', 'packages/components/vitest.config.ts'],
+  ['**/vitest.config.*', 'packages/brand-branchleft/vitest.config.ts'],
+  ['/test-utils/', 'test-utils/axe-setup.ts'],
+  ['/test-utils/', 'test-utils/localstorage-setup.ts'],
+  ['/.pnpmfile.cjs', '.pnpmfile.cjs'],
+  ['/.pnpmfile.mjs', '.pnpmfile.mjs'],
+  ['/scripts/assert-dist*', 'scripts/assert-dist.mjs'],
 ];
 
 describe('CODEOWNERS sabotage', () => {

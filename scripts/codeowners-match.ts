@@ -66,7 +66,7 @@ export function patternToRegExp(rawPattern: string): RegExp {
     } else if (ch === '?') {
       body += '[^/]';
     } else {
-      body += ch.replace(/[.+^${}()|]/g, '\\$&');
+      body += ch.replace(/[.+^${}()|[\]\\]/g, '\\$&');
     }
   }
 

@@ -38,8 +38,15 @@ packages/brand-branchleft/src/styles/branchleft.font-hash.test.ts	free	test
 packages/brand-branchleft/src/styles/branchleft.asset-size.test.ts	free	test
 packages/brand-branchleft/src/styles/testUtils/cvdMatrices.pin.test.ts	free	test
 packages/brand-publicpress/src/components/publicPressMark.generated.test.ts	free	test
-packages/components/vitest.config.ts	free	test
-test-utils/axe.ts	free	test
+packages/components/vitest.config.ts	owned	c1
+packages/brand-branchleft/vitest.config.ts	owned	c1
+packages/brand-publicpress/vitest.config.ts	owned	c1
+test-utils/axe.ts	owned	c1
+test-utils/axe-setup.ts	owned	c1
+test-utils/localstorage-setup.ts	owned	c1
+.pnpmfile.cjs	owned	c2
+.pnpmfile.mjs	owned	c2
+scripts/assert-dist.mjs	owned	c1
 scripts/release-plan.test.mjs	owned	c1
 scripts/peer-bump-safety.test.mjs	owned	c1
 pnpm-lock.yaml	free	lockfile
