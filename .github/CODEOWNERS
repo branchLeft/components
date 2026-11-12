@@ -1,66 +1,91 @@
-# Owners for gating files only (m14, branchLeft/workspace#2265). Every other
-# path needs no owner review. Each group below says why it gates a merge or a
-# deploy; the merge script's four-repo list is the reference.
+# Owners for the paths whose change can do harm that no later check would catch.
+# GitHub applies the LAST matching line, so the order below matters: the kept
+# groups come first, the released paths (a pattern with no owner) follow, and
+# the owner's own words and this file come after those so they always win.
+# No catch-all: a path no line names has no owner and needs no owner review.
 
-# CI workflows and actions decide pass or fail for every PR and every deploy.
+# Workflows and actions run with the run's token, and decide pass or fail for
+# every pull request and every deploy.
 /.github/workflows/      @branchLeft/branchleft-admin
 /.github/actions/        @branchLeft/branchleft-admin
+
+# The package publishing route: changesets set what a release publishes, the
+# registry settings decide where installs and publishes go, package manifests
+# carry the scripts the publish job runs with its token (prepublishOnly), the
+# workspace file holds the install-time supply-chain controls, vite configs run
+# inside the build the publish job performs, and release-plan.mjs decides what
+# is published.
+/.changeset/             @branchLeft/branchleft-admin
+**/.npmrc                @branchLeft/branchleft-admin
+**/package.json          @branchLeft/branchleft-admin
+/pnpm-workspace.yaml     @branchLeft/branchleft-admin
+**/vite.config.ts        @branchLeft/branchleft-admin
+/scripts/release-plan.mjs @branchLeft/branchleft-admin
+
+# Storybook configuration runs in the job that deploys the public site, which
+# holds the pages and id-token permissions.
+/.storybook/             @branchLeft/branchleft-admin
+
+# The checks that gate publishing and the Pages deploy. The ci job holds the
+# run's GITHUB_TOKEN and runs the Storybook accessibility check and the script
+# tests; its result is a required check for deploy-storybook and publish. So
+# the gate scripts and the tests of the publish gate, of the workflow
+# invariants and of the release plan stay owned, as do the lint, format and
+# ignore files that run in that job or decide what it skips.
+/scripts/release-plan.test.mjs        @branchLeft/branchleft-admin
+/scripts/peer-bump-safety*            @branchLeft/branchleft-admin
+/scripts/publish-workflow.test.mjs    @branchLeft/branchleft-admin
+/scripts/verify-attestations-job.test.mjs @branchLeft/branchleft-admin
+/scripts/ci-workflow.test.mjs         @branchLeft/branchleft-admin
+/scripts/storybook-a11y-check*        @branchLeft/branchleft-admin
+/.pre-commit-config.yaml              @branchLeft/branchleft-admin
+/eslint.config.js                     @branchLeft/branchleft-admin
+/.prettierignore                      @branchLeft/branchleft-admin
+**/.gitignore                         @branchLeft/branchleft-admin
+
+# Code the ci job runs with the registry token in its environment: every vitest
+# config (its coverage floors and setup files decide whether the tests count),
+# the shared test setup and helpers those configs load, and the pnpm hook files
+# that run at install. The dist check is run by the publish job when it packs.
+**/vitest.config.*                    @branchLeft/branchleft-admin
+/test-utils/                          @branchLeft/branchleft-admin
+/.pnpmfile.cjs                        @branchLeft/branchleft-admin
+/.pnpmfile.mjs                        @branchLeft/branchleft-admin
+/scripts/assert-dist*                 @branchLeft/branchleft-admin
+
+# The rules themselves: the root test config decides whether the CODEOWNERS
+# proof test runs at all, and that test, its matcher and its samples are the
+# proof of this file. Agent rules and ruleset or branch-protection definitions
+# are named too.
+/vitest.config.ts        @branchLeft/branchleft-admin
+/scripts/codeowners*     @branchLeft/branchleft-admin
+/.claude/                @branchLeft/branchleft-admin
+**/CLAUDE.md             @branchLeft/branchleft-admin
+**/AUTHORISATIONS.md     @branchLeft/branchleft-admin
+**/*ruleset*.json        @branchLeft/branchleft-admin
+**/*branch-protection*.json @branchLeft/branchleft-admin
+**/*branch_protection*.json @branchLeft/branchleft-admin
+
+# Released: a document and a probe inside kept directories. A pattern with no
+# owner clears the owner for the paths it matches.
+/.changeset/README.md
+/.storybook/probes/
 
 # CODEOWNERS decides who must approve a change, at any depth GitHub reads it from.
 **/CODEOWNERS            @branchLeft/branchleft-admin
 
-# Rulesets and branch-protection files set which checks and approvals a merge needs.
-**/*ruleset*             @branchLeft/branchleft-admin
-**/*branch-protection*   @branchLeft/branchleft-admin
-**/*branch_protection*   @branchLeft/branchleft-admin
+# The owner's words: licence and trade-mark text. The README carries the
+# trade-mark and licence notice, and a CODEOWNERS line cannot own half a file.
+/LICENSE                 @branchLeft/branchleft-admin
+/README.md               @branchLeft/branchleft-admin
+**/OFL.txt               @branchLeft/branchleft-admin
 
-# Files named for a guard, an approval or a deploy: CI gate and deploy scripts.
-**/*guard*               @branchLeft/branchleft-admin
-**/*approv*              @branchLeft/branchleft-admin
-**/*deploy*              @branchLeft/branchleft-admin
-
-# CI gate scripts (storybook accessibility check, release plan and their tests) and package build scripts, at any depth.
-**/scripts/              @branchLeft/branchleft-admin
-
-# Changesets: .changeset/ sets what the release plan publishes.
-/.changeset/             @branchLeft/branchleft-admin
-
-# Test runner, coverage and build configs: they set the floors and the skip rules CI runs under.
-**/vitest.config.ts      @branchLeft/branchleft-admin
-**/vite.config.ts        @branchLeft/branchleft-admin
-/test-utils/             @branchLeft/branchleft-admin
-
-# Pins and floors: tests that fix a value CI must keep (matrices, hashes, asset sizes, generated output).
-**/*.pin.test.ts         @branchLeft/branchleft-admin
-**/*hash.test.ts         @branchLeft/branchleft-admin
-**/*.asset-size.test.ts  @branchLeft/branchleft-admin
-**/*.generated.test.ts   @branchLeft/branchleft-admin
-
-# Lint, format and type-check rules CI runs: eslint config, prettier ignore list, tsconfig files.
-/eslint.config.js        @branchLeft/branchleft-admin
-/.prettierignore         @branchLeft/branchleft-admin
-**/tsconfig*.json        @branchLeft/branchleft-admin
-
-# Pre-commit hooks: CI runs these exact hooks through pre-commit/action.
-/.pre-commit-config.yaml @branchLeft/branchleft-admin
-
-# Package scripts: the commands CI runs (test:unit, type-check, build, release-plan).
-/package.json            @branchLeft/branchleft-admin
-
-# Per-package manifests: the test:unit, type-check and build scripts CI runs through pnpm -r, and each package's dependency versions.
-**/package.json          @branchLeft/branchleft-admin
-
-# Workspace and ignore files: pnpm-workspace.yaml picks the packages pnpm -r runs and holds the install-time supply-chain controls; .gitignore is the skip list the format check reads.
-/pnpm-workspace.yaml     @branchLeft/branchleft-admin
-**/.gitignore            @branchLeft/branchleft-admin
-
-# Storybook configuration: CI builds it and the accessibility check scans its stories.
-/.storybook/             @branchLeft/branchleft-admin
-
-# Standards entries (SYNC-1): these six template lines stay the final lines of this file.
+# Floor file, then the standards entries (SYNC-1): the last five lines below
+# are the shared template and stay the final lines of this file. The last line
+# also owns this file and the Dependabot configuration.
+/tools/floors.tsv        @branchLeft/branchleft-admin
 /.standardsignore        @branchLeft/branchleft-admin
 /.standards.mode         @branchLeft/branchleft-admin
 /.docs-lint*             @branchLeft/branchleft-admin
-/tools/floors.tsv        @branchLeft/branchleft-admin
 /.standards-db-tooling   @branchLeft/branchleft-admin
 /.github/                @branchLeft/branchleft-admin
