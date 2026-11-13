@@ -6,19 +6,18 @@ import type { AxeMatchers } from 'vitest-axe';
 // `vitest-axe` in `*.test.tsx` files.
 expect.extend(matchers);
 
-// `vitest-axe` ships its own `extend-expect.d.ts`, but it augments the old
-// `Vi.Assertion` namespace that vitest 0.x/1.x used for custom-matcher
-// typing. Vitest 2's `@vitest/expect` dropped that namespace in favour of
-// augmenting `Assertion` directly on the `vitest` module, so the shipped
-// types are silently ignored and `toHaveNoViolations` fails to typecheck.
-// Re-declare the augmentation against the module vitest 2 actually uses.
+// `vitest-axe` augments the old `Vi.Assertion` namespace, which vitest no
+// longer reads, so its shipped types are ignored. Vitest 5 exposes `Matchers`
+// as the custom-matcher extension point: `Assertion`, `ExpectStatic` and
+// `AsymmetricMatchersContaining` all extend it. Merging into it must repeat
+// its type-parameter list exactly, though `AxeMatchers` uses neither.
 declare module 'vitest' {
-  // `T` must stay to match the `Assertion<T = any>` signature declared
-  // upstream in @vitest/expect — interface merging requires an identical
-  // type-parameter list, even though `AxeMatchers` itself doesn't use `T`.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface Assertion<T = any> extends AxeMatchers {}
-  interface AsymmetricMatchersContaining extends AxeMatchers {}
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  interface Matchers<
+    R extends void | Promise<void> = void | Promise<void>,
+    T = unknown,
+  > extends AxeMatchers {}
+  /* eslint-enable @typescript-eslint/no-unused-vars */
 }
 
 // `axe()` temporarily swaps `document.body.innerHTML` to inspect markup (see
