@@ -1,9 +1,6 @@
 // @vitest-environment node
-//
-// Runs `vite build()` (esbuild under the hood) to get the real built CSS —
-// esbuild's native bridge relies on a `TextEncoder`/`Uint8Array` invariant
-// that jsdom's polyfills break, so this file needs the plain Node
-// environment rather than the package's jsdom default.
+// Plain Node, not the jsdom default: vite's esbuild breaks under jsdom's TextEncoder
+// polyfill (see README.md).
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
@@ -13,13 +10,9 @@ import { buildStylesheetDist } from './testUtils/buildStylesheet';
 
 const FONTS_SOURCE_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'fonts');
 
-// Same list, same order as `vite.config.ts`'s `extractFontsPlugin` —
-// `FONT_FILES` there matches each inlined base64 data URI to a source file
-// by POSITION, not by content (cycle-2 review's one non-blocking
-// observation). A sha256 comparison here is the content-level guarantee
-// that observation asked for: if the plugin ever matched the wrong file to
-// the wrong position, this test catches it even though the plugin's own
-// "did every font get replaced" count check would still pass.
+// Same list, same order as `vite.config.ts`'s `extractFontsPlugin`, which matches
+// inlined fonts to files by POSITION. A sha256 comparison is the content-level check:
+// a mismatched pair is caught even if the plugin's own replaced-count check passes.
 const FONT_FILES = [
   'Syne/Syne-VariableFont_wght.woff2',
   'SpaceGrotesk/SpaceGrotesk-VariableFont_wght.woff2',
@@ -55,13 +48,9 @@ describe('dist/fonts/*.woff2 content matches src/styles/fonts/*.woff2', () => {
   });
 });
 
-// Same family directories as FONT_FILES, one licence file each — every font
-// this package ships is SIL OFL 1.1 (see fonts.css's header comment), and
-// the package's own `license: "MIT"` in package.json covers only its code,
-// never the font bytes. A published tarball with the woff2 files but no
-// OFL.txt beside them would redistribute those fonts under no stated
-// licence at all — this is what closes that gap (see also `pnpm pack`'s
-// tarball contents, checked in the PR body).
+// Same family directories as FONT_FILES, one licence file each: every font here is SIL OFL 1.1 (see
+// fonts.css), and the package's `license: "MIT"` covers only its code. A tarball with the woff2 files but
+// no OFL.txt would redistribute the fonts under no stated licence; this closes that gap.
 const FONT_FAMILY_DIRS = Array.from(
   new Set(FONT_FILES.map((relativePath) => path.dirname(relativePath)))
 );

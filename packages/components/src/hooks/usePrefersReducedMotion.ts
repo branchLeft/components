@@ -1,13 +1,8 @@
 import * as React from 'react';
 
 /**
- * Tracks the `prefers-reduced-motion: reduce` media query.
- *
- * On the server (SSR), returns false since no user preference is available
- * and animations don't run in the HTML output anyway. On the client, reads
- * the media query on first render (not a guess), so `PageTransition` and
- * similar components zero their animation durations when the preference
- * is set — including in test environments where Playwright emulates it.
+ * Tracks `prefers-reduced-motion: reduce`. Returns false on the server (no preference is
+ * available); on the client reads the query on first render, not a guess.
  */
 export function usePrefersReducedMotion(): boolean {
   return React.useSyncExternalStore(

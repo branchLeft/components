@@ -7,10 +7,8 @@ import { fileURLToPath } from 'node:url';
 const PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
 /**
- * Builds the real `styles` entry through the package's own vite.config.ts, the
- * production build redirected to a temp directory, and returns the CSS text.
- * It does not read a pre-built dist file: test:unit can run before build in CI,
- * and a stale copy could drift from tokens.css unnoticed.
+ * Builds the real `styles` entry through the package's own vite.config.ts (the production build, into a
+ * temp directory) and returns the CSS. Never reads a pre-built dist: a stale copy could drift unnoticed.
  */
 export async function buildStylesheet(): Promise<string> {
   const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'branchleft-stylesheet-test-'));
@@ -31,11 +29,8 @@ export async function buildStylesheet(): Promise<string> {
 }
 
 /**
- * Same production build as `buildStylesheet`, but returns the temp output
- * directory itself (not cleaned up) instead of just the CSS text — for a
- * test that also needs the extracted `dist/fonts/*.woff2` files on disk,
- * e.g. to hash them against their source. The caller owns cleanup
- * (`fs.rmSync(outDir, { recursive: true, force: true })`).
+ * As `buildStylesheet`, but returns the un-cleaned temp output directory, for tests
+ * that need `dist/fonts/*.woff2` on disk. The caller owns cleanup.
  */
 export async function buildStylesheetDist(): Promise<string> {
   const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'branchleft-stylesheet-dist-test-'));
@@ -54,9 +49,8 @@ export async function buildStylesheetDist(): Promise<string> {
 export type CustomProperties = ReadonlyMap<string, string>;
 
 /**
- * Extracts every `--name: value` declaration from one flat rule body, given the
- * opener exactly as the minified CSS has it, e.g. `:root{`. Splits on top-level
- * `;` with no nesting: tokens.css declares only flat custom properties here.
+ * Extracts every `--name: value` declaration from one flat rule body, given the opener as the minified CSS has it
+ * (e.g. `:root{`). Splits on top-level `;` with no nesting: tokens.css declares only flat custom properties.
  */
 export function extractCustomProperties(css: string, blockOpener: string): CustomProperties {
   const start = css.indexOf(blockOpener);
@@ -84,10 +78,8 @@ export function extractCustomProperties(css: string, blockOpener: string): Custo
 }
 
 /**
- * Resolves a custom property's value to a literal `#rrggbb` hex colour,
- * following a single level of `var(--other-name)` indirection if present
- * (this stylesheet never nests `var()` more than one level deep — e.g.
- * `--bl-color-invalid: var(--bl-value-redlines)`).
+ * Resolves a custom property to a literal `#rrggbb`, following one level of `var(--other-name)` (the stylesheet
+ * never nests deeper, e.g. `--bl-color-invalid: var(--bl-value-redlines)`).
  */
 export function resolveColour(props: CustomProperties, name: string): string {
   const raw = props.get(name);

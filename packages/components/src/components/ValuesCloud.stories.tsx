@@ -118,10 +118,8 @@ const extendedValues: readonly Value[] = [
 ];
 
 /**
- * With the package's shipped CSS (`import '@branchleft/components/css'`)
- * applied — every node shares the same fallback accent colour here since
- * no `[data-accent='...']` overrides are defined. See the "Unstyled" story
- * for what you get with zero CSS.
+ * With the shipped CSS (`import '@branchleft/components/css'`): every node shares the fallback accent, as no
+ * `[data-accent='...']` overrides exist. See "Unstyled" for zero CSS.
  */
 export const Default: Story = {
   args: {
@@ -131,11 +129,8 @@ export const Default: Story = {
 };
 
 /**
- * Per-value accent colours: each value can have its own colour by targeting
- * the `data-accent` attribute with your CSS, loaded after the package's CSS.
- * This demo sets a different colour for each value via `--value-accent`, so
- * you see green for sustainability, blue for people, and orange for craft.
- * Consumers can use this to create a visual hierarchy or match brand colours.
+ * Per-value accent colours: target `data-accent` in your CSS, loaded after the package CSS.
+ * This demo sets a different `--value-accent` for each value.
  */
 export const CustomAccents: Story = {
   args: {
@@ -166,9 +161,8 @@ export const NoWiggle: Story = {
 };
 
 /**
- * Ten values showing how the cloud scales with more entries. The ring
- * automatically distributes them evenly, and scrollspy still works on small
- * screens with the accordion layout.
+ * Ten values, showing how the cloud scales: the ring distributes them evenly, and scrollspy still works on
+ * small screens with the accordion layout.
  */
 export const ManyValues: Story = {
   args: {

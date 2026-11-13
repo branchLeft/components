@@ -1,18 +1,13 @@
 /// <reference types="node" />
-// This package's tsconfig deliberately omits Node's ambient types from its
-// `types` array (it's a browser-targeted bundle) — this directive scopes
-// the one Node-only import below (`node:crypto`, fine here: this file
-// never ships, it's a dev-time test) to just this file rather than adding
-// Node's globals to the whole program.
+// This package's tsconfig omits Node's ambient types (browser bundle): this directive
+// scopes the one Node-only import (`node:crypto`) to this dev-time file.
 import { describe, it, expect } from 'vitest';
 import { createHash } from 'node:crypto';
 import { themeInitScript, themeInitScriptHash } from './ThemeToggle';
 
 /**
- * `themeInitScriptHash` is a literal so the shipped browser code never needs
- * node:crypto. This test recomputes the SHA-256 of `themeInitScript` and fails
- * when the literal goes stale. After a deliberate change, paste the failure's
- * "Received" value into that constant in ThemeToggle.tsx.
+ * `themeInitScriptHash` is a literal so shipped browser code never needs node:crypto; this recomputes the SHA-256
+ * of `themeInitScript` and fails when it goes stale. After a deliberate change, paste the received value.
  */
 describe('themeInitScriptHash', () => {
   it('matches a fresh SHA-256 hash of the current themeInitScript', () => {

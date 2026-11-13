@@ -1,8 +1,6 @@
 /**
- * CSS-only entry point, published as `@branchleft/components/css`.
- *
- * Import this once in your app if you use components with shipped CSS.
- * See individual component files for what CSS is included and why.
+ * CSS-only entry, published as `@branchleft/components/css`; import it once if you use
+ * components with shipped CSS. Each component file says what it includes.
  */
 import './components/AccordionItem.css';
 import './components/SectionHeading.css';

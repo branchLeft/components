@@ -1,11 +1,6 @@
 /**
- * Colour-vision-deficiency simulation, per Machado, Oliveira & Fernandes,
- * "A Physiologically-based Model for Simulation of Color Vision
- * Deficiency" (IEEE TVCG, 2009). These are the paper's published
- * full-severity (1.0) matrices, applied directly to linear (not gamma-
- * encoded) sRGB — the paper's own model operates in a linear cone-response
- * space, so applying it to gamma-encoded 8-bit values would simulate the
- * wrong thing.
+ * CVD simulation per Machado, Oliveira & Fernandes (IEEE TVCG, 2009): the full-severity
+ * matrices applied to LINEAR sRGB; gamma-encoded input would simulate the wrong thing.
  */
 
 export type CvdKind = 'protanopia' | 'deuteranopia' | 'tritanopia';
@@ -17,9 +12,8 @@ type Matrix3 = readonly [
 ];
 
 /**
- * Exported so cvdMatrices.pin.test.ts can pin these literal coefficients to the
- * paper's table. A row-sum check cannot catch a transcription error that keeps
- * the row sum; only pinning the values can.
+ * Exported so cvdMatrices.pin.test.ts can pin these coefficients to the paper's table: a row-sum check cannot
+ * catch a transcription error that keeps the row sum.
  */
 export const MACHADO_2009_SEVERITY_1: Readonly<Record<CvdKind, Matrix3>> = {
   protanopia: [
@@ -54,11 +48,8 @@ function srgbChannelToLinear(channel8bit: number): number {
 }
 
 /**
- * Applies a Machado et al. 2009 full-severity simulation matrix to a
- * `#rrggbb` colour, in linear RGB, and returns the simulated colour as
- * linear RGB components (each clamped to `[0, 1]` — the matrices can
- * produce slightly out-of-gamut values, and a real display/simulator
- * clips rather than showing an invalid colour).
+ * Applies a Machado et al. 2009 full-severity matrix to a `#rrggbb` colour in linear RGB and returns
+ * linear components clamped to `[0, 1]` (the matrices can go out of gamut; displays clip).
  */
 export function simulateCvdLinear(hex: string, kind: CvdKind): readonly [number, number, number] {
   const [r8, g8, b8] = hexToRgb8(hex);
@@ -103,11 +94,8 @@ function oklabEuclidean(
 }
 
 /**
- * OKLab distance between two `#rrggbb` colours as a viewer with the given
- * colour vision deficiency (full severity) would perceive them — i.e.
- * after applying the Machado et al. 2009 simulation matrix to each colour
- * in linear RGB, then measuring the usual OKLab Euclidean distance between
- * the simulated results.
+ * OKLab distance between two `#rrggbb` colours as a viewer with the given deficiency (full severity) would
+ * perceive them: the simulation matrix applied to each in linear RGB, then Euclidean distance in OKLab.
  */
 export function simulatedOklabDistance(hexA: string, hexB: string, kind: CvdKind): number {
   return oklabEuclidean(

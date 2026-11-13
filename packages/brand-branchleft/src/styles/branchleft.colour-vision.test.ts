@@ -1,9 +1,6 @@
 // @vitest-environment node
-//
-// Runs `vite build()` (esbuild under the hood) to get the real built CSS —
-// esbuild's native bridge relies on a `TextEncoder`/`Uint8Array` invariant
-// that jsdom's polyfills break, so this file needs the plain Node
-// environment rather than the package's jsdom default.
+// Plain Node, not the jsdom default: vite's esbuild breaks under jsdom's TextEncoder
+// polyfill (see README.md).
 import { describe, it, expect, beforeAll } from 'vitest';
 import {
   buildStylesheet,
@@ -23,12 +20,9 @@ const VALUE_NAMES = [
   'redlines',
 ] as const;
 
-// `danger` and `active` are real palette members that appear on screen
-// alongside the ValuesColours, so both are checked against every other
-// member here too — cycle-2 review found the old dark danger colour was
-// only 0.004 OKLab from `--bl-color-active` under a tritanopia simulation,
-// and nothing in this file caught it because `active` wasn't in the set
-// being swept.
+// `danger` and `active` are real palette members shown alongside the ValuesColours, so both are
+// checked against every other member too: the old dark danger colour was 0.004 OKLab from
+// `--bl-color-active` under tritanopia.
 const ALL_COLOUR_NAMES = [...VALUE_NAMES, 'danger', 'active'] as const;
 type ColourName = (typeof ALL_COLOUR_NAMES)[number];
 
@@ -39,10 +33,8 @@ function propertyFor(name: ColourName): string {
 }
 
 /**
- * Floor for OKLab distance after Machado et al. 2009 CVD simulation. Lower than
- * the 0.05 in branchleft.distinguishability.test.ts: full-severity CVD collapses
- * the chroma the palette relies on, so the ordinary margin would fail most
- * pairs. 0.02 is the bare JND: below it, two colours cannot be told apart.
+ * OKLab floor after CVD simulation. Lower than the 0.05 in branchleft.distinguishability.test.ts: full-severity
+ * CVD collapses the chroma the palette relies on. 0.02 is the bare JND: below it two colours can't be told apart.
  */
 const MIN_DISTANCE = 0.02;
 
@@ -113,12 +105,9 @@ describe.each([
       expect(distance).toBeGreaterThan(0);
     });
 
-    // Cycle-3 review found dark-mode environment vs active clashed under
-    // deuteranopia (0.0174 against the 0.02 floor) — the brand owner ruled
-    // on a replacement for --bl-value-environment (workspace#1560 comment
-    // 5876482719: #3fae5c -> #40b25e). Asserted on its own, in addition to
-    // the generic sweep above, since this is the exact pairing that gap was
-    // found in and it's worth a named regression check.
+    // The brand owner ruled a replacement for --bl-value-environment (#3fae5c -> #40b25e) after dark-mode environment
+    // vs active fell below the 0.02 floor under deuteranopia (0.0174). Asserted on its own, beyond the generic sweep,
+    // as a named regression check on that exact pairing.
     it.each(KINDS)(
       'environment vs active clears the CVD-simulated floor under %s simulation',
       (kind) => {

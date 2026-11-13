@@ -21,11 +21,8 @@ export interface PlacedGlyph {
 }
 
 /**
- * Lays the wordmark sequence out left to right, starting from the block's
- * left inset. `GAP` entries widen the gap without emitting a glyph. A
- * kerning entry between two consecutive letters (never across a `GAP`)
- * shifts the second glyph's position without changing either glyph's own
- * advance.
+ * Lays the wordmark out left to right from the left inset. `GAP` widens the gap without
+ * a glyph; kerning (never across a `GAP`) shifts only the second glyph.
  */
 function layoutSequence(): { placements: PlacedGlyph[]; contentWidth: number } {
   let x = 0;

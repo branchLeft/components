@@ -81,11 +81,7 @@ export const AllLevels: Story = {
   ),
 };
 
-/**
- * The shipped CSS applied — spacing between the icon and text (when an
- * anchor is present) — but no styling. Hover/focus states and typography
- * are left to the consumer.
- */
+/** The shipped CSS only (icon and text spacing); hover, focus and typography are the consumer's. */
 export const Unstyled: Story = {
   args: {
     as: 'h2',

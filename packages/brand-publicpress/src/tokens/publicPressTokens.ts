@@ -2,23 +2,14 @@ import { PUBLIC_PRESS_INKS } from '../components/publicPressGeometry';
 import type { DesignTokens } from '@branchleft/components';
 
 /**
- * All four ruled PublicPress mark inks (block + knockout-letter colour),
- * re-exported from the generated mark module so this is never a second,
- * driftable copy of `scripts/publicpress-mark-spec.json`'s `inks` — see
- * `publicPressMark.generated.test.ts` for the control that keeps the
- * generated module itself honest against that spec. `colour.brand`/
- * `colour.brandAccent` below use the blue/pink entries; black/yellow have
- * no assigned semantic role yet (open question).
+ * The four PublicPress mark inks, re-exported (never copied) from the generated module.
+ * `brand`/`brandAccent` use blue/pink; black/yellow have no semantic role yet.
  */
 export const publicPressInks = PUBLIC_PRESS_INKS;
 
 /**
- * PublicPress design tokens. The wordmark/logo (four fixed ink blocks,
- * Libre Franklin Bold), the yellow active colour, the three typefaces
- * (self-hosted Jost with the holding page's Futura stack behind it for
- * display and body, self-hosted Courier Prime for mono), and the type
- * scale are settled visual rulings. Everything else is provisional,
- * mostly borrowed from branchLeft's tokens.
+ * PublicPress design tokens. Settled: the wordmark/logo, the yellow active colour, the three typefaces (Jost
+ * with the holding page's Futura stack behind it, Courier Prime for mono) and the type scale. The rest is provisional.
  */
 export const publicPressTokens: DesignTokens = {
   brand: 'PublicPress',
@@ -45,14 +36,10 @@ export const publicPressTokens: DesignTokens = {
     // No hairline colour is ruled. Provisional guess only.
     hairline: { dark: '#FAFAF7', light: '#000000', provisional: true },
 
-    // Active/accent colour (links, hover, focus) — owner-ruled, both
-    // modes. `dark` is the mark's own yellow ink (16.79:1 on black — see
-    // `publicPressTokens.test.ts`); that hex is only ~1.25:1 on
-    // `colour.background.light`, so it's the light-mode FILL only, never
-    // text/a thin line — the note below carries that into the rendered
-    // docs, not just here. `light` is the owner-ruled deeper variant for
-    // light-mode text (4.63:1 on `colour.background.light`, 4.84:1 on
-    // white).
+    // Active/accent colour (links, hover, focus), owner-ruled in both modes. `dark` is the mark's yellow ink (16.79:1 on
+    // black, see `publicPressTokens.test.ts`) but only ~1.25:1 on `colour.background.light`, so in light mode it is a FILL
+    // only, never text or a thin line (the note below carries that into the docs). `light` is the owner-ruled deeper
+    // variant for light-mode text (4.63:1 on `colour.background.light`, 4.84:1 on white).
     active: {
       dark: '#FFE800',
       light: '#7e7300',
@@ -62,11 +49,8 @@ export const publicPressTokens: DesignTokens = {
 
   type: {
     faces: {
-      // Owner-ruled text face: self-hosted Jost (SIL OFL
-      // 1.1), with the holding page's own Futura stack kept behind it as
-      // the fallback chain. Font files ship in this package
-      // (styles/fonts/Jost/, loaded via styles/fonts.css) —
-      // @fontsource-variable/jost@5.3.0, latin subset.
+      // Owner-ruled text face: self-hosted Jost (SIL OFL 1.1), the holding page's Futura stack kept behind it as the
+      // fallback. Font files ship in this package (styles/fonts/Jost/, via styles/fonts.css): @fontsource-variable/jost@5.3.0, latin.
       display: {
         family: 'Jost',
         fallbackStack: "'Jost', 'Futura', 'Century Gothic', 'Avenir Next', system-ui, sans-serif",
@@ -74,11 +58,9 @@ export const publicPressTokens: DesignTokens = {
         source:
           'Self-hosted Jost (SIL OFL 1.1) — @fontsource-variable/jost@5.3.0 latin-subset woff2, styles/fonts/Jost/, loaded by styles/fonts.css; falls back to the holding page’s own Futura stack',
       },
-      // Settled: the wordmark/logo glyph outlines are Libre Franklin Bold
-      // (SIL OFL 1.1), vectorised into static SVG paths — see the README
-      // and scripts/publicpress-mark-spec.json's `note` field. Only weight 700 (Bold) is used; no web font is loaded by the
-      // components (the outlines are pre-baked paths), so `source` names
-      // the origin typeface rather than a font file the app loads.
+      // Settled: the wordmark/logo outlines are Libre Franklin Bold (SIL OFL 1.1), pre-baked into static SVG paths (see the
+      // README and scripts/publicpress-mark-spec.json's `note`). Only weight 700 is used and no web font is loaded, so `source`
+      // names the origin typeface, not a font file the app loads.
       wordmark: {
         family: 'Libre Franklin',
         fallbackStack: "'Libre Franklin', ui-sans-serif, system-ui, sans-serif",
@@ -122,11 +104,8 @@ export const publicPressTokens: DesignTokens = {
     ],
   },
 
-  // No spacing scale is ruled for PublicPress. Provisional reuse of
-  // branchLeft's generic scale (the two named branchLeft-specific tokens,
-  // nav-offset/section-scroll-offset, are dropped — they describe
-  // branchLeft's own site chrome, not a PublicPress layout that doesn't
-  // exist yet).
+  // No spacing scale is ruled for PublicPress: provisional reuse of branchLeft's generic scale, dropping its two
+  // site-chrome tokens (nav-offset/section-scroll-offset), which describe a layout PublicPress doesn't have yet.
   spacing: [
     { name: 'xs', value: '0.5rem', provisional: true },
     { name: 'sm', value: '1rem', provisional: true },

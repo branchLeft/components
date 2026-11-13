@@ -6,28 +6,20 @@ export type SectionHeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 export interface SectionHeadingProps extends Omit<React.HTMLAttributes<HTMLHeadingElement>, 'id'> {
   /**
    * Heading tag to render.
-   *
    * @default "h2"
    */
   as?: SectionHeadingLevel;
   /**
-   * Fragment identifier this heading anchors. When provided, the heading gets
-   * `id={anchor}`, its text is wrapped in a link with a link icon, and the root
-   * gets `bl-section-heading--linked`. When omitted, the heading is plain.
+   * Fragment identifier this heading anchors. When set, the heading gets `id={anchor}`, its text becomes a link with a
+   * link icon, and the root gets `bl-section-heading--linked`; when omitted it is plain.
    */
   anchor?: string;
   children: React.ReactNode;
 }
 
 /**
- * Section heading with an optional anchor link. Structural CSS (icon and text
- * spacing) ships in `@branchleft/components/css`; colours and states are left
- * to the consumer through the `.bl-section-heading*` class hooks.
- *
- * @example
- * ```tsx
- * <SectionHeading as="h2" anchor="values">Values</SectionHeading>
- * ```
+ * Section heading with an optional anchor; CSS in `@branchleft/components/css`, colours via `.bl-section-heading*`.
+ * @example <SectionHeading as="h2" anchor="values">Values</SectionHeading>
  */
 export function SectionHeading({
   as = 'h2',

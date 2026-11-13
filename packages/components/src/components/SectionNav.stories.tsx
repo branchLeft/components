@@ -61,12 +61,8 @@ export const ManySections: Story = {
 };
 
 /**
- * Demonstrates scroll-into-view behavior on a narrow viewport: when the user
- * scrolls down the page and a new section becomes active, the nav
- * automatically scrolls horizontally to keep the active link in view.
- *
- * View at 375px width to see the horizontal scroll bar. Scroll down to see
- * the nav follow the active section automatically.
+ * Scroll-into-view on a narrow viewport: as a new section becomes active the nav
+ * scrolls horizontally to keep its link visible. View at 375px wide.
  */
 export const ScrollIntoViewOnNarrowViewport: Story = {
   args: {
@@ -123,12 +119,8 @@ export const Unstyled: Story = {
 };
 
 /**
- * Nested navigation built by the consumer as a dropdown, the same pattern
- * used for the "Solutions" item in the website's `NavBar` — native
- * `<details>/<summary>` for keyboard and screen-reader support, with no
- * hand-rolled ARIA state. SectionNav's `Section` type stays flat; a dropdown
- * item is composed alongside plain links using the same `bl-section-nav__link`
- * class hook so it matches the surrounding nav visually.
+ * Nested navigation the consumer builds as a dropdown (as the website's `NavBar` "Solutions" item does) on native
+ * `<details>/<summary>`, with no hand-rolled ARIA. `Section` stays flat; the item uses the `bl-section-nav__link` hook.
  */
 export const NestedCustom: Story = {
   // `render` builds the markup directly below, so `args` is unused at

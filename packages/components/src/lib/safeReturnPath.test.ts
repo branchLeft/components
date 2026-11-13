@@ -23,12 +23,8 @@ describe('safeReturnPath', () => {
     ['', '/'],
     ['/about?x=1#y', '/about?x=1#y'],
     ['https://example.com/settings?a=1', '/settings?a=1'],
-    // Cycle-3 review's own finding: the URL parser normalises dot segments
-    // (and `%2e` decoded as a dot) down to a same-origin `pathname` that
-    // itself STARTS WITH `//` — protocol-relative once returned on its
-    // own, even though the resolved URL really was on-origin. Each of
-    // these collapses to the safe `/evil.com`, not the dangerous
-    // `//evil.com` the origin-only check let through.
+    // The URL parser collapses dot segments (and `%2e`) to a same-origin `pathname` that
+    // STARTS WITH `//` (protocol-relative); each collapses to the safe `/evil.com`.
     ['/.//evil.com', '/evil.com'],
     ['/..//evil.com', '/evil.com'],
     ['/a/..//evil.com', '/evil.com'],
