@@ -11,6 +11,11 @@
     "lib": ["ES2022"],
     "types": ["node"]
   },
-  "include": ["vite.config.ts", "vitest.config.ts"],
+  "include": [
+    "vite.config.ts",
+    "vite.config.test.ts",
+    "package-manifest.test.ts",
+    "vitest.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }
