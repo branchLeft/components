@@ -3,7 +3,50 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { resolveStaticPath } from './storybook-a11y-check.mjs';
+import { resolveStaticPath, runPool } from './storybook-a11y-check.mjs';
+
+// The check visits every entry x theme; the pool is what keeps that from
+// being one page at a time.
+describe('runPool', () => {
+  it('never runs more than `limit` tasks at once, and does run `limit` at once', async () => {
+    let active = 0;
+    let peak = 0;
+    await runPool(
+      Array.from({ length: 10 }, (_, i) => i),
+      3,
+      async () => {
+        active += 1;
+        peak = Math.max(peak, active);
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        active -= 1;
+      }
+    );
+    expect(peak).toBe(3);
+  });
+
+  it('runs every item exactly once and returns the results in input order', async () => {
+    const seen = [];
+    const results = await runPool([5, 1, 3, 2], 2, async (n) => {
+      await new Promise((resolve) => setTimeout(resolve, n));
+      seen.push(n);
+      return n * 10;
+    });
+    expect(results).toEqual([50, 10, 30, 20]);
+    expect([...seen].sort()).toEqual([1, 2, 3, 5]);
+  });
+
+  it('rejects when a task throws, rather than swallowing it', async () => {
+    await expect(
+      runPool([1, 2], 2, async (n) => {
+        if (n === 2) throw new Error('boom');
+      })
+    ).rejects.toThrow('boom');
+  });
+
+  it('treats a limit below 1 as 1', async () => {
+    await expect(runPool([1, 2, 3], 0, async (n) => n)).resolves.toEqual([1, 2, 3]);
+  });
+});
 
 // The static server this guards is a throwaway fixture for the a11y check,
 // but it still serves real files over a real (loopback-only) HTTP port —
