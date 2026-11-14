@@ -1,10 +1,8 @@
 import type { DesignTokens } from '@branchleft/components';
 
 /**
- * branchLeft design tokens. Colours mirror this package's stylesheet
- * (`styles/tokens.css`); the stylesheet-parity test fails if they drift.
- * Type, spacing, radius and motion come from the website's live styles
- * (`app/styles/theme.css`, `fonts.css`, `primitives.css`).
+ * branchLeft design tokens. Colours mirror `styles/tokens.css` (the parity test fails on
+ * drift); the rest comes from the website's live theme, font and primitive styles.
  */
 export const branchLeftTokens: DesignTokens = {
   brand: 'branchLeft',
@@ -88,21 +86,16 @@ export const branchLeftTokens: DesignTokens = {
       { name: 'h6', fontSize: '1rem', lineHeight: '1.5rem' },
       { name: 'body', fontSize: '1rem', lineHeight: '1.6' },
       { name: 'small', fontSize: '0.875rem', lineHeight: '1.25rem' },
-      // The website title-page wordmark size — `@apply text-6xl` with an
-      // explicit `line-height: 1` override, settled from the live site
-      // (`--bl-text-wordmark-hero`/`--bl-leading-wordmark-hero` in this
-      // package's own stylesheet, `styles/tokens.css`). Not a generic
-      // heading step: it's the one size used for the brand name itself on
-      // the site's title page.
+      // The website title-page wordmark size: `text-6xl` with `line-height: 1`, settled from the live
+      // site (`--bl-text-wordmark-hero` in `styles/tokens.css`). Not a generic heading step: used only for
+      // the brand name on the title page.
       { name: 'hero-wordmark', fontSize: '3.75rem', lineHeight: '1' },
     ],
   },
 
-  // theme.css: `--nav-offset: 3.5rem` and `--section-scroll-offset: calc(var(--nav-offset) + 3rem)`
-  // are literal named tokens. The rest are Tailwind spacing-scale utility
-  // values (`gap-12`→3rem, `p-8`→2rem, `gap-6`→1.5rem, `px-6`→1.5rem,
-  // `py-16`→4rem) seen in primitives.css/theme.css — same "Tailwind default,
-  // not written as a literal number" caveat as the type scale above.
+  // theme.css: `--nav-offset: 3.5rem` and `--section-scroll-offset: calc(var(--nav-offset) + 3rem)` are literal tokens.
+  // The rest are Tailwind spacing utilities (`gap-12`→3rem, `p-8`→2rem, `gap-6`/`px-6`→1.5rem, `py-16`→4rem) seen in
+  // primitives.css/theme.css: the same "Tailwind default, not a literal number" caveat as the type scale.
   spacing: [
     { name: 'nav-offset', value: '3.5rem' },
     { name: 'section-scroll-offset', value: 'calc(3.5rem + 3rem)' },
@@ -123,11 +116,8 @@ export const branchLeftTokens: DesignTokens = {
   // styles — the site has no shadow system today, so this key is omitted
   // rather than invented.
 
-  // Durations/easings actually used across primitives.css and the shipped
-  // component CSS (AccordionItem.css, PageTransition.tsx). `prefers-reduced-motion`
-  // is respected (usePrefersReducedMotion hook; `@media (prefers-reduced-motion: reduce)`
-  // in AccordionItem.css) but that's a behaviour, not a token value, so it's
-  // not represented here.
+  // Durations/easings used across primitives.css and the shipped component CSS (AccordionItem.css, PageTransition.tsx).
+  // `prefers-reduced-motion` is respected (usePrefersReducedMotion; AccordionItem.css) but that's behaviour, not a token value.
   motion: {
     duration: [
       { name: 'fast', value: '150ms' },

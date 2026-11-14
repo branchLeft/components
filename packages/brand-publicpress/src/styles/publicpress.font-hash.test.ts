@@ -1,10 +1,6 @@
 // @vitest-environment node
-//
-// Runs `vite build()` (esbuild under the hood) to get the real built CSS —
-// esbuild's native bridge relies on a `TextEncoder`/`Uint8Array` invariant
-// that jsdom's polyfills break, so this file needs the plain Node
-// environment rather than the package's jsdom default. Mirrors
-// @branchleft/brand-branchleft's own `branchleft.font-hash.test.ts`.
+// Plain Node, not the jsdom default: vite's esbuild breaks under jsdom's TextEncoder
+// polyfill. Mirrors `@branchleft/brand-branchleft`'s `branchleft.font-hash.test.ts`.
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
@@ -14,11 +10,8 @@ import { buildStylesheetDist } from './testUtils/buildStylesheet';
 
 const FONTS_SOURCE_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'fonts');
 
-// Same list, same order as `vite.config.ts`'s `extractFontsPlugin` —
-// `FONT_FILES` there matches each inlined base64 data URI to a source file
-// by POSITION, not by content. A sha256 comparison here is the
-// content-level guarantee that a mismatch would still catch, even though
-// the plugin's own "did every font get replaced" count check would pass.
+// Same list, same order as `vite.config.ts`'s `extractFontsPlugin`, which matches fonts by POSITION;
+// a sha256 comparison catches a mismatch even if the plugin's own replaced-count check passes.
 const FONT_FILES = [
   'Jost/Jost-Variable.woff2',
   'Jost/Jost-Italic-Variable.woff2',
