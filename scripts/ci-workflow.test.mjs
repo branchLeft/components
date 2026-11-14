@@ -110,3 +110,33 @@ describe('ci.yml Playwright steps', () => {
     );
   });
 });
+
+// The job timeout must cover the bounded retry path of the two Playwright
+// installs plus the rest of the job. Measured on the last 40 runs, a whole
+// successful job took at most 577s, so 10 minutes is added to the step bounds.
+describe('ci.yml job timeout', () => {
+  function stepTimeout(name) {
+    const match = stepBlock(name).match(/timeout-minutes: (\d+)/);
+    if (!match) throw new Error(`step "${name}" has no timeout-minutes`);
+    return Number(match[1]);
+  }
+
+  function jobTimeout() {
+    const lines = ci.split('\n');
+    const start = lines.findIndex((line) => line === '  ci:');
+    const end = lines.findIndex((line, index) => index > start && line === '    steps:');
+    const match = lines
+      .slice(start, end)
+      .join('\n')
+      .match(/^ {4}timeout-minutes: (\d+)/m);
+    if (!match) throw new Error('the ci job has no timeout-minutes');
+    return Number(match[1]);
+  }
+
+  it('is at least the two Playwright step timeouts plus 10 minutes for the rest of the job', () => {
+    const bound =
+      stepTimeout('Install Playwright system dependencies') +
+      stepTimeout('Install Playwright Chromium');
+    expect(jobTimeout()).toBeGreaterThanOrEqual(bound + 10);
+  });
+});

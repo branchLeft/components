@@ -19,8 +19,11 @@ jobs:
   ci:
     name: Lint, Format & Test
     runs-on: ubuntu-latest
-    # Observed 0.55-1.0min over the last 20 successful runs (p95 0.97min).
-    timeout-minutes: 10
+    # Last 40 runs: successful jobs took 348-577s (median ~410s), the
+    # Storybook accessibility check being 262-297s of that. Four were cancelled
+    # at 10min inside a hung Playwright install. The two Playwright steps are
+    # now bounded at 7min each, so 25min covers that plus 10min for the rest.
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
