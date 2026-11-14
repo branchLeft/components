@@ -22,8 +22,15 @@ export default defineConfig({
       // Externalise every subpath of react/react-dom (including
       // `react/jsx-runtime`) so consumers use their own React copy. Bundling
       // `react/jsx-runtime` inline breaks React 19 consumers because the
-      // inlined helper reads React 18 internals.
-      external: [/^react(\/.*)?$/, /^react-dom(\/.*)?$/],
+      // inlined helper reads React 18 internals. framer-motion and
+      // lucide-react are declared dependencies, so they stay external too
+      // rather than being inlined into dist.
+      external: [
+        /^react(\/.*)?$/,
+        /^react-dom(\/.*)?$/,
+        /^framer-motion(\/.*)?$/,
+        /^lucide-react(\/.*)?$/,
+      ],
       output: {
         globals: {
           react: 'React',
