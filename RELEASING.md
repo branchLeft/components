@@ -11,6 +11,10 @@ This is a pnpm workspace publishing three independently versioned packages — `
 3. Once ready to cut a release, a maintainer runs `pnpm version-packages` on `main`. This consumes every pending changeset, bumps each affected package's `version` in `package.json`, writes its `CHANGELOG.md`, and updates any internal `workspace:^` dependant. Commit the result.
 4. Note which packages actually got a version bump from that run (`git diff` on the `package.json` files it touched) — you'll need that exact list for the tag message below.
 
+### Peer ranges on a major bump
+
+The brand packages declare `@branchleft/components` as a peer dependency with a range capped below the next major (`>=0.4.0 <1.0.0` in `brand-branchleft`, `>=0.6.0 <1.0.0` in `brand-publicpress`). When a `major` changeset for `@branchleft/components` is versioned, Changesets bumps each brand package to major and rewrites its peer range to `>=<new version> <<next major>`, so `>=1.0.0 <2.0.0` after the 1.0.0 bump. The range keeps an upper bound; it does not become open-ended. A later components major will leave that range and force another brand major bump. `.changeset/config.json` sets `onlyUpdatePeerDependentsWhenOutOfRange`, so a brand package moves only when the new version falls outside its current range; `scripts/peer-bump-safety.test.mjs` checks the bump types for a components minor and major, not the rewritten range text.
+
 ## Publishing
 
 Publishing to GitHub Packages ([.github/workflows/publish.yml](.github/workflows/publish.yml)) is triggered by pushing a tag matching `v[0-9]+.[0-9]+.[0-9]+` — the same protected tag pattern as before. But because the three packages version independently, **the tag is a trigger, not a version**: it no longer has to match any single package's `version`, and nothing about its own name is checked. What ties a tag to what it releases is its **message**.
