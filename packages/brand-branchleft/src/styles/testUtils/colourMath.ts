@@ -1,8 +1,6 @@
 /**
- * WCAG 2.x relative-luminance contrast ratio and OKLab perceptual distance,
- * both computed from `#rrggbb` hex strings only — every colour this
- * stylesheet declares resolves to that shape (see `resolveColour`), so
- * neither function needs to handle `rgb()`/`hsl()`/named colours.
+ * WCAG 2.x contrast ratio and OKLab distance from `#rrggbb` hex only: every colour the
+ * stylesheet declares resolves to that shape (see `resolveColour`).
  */
 
 function hexToRgb(hex: string): readonly [number, number, number] {

@@ -10,16 +10,12 @@ import {
 
 export interface PublicPressLogoProps extends Omit<React.SVGProps<SVGSVGElement>, 'color'> {
   /**
-   * Which of the four rulings-fixed inks to render.
-   *
+   * Which of the four fixed inks to render.
    * @default "blue"
    */
   color?: PublicPressColor;
   /**
-   * A number is treated as pixels; a string is any CSS length. The logo is
-   * square, so width follows height 1:1 via `viewBox` — there is no
-   * separate `width` prop.
-   *
+   * A number is pixels, a string any CSS length; width follows height via `viewBox` (no `width` prop).
    * @default 32
    */
   height?: number | string;
@@ -29,22 +25,15 @@ export interface PublicPressLogoProps extends Omit<React.SVGProps<SVGSVGElement>
    */
   title?: string;
   /**
-   * Marks the logo as decorative: it is hidden from assistive technology
-   * (`aria-hidden`) instead of exposing an accessible name. Use this when
-   * adjacent visible text already says "PublicPress".
+   * Marks the logo as decorative: hidden from assistive technology (`aria-hidden`) instead of exposing an
+   * accessible name. Use when adjacent visible text already says "PublicPress".
    */
   decorative?: boolean;
 }
 
 /**
- * The PublicPress logo: the pilcrow P alone, centred in a square block. The
- * mark's geometry and inks are fixed (see the README) — only presentation
- * (`color`, `height`) is configurable.
- *
- * @example
- * ```tsx
- * <PublicPressLogo color="yellow" height={32} />
- * ```
+ * The PublicPress logo: the pilcrow P alone in a square block; geometry and inks are fixed (see the README).
+ * @example <PublicPressLogo color="yellow" height={32} />
  */
 export function PublicPressLogo({
   color = 'blue',

@@ -1,21 +1,14 @@
 /**
- * Shared design-token structure for both brands (branchLeft, PublicPress).
- *
- * `provisional: true` on any leaf means the value is not settled by a
- * written source — it is a best-effort placeholder pending a ruling from
- * the brand owner. See each brand file's top-of-file notes for what's
- * provisional and why.
+ * Shared design-token structure for both brands. `provisional: true` on a leaf is a best-effort
+ * placeholder pending the brand owner's ruling; see each brand file for which and why.
  */
 
 export interface ColourValue {
   light: string;
   dark: string;
   /**
-   * True when NEITHER `light` nor `dark` is settled. A mode-specific value
-   * is a guess only on the side `lightProvisional`/`darkProvisional` says
-   * so — those take precedence over this for their own side, so a token
-   * with one ruled mode and one guessed mode doesn't have to claim the
-   * ruled side is provisional just because the other one is.
+   * True when NEITHER `light` nor `dark` is settled. `lightProvisional`/`darkProvisional` take precedence for
+   * their own side, so a token with one ruled mode needn't call that side provisional.
    */
   provisional?: boolean;
   /** True when specifically `light` is a guess, not a ruling. */
@@ -23,9 +16,8 @@ export interface ColourValue {
   /** True when specifically `dark` is a guess, not a ruling. */
   darkProvisional?: boolean;
   /**
-   * A usage rule that belongs on the rendered token, not only in source —
-   * e.g. a colour that's ruled but restricted to one use (a fill, never
-   * text). Shown under the token's swatches in the docs page.
+   * A usage rule that belongs on the rendered token, not only in source (e.g. a ruled colour restricted to a fill,
+   * never text). Shown under the token's swatches in the docs page.
    */
   note?: string;
 }
@@ -42,10 +34,8 @@ export interface ColourTokens {
   /** Hairline border/divider colour. */
   hairline: ColourValue;
   /**
-   * Active/accent colour — links, hover, focus. Optional: not every brand
-   * has ruled a distinct one yet (a brand may still fold this role into
-   * `brandAccent`), but the shape exists here so a brand that HAS ruled one
-   * (see `publicPressTokens`) doesn't need its own one-off colour key.
+   * Active/accent colour (links, hover, focus). Optional: a brand may still fold this role into `brandAccent`,
+   * but a brand that HAS ruled one (see `publicPressTokens`) shouldn't need its own one-off key.
    */
   active?: ColourValue;
 }
@@ -109,10 +99,8 @@ export interface MotionTokens {
 }
 
 /**
- * The structure every brand's token set must provide. `shadow` and
- * `motion` are optional at this level because a brand may genuinely have
- * no ruling either way yet — `REQUIRED_TOKEN_KEYS` below
- * lists only the keys every brand must have.
+ * The structure every brand's token set must provide. `shadow` and `motion` are optional here because a brand may have
+ * no ruling yet; `REQUIRED_TOKEN_KEYS` lists the keys every brand must have.
  */
 export interface DesignTokens {
   brand: string;

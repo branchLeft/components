@@ -23,11 +23,8 @@ const values: readonly Value[] = [
 ];
 
 /**
- * Zero CSS applied — raw markup only. `ValuesCloud`'s ring layout depends
- * on real positioning rules, so without `@branchleft/components/css` (or
- * your own equivalent) this is what you get: everything stacked in
- * document order. Import the package CSS (see the "Default" story) or
- * write your own against the `bl-values-cloud*` class hooks.
+ * Zero CSS, raw markup: the ring layout needs real positioning rules, so without
+ * `@branchleft/components/css` (or your own for `bl-values-cloud*`) it stacks in document order.
  */
 export const Unstyled: Story = {
   args: {

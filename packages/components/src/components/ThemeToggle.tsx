@@ -4,20 +4,14 @@ import { Moon, Sun } from 'lucide-react';
 export type Theme = 'dark' | 'light';
 
 /**
- * `localStorage` key the legacy, no-server init path (`themeInitScript`) and
- * its matching read/write helpers use — kept only for a static app with no
- * server to set a cookie (see `THEME_COOKIE_NAME` and this module's own doc
- * comment below for the primary, server-backed path).
+ * `localStorage` key for the legacy no-server path (`themeInitScript` and its read/write helpers), kept only for a
+ * static app with no server to set a cookie; the primary, server-backed path is `THEME_COOKIE_NAME`.
  */
 export const THEME_STORAGE_KEY = 'bl-theme';
 
 /**
- * Cookie name the server-backed toggle reads and writes. A consumer's
- * server sets `data-theme` on `<html>` (before first paint) from this
- * cookie's value, parsed with `parseThemeCookie` — that is what makes the
- * switch work with JavaScript disabled: the `<form>` below posts to the
- * consumer's own `action` URL, whose handler stores the submitted value
- * under this cookie name and redirects back.
+ * Cookie name the server-backed toggle reads and writes: the consumer's server sets `data-theme` from it before first
+ * paint (`parseThemeCookie`), and its `action` handler stores the no-JS form's value under this name and redirects back.
  */
 export const THEME_COOKIE_NAME = 'bl-theme';
 
@@ -28,20 +22,13 @@ function isTheme(value: string): value is Theme {
 }
 
 /**
- * Parses a `Theme` out of a raw `Cookie` request header — pure and
- * framework-neutral, so a consumer's server can call it directly on the
- * header string it already has. Defaults to `'dark'`, and folds every
- * failure mode into that default rather than throwing: a missing header,
- * no cookie of this name, a malformed pair, or a value that isn't exactly
- * `"light"`/`"dark"` all fall through to dark, matching the brand default
- * a stylesheet itself falls back to with no `data-theme` attribute at all.
+ * Parses a `Theme` from a raw `Cookie` header; pure and framework-neutral. Never throws: a missing header or cookie,
+ * a malformed pair, or anything but exactly `"light"`/`"dark"` falls back to `'dark'`, the brand default.
  */
 
 /**
- * A `Cookie` header can legally repeat a name (rare, but seen with
- * differently-scoped cookies of the same name from an ancestor path) — the
- * LAST occurrence wins here, mirroring how a repeated `Set-Cookie` would
- * have overwritten the earlier one when it was set.
+ * A `Cookie` header can legally repeat a name (seen with same-named cookies from an ancestor path): the LAST
+ * occurrence wins, as a repeated `Set-Cookie` would have overwritten the earlier one.
  */
 export function parseThemeCookie(cookieHeader: string | null): Theme {
   if (!cookieHeader) return 'dark';
@@ -78,11 +65,8 @@ function writeStoredTheme(theme: Theme): void {
 }
 
 /**
- * Writes `THEME_COOKIE_NAME` client-side, so the next full page load (or a
- * `parseThemeCookie` call on the next request) sees the choice without a
- * server round trip having completed first. `Secure` is added only when the
- * page itself is https — set unconditionally, a `pnpm start`/e2e server
- * without TLS would silently reject the cookie.
+ * Writes `THEME_COOKIE_NAME` client-side so the next load sees the choice before a server round trip completes.
+ * `Secure` only on https: set unconditionally, a TLS-less `pnpm start`/e2e server would silently reject the cookie.
  */
 function writeThemeCookie(theme: Theme): void {
   try {
@@ -95,20 +79,8 @@ function writeThemeCookie(theme: Theme): void {
 }
 
 /**
- * Inline `<head>` script, as a string, for a STATIC app with no server to
- * set `data-theme` from a cookie (see `THEME_COOKIE_NAME`/
- * `parseThemeCookie` for the primary, server-backed path — this is the
- * fallback for a consumer that has neither). Embedded before any
- * stylesheet/hydration, so a `localStorage`-stored theme applies before
- * first paint. Sets `data-theme="light"` only: dark is the default with no
- * attribute needed, so any other stored value falls through to it.
- */
-
-/**
- * Deliberately plain, un-minified ES5-shaped JS with no template literals
- * or arrow functions — meant to run unmodified in whatever document head
- * embeds it (a consumer's CSP, or a very old browser), independent of this
- * package's own build target.
+ * Inline `<head>` script for a STATIC app with no server to set `data-theme` from a cookie (else `parseThemeCookie`).
+ * Plain ES5-shaped JS (no template literals or arrows) so it runs unmodified in any head, before first paint; sets `light` only.
  */
 export const themeInitScript = `(function () {
   try {
@@ -120,37 +92,14 @@ export const themeInitScript = `(function () {
 })();`;
 
 /**
- * `themeInitScript`'s SHA-256 hash, in the `'sha256-<base64>'` form a CSP
- * `script-src` directive expects for an inline `<script>` — e.g.:
- *
- *   Content-Security-Policy: script-src 'self' 'sha256-eaTM2OdrPnWt18EwafzafEMGqGT6XQixJje4JPQ2gUg='
- */
-
-/**
- * Inlining it needs a per-response `nonce`, `'unsafe-inline'` (a real CSP
- * weakening this package should not ask for), or this hash — which only
- * matches the EXACT script text, hence `themeInitScript` being a literal,
- * un-templated string, and this constant a literal too (not computed at
- * runtime; this package ships to browsers, `node:crypto` isn't there).
- */
-
-/**
- * Computed once by `ThemeToggle.hash.test.ts`, which fails if it ever
- * drifts from `themeInitScript`'s actual content — recompute it there (the
- * test's own comment says how) and paste the result back here if
- * `themeInitScript` ever changes.
+ * `themeInitScript`'s SHA-256 as a CSP `script-src` expects it (the alternatives: a `nonce` or `'unsafe-inline'`). A literal,
+ * as it matches only the EXACT script text: `ThemeToggle.hash.test.ts` fails on drift; paste its result here.
  */
 export const themeInitScriptHash = 'sha256-eaTM2OdrPnWt18EwafzafEMGqGT6XQixJje4JPQ2gUg=';
 
 /**
- * The button's box must clear WCAG 2.5.8's 24×24 CSS px minimum target
- * size — an icon-only button with no visible label text can't be relied on
- * to reach that from its own content/padding the way the old text-pill
- * version did. `min-width`/`min-height` (not `width`/`height`) so a
- * consumer's own sizing (via `className`) can still grow it, never shrink
- * it below the floor. Deliberately the only inline styling this component
- * applies — no colour, border or background, which stay the consumer's to
- * theme (or the browser's own UA default button chrome, unstyled).
+ * WCAG 2.5.8 needs 24×24 px; `min-*` (not `width`/`height`) lets a consumer's `className` grow
+ * the button but never shrink it. The only inline styling: colour and chrome stay theirs.
  */
 const HIT_TARGET_STYLE: React.CSSProperties = {
   minWidth: '24px',
@@ -162,12 +111,8 @@ const HIT_TARGET_STYLE: React.CSSProperties = {
 
 export interface ThemeToggleProps {
   /**
-   * The theme already in effect for this render — the consumer's server
-   * computes this with `parseThemeCookie` and passes it down (e.g. as
-   * loader data), and the client must pass the SAME value on its first
-   * render (the framework's own hydration data, or a `parseThemeCookie
-   * (document.cookie)` call reading the identical cookie) — never derived
-   * independently by this component.
+   * The theme in effect for this render: computed by the consumer's server with `parseThemeCookie`; the client must pass
+   * the SAME value on first render (hydration data or `parseThemeCookie(document.cookie)`), never derive it itself.
    */
 
   // Passing the same value both times is what makes server and client
@@ -176,19 +121,13 @@ export interface ThemeToggleProps {
   // from here on, independent of this prop.
   readonly theme: Theme;
   /**
-   * The URL the no-JS `<form>` posts to. The consumer's server reads the
-   * submitted `theme` field, stores it under `THEME_COOKIE_NAME`, and
-   * redirects back to the page the toggle was on — this component renders
-   * the form and reads the resulting state, but never performs that
-   * redirect itself (there is no server here to do it from).
+   * The URL the no-JS `<form>` posts to. The consumer's server reads the submitted `theme` field, stores it under
+   * `THEME_COOKIE_NAME` and redirects back; this component never redirects itself (there is no server here).
    */
   readonly action: string;
   /**
-   * The current page's path (+ optional search/hash) — the app supplies
-   * this (e.g. from its router), and it's rendered as a hidden `return`
-   * form field so the no-JS `POST` handler knows where to redirect back
-   * to. Omit it and a no-JS submit falls back to whatever the server's
-   * handler does with no `return` field (its own default, or `Referer`).
+   * The current page's path (+ optional search/hash), supplied by the app (e.g. from its router) and rendered as a hidden
+   * `return` field so the no-JS `POST` handler knows where to redirect back. Omit it and the handler's own default (or `Referer`) applies.
    */
   readonly returnTo?: string;
   /** Accessible name when the button's action is "switch to light mode" (i.e. dark is currently active). Overridable for a consumer-specific phrasing. */
@@ -199,27 +138,18 @@ export interface ThemeToggleProps {
 }
 
 /**
- * An icon button, wrapped in a real `<form>`, that switches the page
- * between `"dark"` (the default — no `<html data-theme>` attribute needed)
- * and `"light"`.
+ * An icon button, wrapped in a real `<form>`, that switches the page between `"dark"` (the default: no `<html data-theme>`
+ * attribute needed) and `"light"`.
  */
 
 /**
- * Without JavaScript, submitting the form is the entire mechanism: it
- * posts `theme=<the mode to switch TO>` to `action`, and the consumer's
- * server stores that under `THEME_COOKIE_NAME` and redirects back with
- * `<html data-theme>` (via `parseThemeCookie`) already set to match — the
- * switch works end to end with scripting disabled.
+ * Without JavaScript the form submit is the whole mechanism: it posts `theme=<the mode to switch TO>` to `action`, and
+ * the consumer's server stores it under `THEME_COOKIE_NAME` and redirects back with `<html data-theme>` already set.
  */
 
 /**
- * With JavaScript, this component intercepts that same submit,
- * `preventDefault`s the navigation, flips `data-theme` on `<html>`
- * immediately, and writes the same cookie itself via `document.cookie` —
- * instant instead of a round trip, landing on the same state either way.
- *
- * Brand-neutral: it knows nothing about any brand's colour tokens, only
- * the `data-theme` attribute contract a brand stylesheet keys off.
+ * With JavaScript, intercepts the submit, flips `data-theme` on `<html>` at once and writes the same cookie via
+ * `document.cookie`: same end state, no round trip. Brand-neutral: it knows only the `data-theme` attribute contract.
  */
 export function ThemeToggle({
   theme: initialTheme,
@@ -238,13 +168,9 @@ export function ThemeToggle({
   // detect a change — never read for anything else.
   const [lastSeenTheme, setLastSeenTheme] = React.useState<Theme>(initialTheme);
 
-  // Adjusts state during render (React's own documented pattern for
-  // "resetting/adjusting state when a prop changes"), not in an effect: a
-  // `setState` call made while rendering re-renders immediately, before
-  // the browser paints, so a changed `initialTheme` (e.g. the app remounts
-  // this component with fresh loader data after a client-side navigation,
-  // with no full page load to hydrate) is reflected without ever painting
-  // a stale frame first.
+  // Adjusts state during render (React's documented pattern for adjusting state when a prop changes), not in an effect:
+  // a `setState` while rendering re-renders before paint, so a changed `initialTheme` (the app remounts this with fresh
+  // loader data after a client-side navigation) shows without painting a stale frame first.
   if (initialTheme !== lastSeenTheme) {
     setLastSeenTheme(initialTheme);
     setTheme(initialTheme);

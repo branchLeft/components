@@ -1,21 +1,13 @@
 import type { CSSProperties, JSX } from 'react';
 
 /**
- * Storybook-only fixture rendering one of every element `elements.css`
- * defines, so a reviewer can eyeball the whole set in both modes (see the
- * "theme" toolbar in `.storybook/preview.tsx`) rather than reading CSS.
- * Not exported from the package's public API — `branchleft-base` applies
- * to plain markup automatically, so there is nothing for consumers to
- * import here.
+ * Storybook-only fixture: one of every element `elements.css` defines, to eyeball both
+ * modes. Not part of the public API.
  */
 
 /**
- * Storybook-only demo layout for a form field row (label + control) — not
- * part of `elements.css`, which deliberately ships no form-row grid (see
- * that file's own comments): a consumer's markup decides label/control
- * placement, this fixture just needs its own so a bare `label` + `input`
- * pair (each sized only by its own content, per the stylesheet) doesn't
- * read as two randomly-spaced inline items.
+ * Storybook-only form field row (label + control). `elements.css` ships no form-row grid, so this
+ * fixture supplies its own spacing for a bare `label` + `input` pair.
  */
 const fieldRowStyle: CSSProperties = {
   display: 'grid',
