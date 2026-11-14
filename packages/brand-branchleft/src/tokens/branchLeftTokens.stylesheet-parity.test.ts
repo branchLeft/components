@@ -11,11 +11,9 @@ import {
 } from '../styles/testUtils/buildStylesheet';
 import { branchLeftTokens } from './branchLeftTokens';
 
-// Maps each `branchLeftTokens.colour.*` key to the built stylesheet's own
-// custom property name — the one thing this test exists to keep honest.
-// `brand` has no distinctly-named property of its own (see its own
-// comment in branchLeftTokens.ts): the closest real property sharing its
-// value is `--bl-color-button-fill`.
+// Maps each `branchLeftTokens.colour.*` key to the stylesheet's own property name.
+// `brand` has no property of its own (see branchLeftTokens.ts): the closest one
+// sharing its value is `--bl-color-button-fill`.
 const COLOUR_TO_PROPERTY: Record<string, string> = {
   background: '--bl-color-bg',
   foreground: '--bl-color-fg',

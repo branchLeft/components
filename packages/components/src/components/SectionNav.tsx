@@ -8,16 +8,8 @@ export interface SectionNavProps {
 }
 
 /**
- * Sticky in-page section nav with scrollspy.
- *
- * - Anchor links (#id) with smooth-scroll (respects prefers-reduced-motion).
- * - Active section tracked via a single IntersectionObserver.
- * - `aria-current="location"` on the active link.
- * - Ships no CSS — only stable class-name hooks (`bl-section-nav`,
- *   `bl-section-nav__inner`, `bl-section-nav__link`,
- *   `bl-section-nav__link--active`). Sticks under a fixed header by having
- *   the consumer set `top` (e.g. via a `--nav-offset` custom property) on
- *   `.bl-section-nav`.
+ * Sticky in-page nav with scrollspy (smooth `#id` scroll respecting reduced motion, one IntersectionObserver,
+ * `aria-current`). Ships no CSS: under a fixed header, set `top` on `.bl-section-nav`.
  */
 export function SectionNav({
   sections,

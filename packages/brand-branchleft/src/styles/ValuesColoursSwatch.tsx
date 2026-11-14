@@ -11,10 +11,8 @@ const VALUE_NAMES = [
 ] as const;
 
 /**
- * Storybook-only fixture: one swatch per `--bl-value-*` ValuesColour. Not
- * exported from the package's public API — a consumer reads the custom
- * properties (or the `[data-accent]`/`--value-accent` bridge for
- * `ValuesCloud`) directly, there's no component wrapper to import.
+ * Storybook-only fixture: one swatch per `--bl-value-*` ValuesColour. Not part of the
+ * public API.
  */
 export function ValuesColoursSwatch(): JSX.Element {
   return (

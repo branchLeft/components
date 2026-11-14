@@ -1,10 +1,8 @@
 import { vi } from 'vitest';
 
 /**
- * Stubs `window.matchMedia` with a fake `MediaQueryList` and returns a
- * `fire()` handle for simulating a change event. Listeners are tracked in a
- * `Set` (not invoked eagerly) so callers that never register one, or that
- * only care about the initial `matches` value, pay no extra cost.
+ * Stubs `window.matchMedia` with a fake `MediaQueryList` and returns a `fire()` handle to
+ * simulate a change. Listeners sit in a `Set`, not invoked eagerly.
  */
 export function mockMatchMedia(matches: boolean) {
   const listeners = new Set<() => void>();

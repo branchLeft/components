@@ -1,16 +1,10 @@
-// Exercises the real Changesets bump logic (not a re-implementation of it)
-// against this workspace's actual package.json/config files, to prove that a
-// components MINOR bump can never force a brand package to 1.0.0. Below
-// 1.0, npm's caret range treats the minor digit as breaking, so a brand
-// package's `@branchleft/components` peer range has to survive that; and
-// Changesets itself defaults to bumping a peer-dependent by a major version
-// whenever its peer's version changes at all, unless
-// `onlyUpdatePeerDependentsWhenOutOfRange` is set and the existing peer
-// range still covers the new version. Both of those have to hold, together,
-// for a components minor to leave the brand packages alone — this test
-// calls the same `assembleReleasePlan`/`parse` Changesets' own CLI calls, so
-// a regression in either one (or in how they interact) shows up here rather
-// than only at the next real release.
+// Runs the real Changesets bump logic against this workspace's package files,
+// to prove a components MINOR bump cannot force a brand package to 1.0.0.
+// Below 1.0 the caret range treats the minor as breaking, and Changesets bumps
+// peer dependents by major unless onlyUpdatePeerDependentsWhenOutOfRange is set
+// and the peer range still covers the new version. Both must hold together.
+// It calls the same functions the Changesets CLI calls, so a regression shows
+// here rather than at the next real release.
 
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';

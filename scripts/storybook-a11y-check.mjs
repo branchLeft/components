@@ -22,6 +22,11 @@ const STATIC_DIR = path.join(ROOT, 'storybook-static');
 const PORT = 6474;
 const THEMES = ['dark', 'light'];
 
+// Pages visited at once. Every visit is dominated by fixed waits (the
+// DOM-quiet watch below), not CPU, so a few in parallel cut the wall time
+// near-linearly; the standard runner has 4 vCPUs.
+const CONCURRENCY = Number(process.env.STORYBOOK_A11Y_CONCURRENCY) || 4;
+
 // Nothing below is allowed to hang the process indefinitely — every page
 // load/wait already carries its own bounded timeout (see below), and this
 // is the backstop: if the whole run somehow still exceeds it (a browser
@@ -100,6 +105,25 @@ export function resolveStaticPath(root, requestUrl) {
   if (resolved !== resolvedRoot && !resolved.startsWith(boundary)) return null;
 
   return resolved;
+}
+
+/**
+ * Runs `worker` over `items` with at most `limit` in flight, and resolves to
+ * the results in input order. The first rejection rejects the whole call.
+ */
+export async function runPool(items, limit, worker) {
+  const results = new Array(items.length);
+  let next = 0;
+  async function lane() {
+    while (next < items.length) {
+      const index = next;
+      next += 1;
+      results[index] = await worker(items[index], index);
+    }
+  }
+  const lanes = Math.max(1, Math.min(Math.floor(limit), items.length));
+  await Promise.all(Array.from({ length: lanes }, lane));
+  return results;
 }
 
 const STATIC_DIR_BOUNDARY = path.resolve(STATIC_DIR) + path.sep;
@@ -207,7 +231,7 @@ async function main() {
 
   const server = await serveStatic();
   const browser = await chromium.launch();
-  const failures = [];
+  let failures = [];
 
   // The backstop described above `OVERALL_TIMEOUT_MS`: fires regardless of
   // what the try/finally below is doing, since nothing inside it can clear
@@ -221,152 +245,161 @@ async function main() {
   }, OVERALL_TIMEOUT_MS);
 
   try {
+    // One context per theme, not per entry (116 short-lived contexts
+    // exhausted file descriptors on a constrained CI runner and surfaced as
+    // an in-page Storybook error rather than a script failure); a fresh page
+    // per entry is enough isolation for a read-only visit.
+    const contexts = new Map();
     for (const theme of THEMES) {
-      // One context per theme, not per entry (116 short-lived contexts
-      // exhausted file descriptors on a constrained CI runner and surfaced
-      // as an in-page Storybook error rather than a script failure) — a
-      // fresh page per entry is enough isolation for a read-only visit.
-      const context = await browser.newContext({
-        viewport: { width: 1024, height: 900 },
-        reducedMotion: 'reduce',
+      contexts.set(
+        theme,
+        await browser.newContext({
+          viewport: { width: 1024, height: 900 },
+          reducedMotion: 'reduce',
+        })
+      );
+    }
+    const tasks = THEMES.flatMap((theme) =>
+      entries.map((entry, entryIndex) => ({ theme, entry, entryIndex }))
+    );
+    // Each visit returns its own failures; runPool keeps them in input order,
+    // so the report reads the same as a serial run.
+    const perVisit = await runPool(tasks, CONCURRENCY, async ({ theme, entry, entryIndex }) => {
+      const failures = [];
+      const context = contexts.get(theme);
+      const viewMode = entry.type === 'docs' ? 'docs' : 'story';
+      const url = `http://127.0.0.1:${PORT}/iframe.html?id=${entry.id}&viewMode=${viewMode}&globals=theme:${theme}`;
+      // Printed before the visit, not just on failure — the one signal
+      // that tells a human watching a hung run where it stopped,
+      // without waiting for the (bounded, but real) per-entry timeouts
+      // to actually expire.
+      console.log(`[${theme}] (${entryIndex + 1}/${entries.length}) ${entry.id} — visiting…`);
+      const page = await context.newPage();
+      const pageErrors = [];
+      page.on('pageerror', (err) => pageErrors.push(String(err)));
+      page.on('console', (msg) => {
+        if (msg.type() === 'error') pageErrors.push(msg.text());
       });
+
       try {
-        for (const [entryIndex, entry] of entries.entries()) {
-          const viewMode = entry.type === 'docs' ? 'docs' : 'story';
-          const url = `http://127.0.0.1:${PORT}/iframe.html?id=${entry.id}&viewMode=${viewMode}&globals=theme:${theme}`;
-          // Printed before the visit, not just on failure — the one signal
-          // that tells a human watching a hung run where it stopped,
-          // without waiting for the (bounded, but real) per-entry timeouts
-          // to actually expire.
-          console.log(`[${theme}] (${entryIndex + 1}/${entries.length}) ${entry.id} — visiting…`);
-          const page = await context.newPage();
-          const pageErrors = [];
-          page.on('pageerror', (err) => pageErrors.push(String(err)));
-          page.on('console', (msg) => {
-            if (msg.type() === 'error') pageErrors.push(msg.text());
+        await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
+
+        const rootSelector = viewMode === 'docs' ? '#storybook-docs' : '#storybook-root';
+        let rendered = true;
+        try {
+          // A real "the story is actually on screen" signal, not a
+          // fixed delay tuned to one animation: the root Storybook
+          // mounts into has at least one child. Reduced motion (this
+          // context's own setting) makes framer-motion components
+          // skip to their end state immediately, so this resolves
+          // right away for a working story.
+          await page.waitForFunction(
+            (selector) => {
+              const root = document.querySelector(selector);
+              return Boolean(root && root.childElementCount > 0);
+            },
+            rootSelector,
+            { timeout: 10_000 }
+          );
+          // Raced against a hard timeout INSIDE the page, not just
+          // awaited from Node: `document.fonts.ready` is a promise this
+          // script doesn't control, and a stalled font fetch (or a
+          // network-less sandbox) would otherwise leave this `evaluate`
+          // pending forever — the one gap that let a previous run hang
+          // with nothing to show for it.
+          await page.evaluate(
+            () =>
+              new Promise((resolve) => {
+                const timer = setTimeout(resolve, 5000);
+                document.fonts.ready.then(() => {
+                  clearTimeout(timer);
+                  resolve();
+                });
+              })
+          );
+        } catch {
+          rendered = false;
+        }
+
+        if (!rendered) {
+          failures.push({
+            id: entry.id,
+            theme,
+            kind: 'empty-render',
+            detail: [`${rootSelector} has no children after 10s — the story never rendered`],
           });
+        }
 
-          try {
-            await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
-
-            const rootSelector = viewMode === 'docs' ? '#storybook-docs' : '#storybook-root';
-            let rendered = true;
-            try {
-              // A real "the story is actually on screen" signal, not a
-              // fixed delay tuned to one animation: the root Storybook
-              // mounts into has at least one child. Reduced motion (this
-              // context's own setting) makes framer-motion components
-              // skip to their end state immediately, so this resolves
-              // right away for a working story.
-              await page.waitForFunction(
-                (selector) => {
-                  const root = document.querySelector(selector);
-                  return Boolean(root && root.childElementCount > 0);
-                },
-                rootSelector,
-                { timeout: 10_000 }
-              );
-              // Raced against a hard timeout INSIDE the page, not just
-              // awaited from Node: `document.fonts.ready` is a promise this
-              // script doesn't control, and a stalled font fetch (or a
-              // network-less sandbox) would otherwise leave this `evaluate`
-              // pending forever — the one gap that let a previous run hang
-              // with nothing to show for it.
-              await page.evaluate(
-                () =>
-                  new Promise((resolve) => {
-                    const timer = setTimeout(resolve, 5000);
-                    document.fonts.ready.then(() => {
-                      clearTimeout(timer);
-                      resolve();
-                    });
-                  })
-              );
-            } catch {
-              rendered = false;
-            }
-
-            if (!rendered) {
-              failures.push({
-                id: entry.id,
-                theme,
-                kind: 'empty-render',
-                detail: [`${rootSelector} has no children after 10s — the story never rendered`],
-              });
-            }
-
-            // "Has children" alone only proves an INITIAL render — a story
-            // whose real content lands later (a timer, a delayed fetch)
-            // would still get scanned while still showing a placeholder.
-            // Deliberately no early exit on first sight of quiet: that
-            // would resolve before a later mutation had a chance to
-            // happen at all. Watches for the full bound instead; see
-            // DOM_QUIET_CAP_MS above for exactly what it does and doesn't
-            // cover.
-            if (rendered) {
-              const quiet = await page.evaluate(
-                ({ quietMs, capMs }) =>
-                  new Promise((resolve) => {
-                    const root = document.querySelector('#storybook-root, #storybook-docs');
-                    if (!root) {
-                      resolve({ settled: true });
-                      return;
-                    }
-                    let lastMutationAt = 0;
-                    const observer = new MutationObserver(() => {
-                      lastMutationAt = Date.now();
-                    });
-                    observer.observe(root, { childList: true, subtree: true, attributes: true });
-                    setTimeout(() => {
-                      observer.disconnect();
-                      const quietForMs = lastMutationAt === 0 ? capMs : Date.now() - lastMutationAt;
-                      resolve({ settled: quietForMs >= quietMs });
-                    }, capMs);
-                  }),
-                { quietMs: QUIET_MS, capMs: DOM_QUIET_CAP_MS }
-              );
-              if (!quiet.settled) {
-                rendered = false;
-                failures.push({
-                  id: entry.id,
-                  theme,
-                  kind: 'still-mutating',
-                  detail: [
-                    `${rootSelector} was still mutating ${DOM_QUIET_CAP_MS}ms after ` +
-                      `initial render (story ${entry.id}) — failing rather than scanning ` +
-                      `content that may not be its final state`,
-                  ],
+        // "Has children" alone only proves an INITIAL render — a story
+        // whose real content lands later (a timer, a delayed fetch)
+        // would still get scanned while still showing a placeholder.
+        // Deliberately no early exit on first sight of quiet: that
+        // would resolve before a later mutation had a chance to
+        // happen at all. Watches for the full bound instead; see
+        // DOM_QUIET_CAP_MS above for exactly what it does and doesn't
+        // cover.
+        if (rendered) {
+          const quiet = await page.evaluate(
+            ({ quietMs, capMs }) =>
+              new Promise((resolve) => {
+                const root = document.querySelector('#storybook-root, #storybook-docs');
+                if (!root) {
+                  resolve({ settled: true });
+                  return;
+                }
+                let lastMutationAt = 0;
+                const observer = new MutationObserver(() => {
+                  lastMutationAt = Date.now();
                 });
-              }
-            }
-
-            if (pageErrors.length > 0) {
-              failures.push({ id: entry.id, theme, kind: 'render-error', detail: pageErrors });
-            }
-
-            if (rendered) {
-              const results = await analyzeColorContrast(page);
-              if (results.violations.length > 0) {
-                failures.push({
-                  id: entry.id,
-                  theme,
-                  kind: 'color-contrast',
-                  detail: results.violations.map((v) => ({
-                    targets: v.nodes.map((n) => n.target.join(' ')),
-                  })),
-                });
-              }
-            }
-          } catch (err) {
-            failures.push({ id: entry.id, theme, kind: 'navigation-error', detail: String(err) });
-          } finally {
-            await page.close();
+                observer.observe(root, { childList: true, subtree: true, attributes: true });
+                setTimeout(() => {
+                  observer.disconnect();
+                  const quietForMs = lastMutationAt === 0 ? capMs : Date.now() - lastMutationAt;
+                  resolve({ settled: quietForMs >= quietMs });
+                }, capMs);
+              }),
+            { quietMs: QUIET_MS, capMs: DOM_QUIET_CAP_MS }
+          );
+          if (!quiet.settled) {
+            rendered = false;
+            failures.push({
+              id: entry.id,
+              theme,
+              kind: 'still-mutating',
+              detail: [
+                `${rootSelector} was still mutating ${DOM_QUIET_CAP_MS}ms after ` +
+                  `initial render (story ${entry.id}) — failing rather than scanning ` +
+                  `content that may not be its final state`,
+              ],
+            });
           }
         }
+
+        if (pageErrors.length > 0) {
+          failures.push({ id: entry.id, theme, kind: 'render-error', detail: pageErrors });
+        }
+
+        if (rendered) {
+          const results = await analyzeColorContrast(page);
+          if (results.violations.length > 0) {
+            failures.push({
+              id: entry.id,
+              theme,
+              kind: 'color-contrast',
+              detail: results.violations.map((v) => ({
+                targets: v.nodes.map((n) => n.target.join(' ')),
+              })),
+            });
+          }
+        }
+      } catch (err) {
+        failures.push({ id: entry.id, theme, kind: 'navigation-error', detail: String(err) });
       } finally {
-        await context.close();
+        await page.close();
       }
-    }
+      return failures;
+    });
+    failures = perVisit.flat();
   } finally {
     await browser.close();
     server.close();

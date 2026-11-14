@@ -95,8 +95,48 @@ jobs:
       # which only runs on `main`) so a PR that regresses a story's contrast
       # or breaks a PublicPress story's load fails CI before merge, not after
       # a deploy.
+      # The browser build is tied to the locked Playwright version, so the cache
+      # is keyed on that version alone, with no restore-keys fallback.
+      - name: Get Playwright version
+        id: playwright-version
+        run: node -p "'version=' + require('@playwright/test/package.json').version" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
+      # The apt step is the one that hung on a runner-network fault, so the
+      # system dependencies get their own timeout and bounded retry. Kept
+      # (not dropped) because the runner-images readme does not list the
+      # libraries Playwright's Chromium needs. The browser download is a
+      # separate step below and does not use apt.
+      - name: Install Playwright system dependencies
+        timeout-minutes: 7
+        run: |
+          for attempt in 1 2 3; do
+            if timeout 120 npx playwright install-deps chromium; then
+              exit 0
+            fi
+            echo "::warning::install-deps attempt $attempt failed"
+            if [ "$attempt" -lt 3 ]; then sleep $((attempt * 15)); fi
+          done
+          echo "::error::install-deps failed after 3 attempts"
+          exit 1
+
       - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+        timeout-minutes: 7
+        run: |
+          for attempt in 1 2 3; do
+            if timeout 120 npx playwright install chromium; then
+              exit 0
+            fi
+            echo "::warning::browser install attempt $attempt failed"
+            if [ "$attempt" -lt 3 ]; then sleep $((attempt * 15)); fi
+          done
+          echo "::error::browser install failed after 3 attempts"
+          exit 1
 
       - name: Storybook accessibility check
         run: node scripts/storybook-a11y-check.mjs

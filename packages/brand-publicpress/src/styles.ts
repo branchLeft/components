@@ -1,7 +1,5 @@
 /**
- * CSS-only entry point, published as `@branchleft/brand-publicpress/css` and
- * built to `dist/publicpress.css`. No element stylesheet exists yet, so
- * this ships only the two self-hosted typefaces (`fonts.css`):
- *   import '@branchleft/brand-publicpress/css';
+ * CSS-only entry (`@branchleft/brand-publicpress/css`, built to `dist/publicpress.css`).
+ * No element stylesheet yet: only the two self-hosted typefaces (`fonts.css`).
  */
 import './styles/fonts.css';

@@ -8,11 +8,9 @@ import {
   type PublicPressColor,
 } from './publicPressMark.generated';
 
-// The wordmark's block: 260-unit side insets + the sequence advances
-// (pilcrowP, u, b, l, i, c, the 60-unit gap, pilcrowP, r, e, s, s, with the
-// r-e pair kerned -17) + 260, against a fixed 1340-unit block height.
-// Hardcoded independently of the generated module so a geometry or kerning
-// regression there still fails this test: 260 + 6100 + 260 = 6620.
+// Block: 260 side insets + sequence advances (6100, with the r-e pair kerned -17 and a
+// 60-unit gap) + 260 = 6620, against a fixed 1340-unit height. Hardcoded independently
+// of the generated module so a geometry or kerning regression still fails.
 const EXPECTED_VIEW_BOX = '0 0 6620 1340';
 
 const PILCROW_P_D = PUBLIC_PRESS_GLYPHS.pilcrowP.d;

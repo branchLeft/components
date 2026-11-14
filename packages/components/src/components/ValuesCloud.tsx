@@ -5,9 +5,8 @@ import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { AccordionItem } from './AccordionItem';
 
 /**
- * Consumer-defined accent key, exposed on each node as `data-accent` so the
- * consumer's CSS can map it to a colour (e.g. `[data-accent='foo'] { --value-accent: ... }`).
- * Any string works — this package has no opinion on the taxonomy.
+ * Consumer-defined accent key, exposed on each node as `data-accent` for the consumer's CSS to map to a colour
+ * (e.g. `[data-accent='foo'] { --value-accent: ... }`). Any string works; this package has no opinion on the taxonomy.
  */
 export type ValueAccent = string;
 
@@ -22,11 +21,8 @@ export interface ValuesCloudProps {
   readonly values: readonly Value[];
   readonly ariaLabel?: string;
   /**
-   * Disable the idle floating ("wiggle") animation on ring nodes.
-   *
-   * Off by default. `prefers-reduced-motion: reduce` already disables the
-   * wiggle regardless of this prop — use this when you want it off
-   * unconditionally, e.g. for a calmer presentation.
+   * Disable the idle floating ("wiggle") animation on ring nodes. Off by default; `prefers-reduced-motion: reduce`
+   * already disables it regardless, so use this to turn it off unconditionally.
    */
   readonly disableWiggle?: boolean;
 }
@@ -40,28 +36,8 @@ const SPEECH_BODY_ID = 'bl-values-cloud-speech-body';
 const ACCORDION_NAME = 'bl-values-cloud-accordion';
 
 /**
- * Cloud of orbiting value icons around a central hint (desktop, above
- * ~425px), falling back to a collapsed accordion (`AccordionItem`) on
- * small mobile. Both views share a single `openValueId` state — selecting
- * a value is a plain disclosure toggle, not a modal:
- *   - Desktop: the selected bubble animates to a fixed spot at the centre
- *     of the ring (replacing the hint text), the rest of the cloud dims,
- *     and a boxy speech-bubble panel grows out of it with the full text.
- *     Above 768px the whole cloud additionally slides to sit alongside the
- *     speech bubble rather than on top of it. Toggled via
- *     `aria-expanded`/`aria-controls` on a plain button.
- *   - Small mobile: the same state expands an `AccordionItem` panel in
- *     place — native `<details>`/`<summary>` semantics, no explicit ARIA
- *     needed, and works with JavaScript disabled.
- * Nothing is inert and there's no focus trap — background bubbles stay
- * clickable so switching the selection is a direct, one-click action.
- *
- * Ships structural CSS via `@branchleft/components/css` (see
- * `ValuesCloud.css`) — the layout/positioning isn't reasonable to ask every
- * consumer to reimplement. Colour comes from a `data-accent` attribute on
- * each node/panel, keyed off `Value.accent` (an opaque string — this
- * package assigns it no meaning of its own) so the consumer's CSS can map
- * it to a `--value-accent` colour.
+ * Orbiting value icons, an `AccordionItem` on small screens; one shared `openValueId`. Selection
+ * toggles (no modal, nothing inert, no focus trap). CSS: `@branchleft/components/css`; colour: `data-accent`.
  */
 export function ValuesCloud({
   values,
@@ -206,14 +182,10 @@ export function ValuesCloud({
             onOpenChange={(open) =>
               setOpenValueId((current) => {
                 if (open) return value.accent;
-                // A `false` event can come from two different causes: the
-                // user explicitly closing *this* item, or the browser's
-                // native `name`-based exclusivity auto-closing it because a
-                // *different* item just opened (both fire as separate
-                // `toggle` events from the same click, and React batches
-                // them). Only clear the selection if this item was actually
-                // the one selected — otherwise this stale close event would
-                // stomp on the other item's selection that just landed.
+                // A `false` event is either the user closing *this* item or the browser's `name`-based
+                // exclusivity auto-closing it because another item opened (separate `toggle` events from one
+                // click, batched by React). Only clear if this item is still selected, so the stale close
+                // doesn't stomp the other item's new selection.
                 return current === value.accent ? null : current;
               })
             }

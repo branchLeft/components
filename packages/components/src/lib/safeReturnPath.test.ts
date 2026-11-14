@@ -23,12 +23,8 @@ describe('safeReturnPath', () => {
     ['', '/'],
     ['/about?x=1#y', '/about?x=1#y'],
     ['https://example.com/settings?a=1', '/settings?a=1'],
-    // Cycle-3 review's own finding: the URL parser normalises dot segments
-    // (and `%2e` decoded as a dot) down to a same-origin `pathname` that
-    // itself STARTS WITH `//` — protocol-relative once returned on its
-    // own, even though the resolved URL really was on-origin. Each of
-    // these collapses to the safe `/evil.com`, not the dangerous
-    // `//evil.com` the origin-only check let through.
+    // The URL parser collapses dot segments (and `%2e`) to a same-origin `pathname` that
+    // STARTS WITH `//` (protocol-relative); each collapses to the safe `/evil.com`.
     ['/.//evil.com', '/evil.com'],
     ['/..//evil.com', '/evil.com'],
     ['/a/..//evil.com', '/evil.com'],
@@ -133,13 +129,22 @@ describe('safeReturnPath — property fuzz', () => {
     '..',
     '%2e',
     '%2f',
+    '%2F',
     '%5c',
+    '%5C',
     '\t',
     '\n',
     '\r',
+    ' ',
+    ' ',
+    ' ',
+    'é',
     '@',
     ':',
+    ':8080',
+    'user:pw@',
     'https://',
+    'http://',
     '//example.com',
     'example.com',
     'evil.com',
@@ -183,6 +188,10 @@ describe('safeReturnPath — property fuzz', () => {
       expect(new URL(output, 'https://other.example').host, `input=${JSON.stringify(input)}`).toBe(
         'other.example'
       );
+      // 6. Every character is ASCII, so the value is safe to put in a `Location`
+      // header; non-ASCII input must come back percent-encoded or fall back to `/`.
+      // eslint-disable-next-line no-control-regex -- the class deliberately spans U+0000 to U+007F.
+      expect(output, `input=${JSON.stringify(input)}`).not.toMatch(/[^\x00-\x7f]/);
     }
   });
 });

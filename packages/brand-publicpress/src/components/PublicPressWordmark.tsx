@@ -11,16 +11,12 @@ import {
 
 export interface PublicPressWordmarkProps extends Omit<React.SVGProps<SVGSVGElement>, 'color'> {
   /**
-   * Which of the four rulings-fixed inks to render.
-   *
+   * Which of the four fixed inks to render.
    * @default "blue"
    */
   color?: PublicPressColor;
   /**
-   * A number is treated as pixels; a string is any CSS length. Width
-   * follows automatically from the mark's aspect ratio (via `viewBox`) —
-   * there is no separate `width` prop.
-   *
+   * A number is pixels, a string any CSS length; width follows the mark's aspect ratio via `viewBox`.
    * @default 32
    */
   height?: number | string;
@@ -30,23 +26,15 @@ export interface PublicPressWordmarkProps extends Omit<React.SVGProps<SVGSVGElem
    */
   title?: string;
   /**
-   * Marks the wordmark as decorative: it is hidden from assistive
-   * technology (`aria-hidden`) instead of exposing an accessible name. Use
-   * this when adjacent visible text already says "PublicPress".
+   * Marks the wordmark as decorative: hidden from assistive technology (`aria-hidden`) instead of exposing an
+   * accessible name. Use when adjacent visible text already says "PublicPress".
    */
   decorative?: boolean;
 }
 
 /**
- * The PublicPress wordmark: Libre Franklin Bold letters, both Ps the
- * pilcrow P, knocked out of a solid block. The mark's geometry and inks are
- * fixed (see the README) — only presentation (`color`, `height`) is
- * configurable.
- *
- * @example
- * ```tsx
- * <PublicPressWordmark color="pink" height={48} />
- * ```
+ * The PublicPress wordmark: Libre Franklin Bold, both Ps the pilcrow P, knocked out of a solid block.
+ * @example <PublicPressWordmark color="pink" height={48} />
  */
 export function PublicPressWordmark({
   color = 'blue',
