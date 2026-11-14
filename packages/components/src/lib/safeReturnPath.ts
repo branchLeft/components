@@ -40,9 +40,10 @@ export function safeReturnPath(value: string | null | undefined, origin: string)
   if (/[\x00-\x1f\x7f]/.test(collapsed)) return '/';
   if (collapsed.length > MAX_LENGTH) return '/';
 
-  // The actual guarantee: a browser re-parsing THIS string, relative to
-  // `origin`, must land back on `origin` — checked on the string this
-  // function is about to return, not the value it was given.
+  // Backstop: the checks above already reject off-origin input, so this
+  // re-check should never fail. It runs on the string this function is about
+  // to return, not the value it was given, so a future change to the
+  // normalisation above cannot return a protocol-relative path unnoticed.
   let recheck: URL;
   try {
     recheck = new URL(collapsed, ownOrigin);
