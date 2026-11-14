@@ -7,13 +7,8 @@ import { fileURLToPath } from 'node:url';
 const PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
 /**
- * Runs the real `styles` entry via the package's own `vite.config.ts` — the
- * exact production build `pnpm build` runs, only redirected to a throwaway
- * temp directory — and returns the resulting output directory, still on
- * disk, holding both `publicpress.css` and the extracted `dist/fonts/*`
- * files. The caller owns cleanup (`fs.rmSync(outDir, { recursive: true,
- * force: true })`). Mirrors @branchleft/brand-branchleft's own
- * `testUtils/buildStylesheet.ts`.
+ * Runs the production `styles` build into a temp directory holding `publicpress.css` and
+ * `dist/fonts/*`; the caller cleans up. Mirrors brand-branchleft's `buildStylesheet`.
  */
 export async function buildStylesheetDist(): Promise<string> {
   const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'publicpress-stylesheet-dist-test-'));

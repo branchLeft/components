@@ -15,11 +15,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/**
- * A single item, fully controlled — this component holds no state of its
- * own. With the package's shipped CSS applied, opening it plays the
- * fade+grow reveal animation.
- */
+/** A single, fully controlled item (the component holds no state); with the shipped CSS, opening it plays a fade+grow reveal. */
 export const Default: Story = {
   args: { summary: '', open: false, onOpenChange: () => {}, children: null },
   render: function DefaultStory() {
@@ -33,9 +29,8 @@ export const Default: Story = {
 };
 
 /**
- * Several items with independent `open` state — any number can be open at
- * once, since nothing here enforces exclusivity. This is the shape used by
- * the affordable-websites "What We Build" section.
+ * Several items with independent `open` state: any number can be open at once, as nothing enforces
+ * exclusivity. The shape used by the affordable-websites "What We Build" section.
  */
 export const MultipleOpenAtOnce: Story = {
   args: { summary: '', open: false, onOpenChange: () => {}, children: null },
@@ -70,10 +65,8 @@ export const MultipleOpenAtOnce: Story = {
 };
 
 /**
- * Several items sharing one `openId` — only one is ever open, driven by the
- * consumer's own state (this is the shape `ValuesCloud`'s accordion
- * fallback uses). The same `name` is also passed to every item so the
- * exclusivity holds natively even with JavaScript disabled.
+ * Several items sharing one `openId`, so only one is open at a time (the shape
+ * `ValuesCloud`'s accordion uses); the shared `name` also enforces it without JS.
  */
 export const OneOpenAtATime: Story = {
   args: { summary: '', open: false, onOpenChange: () => {}, children: null },

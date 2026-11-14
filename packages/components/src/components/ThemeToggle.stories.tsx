@@ -23,11 +23,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * An icon button inside a real `<form>`. With JavaScript (as here in
- * Storybook), clicking flips `data-theme` on `<html>` instantly and writes
- * the theme cookie via `document.cookie` — open this story's HTML panel to
- * see the attribute change. With JavaScript disabled, the same click would
- * instead submit the form to `action`, for the consumer's server to handle.
+ * An icon button in a real `<form>`: with JavaScript it flips `data-theme` on `<html>` and writes
+ * the theme cookie; without, the click submits the form to `action`.
  */
 export const Default: Story = {};
 
