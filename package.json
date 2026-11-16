@@ -30,7 +30,7 @@
     "@changesets/config": "^3.1.4",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.65.0",
-    "@storybook/addon-a11y": "^8.6.18",
+    "@storybook/addon-a11y": "^8.6.19",
     "@storybook/addon-essentials": "^8.6.19",
     "@storybook/addon-interactions": "^8.6.19",
     "@storybook/addon-links": "^8.6.0",
