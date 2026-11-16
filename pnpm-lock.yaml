@@ -42,8 +42,8 @@ importers:
         specifier: ^8.6.19
         version: 8.6.19(storybook@8.6.19(prettier@3.9.10)(supports-color@7.2.0))
       '@storybook/addon-links':
-        specifier: ^8.6.0
-        version: 8.6.18(react@18.3.1)(storybook@8.6.19(prettier@3.9.10)(supports-color@7.2.0))
+        specifier: ^8.6.19
+        version: 8.6.19(react@18.3.1)(storybook@8.6.19(prettier@3.9.10)(supports-color@7.2.0))
       '@storybook/blocks':
         specifier: ^8.6.19
         version: 8.6.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.19(prettier@3.9.10)(supports-color@7.2.0))
@@ -1037,11 +1037,11 @@ packages:
     peerDependencies:
       storybook: ^8.6.19
 
-  '@storybook/addon-links@8.6.18':
-    resolution: {integrity: sha512-FFlQcPRTgXoFZr2uawtf7lNc/ceIVRhU13BkJbJZKlil3+C8ORFDO1vnREzHje9JzeOWm/rzI0ay0RVetCcXzg==}
+  '@storybook/addon-links@8.6.19':
+    resolution: {integrity: sha512-XjMabD2UpH/uaRo57yPt4TUu8JFbGSZhofyM5wWg2PvrkPz1S4rAELlw7tXZnlxzZ3JbrDCYs9rHEuwj0HILHQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      storybook: ^8.6.18
+      storybook: ^8.6.19
     peerDependenciesMeta:
       react:
         optional: true
@@ -3866,7 +3866,7 @@ snapshots:
       storybook: 8.6.19(prettier@3.9.10)(supports-color@7.2.0)
       ts-dedent: 2.3.0
 
-  '@storybook/addon-links@8.6.18(react@18.3.1)(storybook@8.6.19(prettier@3.9.10)(supports-color@7.2.0))':
+  '@storybook/addon-links@8.6.19(react@18.3.1)(storybook@8.6.19(prettier@3.9.10)(supports-color@7.2.0))':
     dependencies:
       '@storybook/global': 5.0.0
       storybook: 8.6.19(prettier@3.9.10)(supports-color@7.2.0)
