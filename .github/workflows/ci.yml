@@ -19,7 +19,11 @@ jobs:
   ci:
     name: Lint, Format & Test
     runs-on: ubuntu-latest
-    # Observed 0.55-1.0min over the last 20 successful runs (p95 0.97min).
+    # Observed 172-251s (median 199s) over the 12 successful runs since the
+    # Storybook accessibility check visits pages four at a time. Everything but
+    # the two Playwright steps took at most 216s. Each Playwright step is bounded
+    # at 3 minutes below, so a hang in both leaves 4 minutes for the rest:
+    # 3 + 3 + 4 = 10. A test in scripts/ci-workflow.test.mjs holds that sum.
     timeout-minutes: 10
 
     steps:
@@ -108,32 +112,35 @@ jobs:
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
 
       # The apt step is the one that hung on a runner-network fault, so the
-      # system dependencies get their own timeout and bounded retry. Kept
+      # system dependencies get their own timeout and bounded retry. Measured
+      # since the browser cache landed: apt 8-34s, the browser step 0-1s on a
+      # cache hit and 15-37s on a miss. Three attempts of at most 50s plus 15s
+      # of sleep are 165s, inside the 3-minute step bound. Kept
       # (not dropped) because the runner-images readme does not list the
       # libraries Playwright's Chromium needs. The browser download is a
       # separate step below and does not use apt.
       - name: Install Playwright system dependencies
-        timeout-minutes: 7
+        timeout-minutes: 3
         run: |
           for attempt in 1 2 3; do
-            if timeout 120 npx playwright install-deps chromium; then
+            if timeout 50 npx playwright install-deps chromium; then
               exit 0
             fi
             echo "::warning::install-deps attempt $attempt failed"
-            if [ "$attempt" -lt 3 ]; then sleep $((attempt * 15)); fi
+            if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
           done
           echo "::error::install-deps failed after 3 attempts"
           exit 1
 
       - name: Install Playwright Chromium
-        timeout-minutes: 7
+        timeout-minutes: 3
         run: |
           for attempt in 1 2 3; do
-            if timeout 120 npx playwright install chromium; then
+            if timeout 50 npx playwright install chromium; then
               exit 0
             fi
             echo "::warning::browser install attempt $attempt failed"
-            if [ "$attempt" -lt 3 ]; then sleep $((attempt * 15)); fi
+            if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
           done
           echo "::error::browser install failed after 3 attempts"
           exit 1

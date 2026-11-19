@@ -56,7 +56,7 @@ function expectRetryFailsClosed(name, installCommand, errorText) {
   const successExit = script.indexOf('exit 0');
   expect(successExit).toBeGreaterThan(loopOpen);
   expect(successExit).toBeLessThan(loopDone);
-  expect(script[successExit - 1]).toBe(`if timeout 120 ${installCommand}; then`);
+  expect(script[successExit - 1]).toBe(`if timeout 50 ${installCommand}; then`);
 }
 
 describe('ci.yml Playwright steps', () => {
@@ -108,5 +108,56 @@ describe('ci.yml Playwright steps', () => {
       'npx playwright install chromium',
       'browser install failed after 3 attempts'
     );
+  });
+});
+
+// The Playwright steps are bounded so that a hang in both still fits inside the
+// job's own timeout. REST_OF_JOB_MAX_MINUTES is the measured ceiling for every
+// other step (3.6 minutes over the 12 runs since the accessibility check went
+// parallel), rounded up.
+const REST_OF_JOB_MAX_MINUTES = 4;
+const PLAYWRIGHT_STEPS = ['Install Playwright system dependencies', 'Install Playwright Chromium'];
+
+// The `ci` job's timeout: the 4-space `timeout-minutes` between `  ci:` and
+// its `    steps:`.
+function jobTimeoutMinutes() {
+  const lines = ci.split('\n');
+  const start = lines.findIndex((line) => line === '  ci:');
+  const steps = lines.findIndex((line, i) => i > start && line === '    steps:');
+  if (start === -1 || steps === -1) throw new Error('no ci job in ci.yml');
+  const hit = lines
+    .slice(start, steps)
+    .map((line) => /^ {4}timeout-minutes: (\d+)$/.exec(line))
+    .find((m) => m !== null);
+  if (!hit) throw new Error('the ci job has no timeout-minutes');
+  return Number(hit[1]);
+}
+
+function stepTimeoutMinutes(name) {
+  const hit = /^ {8}timeout-minutes: (\d+)$/m.exec(stepBlock(name));
+  if (!hit) throw new Error(`step "${name}" has no timeout-minutes`);
+  return Number(hit[1]);
+}
+
+describe('ci.yml job timeout', () => {
+  it('holds the 10-minute job timeout', () => {
+    expect(jobTimeoutMinutes()).toBe(10);
+  });
+
+  it('fits both Playwright step bounds plus the rest of the job', () => {
+    const bounds = PLAYWRIGHT_STEPS.map(stepTimeoutMinutes);
+    const total = bounds.reduce((a, b) => a + b, 0) + REST_OF_JOB_MAX_MINUTES;
+    expect(jobTimeoutMinutes()).toBeGreaterThanOrEqual(total);
+  });
+
+  it.each(PLAYWRIGHT_STEPS)('%s: three attempts and their sleeps fit the step bound', (name) => {
+    const script = runScript(name).join('\n');
+    const attempt = /timeout (\d+) npx playwright/.exec(script);
+    const sleep = /sleep \$\(\(attempt \* (\d+)\)\)/.exec(script);
+    expect(attempt).not.toBeNull();
+    expect(sleep).not.toBeNull();
+    // Attempts 1 and 2 sleep before the next; attempt 3 does not.
+    const worstSeconds = 3 * Number(attempt?.[1]) + Number(sleep?.[1]) * (1 + 2);
+    expect(worstSeconds).toBeLessThanOrEqual(stepTimeoutMinutes(name) * 60);
   });
 });
