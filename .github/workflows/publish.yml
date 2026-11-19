@@ -193,7 +193,7 @@ jobs:
       - name: Attest @branchleft/components
         id: attest_components
         if: steps.pack.outputs.components != ''
-        uses: branchLeft/github-workflows/.github/actions/attest-npm-tarball@a2175a416b57f950fed891837f88f2d1a31e00f4 # v1.2.0
+        uses: branchLeft/github-workflows/.github/actions/attest-npm-tarball@231e592397f4c94668c64646c14160d9d497bdde # v1.2.2
         with:
           tarball: ${{ steps.pack.outputs.components }}
           repo: branchLeft/components
@@ -203,7 +203,7 @@ jobs:
       - name: Attest @branchleft/brand-branchleft
         id: attest_brand_branchleft
         if: steps.pack.outputs.brand-branchleft != ''
-        uses: branchLeft/github-workflows/.github/actions/attest-npm-tarball@a2175a416b57f950fed891837f88f2d1a31e00f4 # v1.2.0
+        uses: branchLeft/github-workflows/.github/actions/attest-npm-tarball@231e592397f4c94668c64646c14160d9d497bdde # v1.2.2
         with:
           tarball: ${{ steps.pack.outputs.brand-branchleft }}
           repo: branchLeft/components
@@ -213,7 +213,7 @@ jobs:
       - name: Attest @branchleft/brand-publicpress
         id: attest_brand_publicpress
         if: steps.pack.outputs.brand-publicpress != ''
-        uses: branchLeft/github-workflows/.github/actions/attest-npm-tarball@a2175a416b57f950fed891837f88f2d1a31e00f4 # v1.2.0
+        uses: branchLeft/github-workflows/.github/actions/attest-npm-tarball@231e592397f4c94668c64646c14160d9d497bdde # v1.2.2
         with:
           tarball: ${{ steps.pack.outputs.brand-publicpress }}
           repo: branchLeft/components
