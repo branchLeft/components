@@ -9,11 +9,29 @@ import {
   isEntryPoint,
   isolatedGitArgs,
   isPublishedOnRegistry,
+  packagesOutputLine,
   parseReleaseTagMessage,
   readTagMessageFromGit,
   runReleasePlan,
   selectPackagesToPublish,
 } from './release-plan.mjs';
+
+describe('packagesOutputLine', () => {
+  it('hands the publish step every planned package name, comma-joined', () => {
+    const planned = [
+      { name: '@branchleft/components', version: '0.4.0' },
+      { name: '@branchleft/brand-publicpress', version: '0.1.0' },
+    ];
+
+    expect(packagesOutputLine(planned)).toBe(
+      'packages=@branchleft/components,@branchleft/brand-publicpress\n'
+    );
+  });
+
+  it('writes an empty list when the plan holds nothing, so the publish step is skipped', () => {
+    expect(packagesOutputLine([])).toBe('packages=\n');
+  });
+});
 
 describe('selectPackagesToPublish', () => {
   it('publishes a package the registry lookup reports as unpublished', async () => {

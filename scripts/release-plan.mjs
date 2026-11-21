@@ -264,8 +264,17 @@ async function main() {
   // otherwise have picked.
   const githubOutput = process.env.GITHUB_OUTPUT;
   if (githubOutput) {
-    appendFileSync(githubOutput, `packages=${toPublish.map((pkg) => pkg.name).join(',')}\n`);
+    appendFileSync(githubOutput, packagesOutputLine(toPublish));
   }
+}
+
+/**
+ * The one `packages=` line the publish step reads. An empty plan writes
+ * `packages=` with nothing after it, which is what makes the pack and publish
+ * steps skip; any name dropped here is a package the publish step never sees.
+ */
+export function packagesOutputLine(toPublish) {
+  return `packages=${toPublish.map((pkg) => pkg.name).join(',')}\n`;
 }
 
 /**
