@@ -350,7 +350,11 @@ describe('readTagMessageFromGit and runReleasePlan, against a real (throwaway, l
       const isolated = isolatedGitArgs('/real/repo', ['status']);
       expect(Object.keys(isolated.env).filter((key) => key.startsWith('GIT_'))).toEqual([]);
       expect(isolated.env.GIT_INDEX_FILE).toBeUndefined();
-      expect(isolated.args).toEqual(['--git-dir=/real/repo/.git', '--work-tree=/real/repo', 'status']);
+      expect(isolated.args).toEqual([
+        '--git-dir=/real/repo/.git',
+        '--work-tree=/real/repo',
+        'status',
+      ]);
       // The helper copies the environment; it must not strip the parent's own.
       expect(process.env.GIT_INDEX_FILE).toBe('/decoy/index');
     } finally {
