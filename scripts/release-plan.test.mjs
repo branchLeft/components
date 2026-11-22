@@ -332,6 +332,39 @@ describe('readTagMessageFromGit and runReleasePlan, against a real (throwaway, l
     return dir;
   }
 
+  it('isolatedGitArgs strips decoy GIT_DIR, GIT_WORK_TREE and GIT_INDEX_FILE and leaves the parent environment alone', () => {
+    // A leaked GIT_INDEX_FILE inside a hook is how the 2026-09-28 identity
+    // incident happened. Plant decoys in this process's environment, as a
+    // hook would, and check the helper's env drops them.
+    const decoys = {
+      GIT_DIR: '/decoy/.git',
+      GIT_WORK_TREE: '/decoy',
+      GIT_INDEX_FILE: '/decoy/index',
+    };
+    const saved = {};
+    for (const [key, value] of Object.entries(decoys)) {
+      saved[key] = process.env[key];
+      process.env[key] = value;
+    }
+    try {
+      const isolated = isolatedGitArgs('/real/repo', ['status']);
+      expect(Object.keys(isolated.env).filter((key) => key.startsWith('GIT_'))).toEqual([]);
+      expect(isolated.env.GIT_INDEX_FILE).toBeUndefined();
+      expect(isolated.args).toEqual([
+        '--git-dir=/real/repo/.git',
+        '--work-tree=/real/repo',
+        'status',
+      ]);
+      // The helper copies the environment; it must not strip the parent's own.
+      expect(process.env.GIT_INDEX_FILE).toBe('/decoy/index');
+    } finally {
+      for (const [key, value] of Object.entries(saved)) {
+        if (value === undefined) delete process.env[key];
+        else process.env[key] = value;
+      }
+    }
+  });
+
   it("readTagMessageFromGit returns the package lines after the tag's subject", () => {
     repoDir = makeTaggedRepo('v0.0.0-probe\n\n@branchleft/components@0.4.0\n');
 
