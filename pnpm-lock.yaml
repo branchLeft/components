@@ -212,6 +212,12 @@ importers:
         specifier: 0.1.0
         version: 0.1.0(vitest@5.0.5)
 
+  packages/build-fonts:
+    devDependencies:
+      vite:
+        specifier: ^6.4.3
+        version: 6.4.3(@types/node@26.6.6)(yaml@2.9.1)
+
   packages/components:
     dependencies:
       react:
