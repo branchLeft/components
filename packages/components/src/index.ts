@@ -29,6 +29,7 @@ export { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 
 // Lib
 export { safeReturnPath } from './lib/safeReturnPath';
+export { contrastRatio, hexToRgb, srgbChannelToLinear } from './lib/contrastRatio';
 
 // Design tokens
 export type {

@@ -3,39 +3,10 @@ import {
   REQUIRED_COLOUR_KEYS,
   REQUIRED_TOKEN_KEYS,
   REQUIRED_TYPE_FACE_KEYS,
+  contrastRatio,
   type DesignTokens,
 } from '@branchleft/components';
 import { publicPressTokens } from './publicPressTokens';
-
-// Local WCAG 2.x contrast helper — deliberately not shared with
-// brand-branchleft's own copy (`styles/testUtils/colourMath.ts`): brand
-// packages don't depend on each other (see the workspace CLAUDE.md), and
-// this is the only contrast check this package needs.
-function hexToRgb(hex: string): readonly [number, number, number] {
-  const match = /^#([0-9a-fA-F]{6})$/.exec(hex.trim());
-  if (!match) {
-    throw new Error(`Expected a #rrggbb hex colour, got: ${hex}`);
-  }
-  const n = parseInt(match[1], 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-}
-
-function srgbChannelToLinear(channel8bit: number): number {
-  const c = channel8bit / 255;
-  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-}
-
-function relativeLuminance([r, g, b]: readonly [number, number, number]): number {
-  const [rl, gl, bl] = [r, g, b].map(srgbChannelToLinear);
-  return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
-}
-
-function contrastRatio(hexA: string, hexB: string): number {
-  const lumA = relativeLuminance(hexToRgb(hexA));
-  const lumB = relativeLuminance(hexToRgb(hexB));
-  const [lighter, darker] = lumA > lumB ? [lumA, lumB] : [lumB, lumA];
-  return (lighter + 0.05) / (darker + 0.05);
-}
 
 const brands: { name: string; tokens: DesignTokens }[] = [
   { name: 'PublicPress', tokens: publicPressTokens },
