@@ -13,7 +13,7 @@ const manifest: Manifest = JSON.parse(
 );
 
 // Consumer peer ranges: framer-motion admits 13 and 14 so existing 13 consumers
-// keep installing (branchLeft/workspace#4210 option a).
+// keep installing.
 const PEER_LIBRARIES: Record<string, string> = {
   'framer-motion': '^13.0.0 || ^14.0.0',
   'lucide-react': '^1.70.0',
