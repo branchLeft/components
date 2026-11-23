@@ -8,7 +8,7 @@ import {
   resolveColour,
   type CustomProperties,
 } from './testUtils/buildStylesheet';
-import { contrastRatio } from './testUtils/colourMath';
+import { contrastRatio } from '@branchleft/components';
 
 const VALUE_NAMES = [
   'sustainability',

@@ -3,6 +3,8 @@
  * matrices applied to LINEAR sRGB; gamma-encoded input would simulate the wrong thing.
  */
 
+import { hexToRgb, srgbChannelToLinear } from '@branchleft/components';
+
 export type CvdKind = 'protanopia' | 'deuteranopia' | 'tritanopia';
 
 type Matrix3 = readonly [
@@ -33,26 +35,12 @@ export const MACHADO_2009_SEVERITY_1: Readonly<Record<CvdKind, Matrix3>> = {
   ],
 };
 
-function hexToRgb8(hex: string): readonly [number, number, number] {
-  const match = /^#([0-9a-fA-F]{6})$/.exec(hex.trim());
-  if (!match) {
-    throw new Error(`Expected a #rrggbb hex colour, got: ${hex}`);
-  }
-  const n = parseInt(match[1], 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-}
-
-function srgbChannelToLinear(channel8bit: number): number {
-  const c = channel8bit / 255;
-  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-}
-
 /**
  * Applies a Machado et al. 2009 full-severity matrix to a `#rrggbb` colour in linear RGB and returns
  * linear components clamped to `[0, 1]` (the matrices can go out of gamut; displays clip).
  */
 export function simulateCvdLinear(hex: string, kind: CvdKind): readonly [number, number, number] {
-  const [r8, g8, b8] = hexToRgb8(hex);
+  const [r8, g8, b8] = hexToRgb(hex);
   const r = srgbChannelToLinear(r8);
   const g = srgbChannelToLinear(g8);
   const b = srgbChannelToLinear(b8);
