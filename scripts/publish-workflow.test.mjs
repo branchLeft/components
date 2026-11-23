@@ -19,7 +19,7 @@ const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const workflowText = readFileSync(path.join(rootDir, '.github/workflows/publish.yml'), 'utf8');
 
 const ATTEST_ACTION = 'branchLeft/github-workflows/.github/actions/attest-npm-tarball';
-const ATTEST_SHA = 'a2175a416b57f950fed891837f88f2d1a31e00f4';
+const ATTEST_SHA = 'b1092eafc16f34551fd2fd99328966beceb565e0';
 
 /** Splits the workflow's one job into its steps: each starts at `      - name:`. */
 export function readSteps(text) {
@@ -116,7 +116,7 @@ describe('publish workflow attestation', () => {
   it('pins every attest step by commit with a version comment', () => {
     expect(attestSteps).toHaveLength(publishablePackages.length);
     for (const step of attestSteps) {
-      expect(step.body).toContain(`uses: ${ATTEST_ACTION}@${ATTEST_SHA} # v1.2.0`);
+      expect(step.body).toContain(`uses: ${ATTEST_ACTION}@${ATTEST_SHA} # v1.2.5`);
     }
   });
 
