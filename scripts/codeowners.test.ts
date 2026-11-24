@@ -34,7 +34,6 @@ const FREE_CLASSES: readonly string[] = [
   'install-config',
   'manifest',
   'vite',
-  'release-plan',
   'storybook',
 ];
 
@@ -116,6 +115,7 @@ describe('CODEOWNERS file shape', () => {
 // Sabotage: delete the one line that owns each path of the publish gate and the
 // path must turn free, which proves the line is what owns it (not a later line).
 const SABOTAGE: ReadonlyArray<readonly [string, string]> = [
+  ['/scripts/release-plan.mjs', 'scripts/release-plan.mjs'],
   ['/scripts/release-plan.test.mjs', 'scripts/release-plan.test.mjs'],
   ['/scripts/peer-bump-safety*', 'scripts/peer-bump-safety.test.mjs'],
   ['/scripts/publish-workflow.test.mjs', 'scripts/publish-workflow.test.mjs'],

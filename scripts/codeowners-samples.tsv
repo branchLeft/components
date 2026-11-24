@@ -9,7 +9,7 @@ packages/components/package.json	free	manifest
 package.json	free	manifest
 pnpm-workspace.yaml	free	install-config
 packages/components/vite.config.ts	free	vite
-scripts/release-plan.mjs	free	release-plan
+scripts/release-plan.mjs	owned	c3
 .storybook/main.ts	free	storybook
 CLAUDE.md	owned	c1
 .github/CODEOWNERS	owned	c1

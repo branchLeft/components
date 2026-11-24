@@ -6,7 +6,7 @@
 #     CODEOWNERS and its proof test).
 # (b) HUMAN-FACING DOCS: LICENSE, README and font licence text.
 # EVERYTHING ELSE is released and lands on agent review plus green CI: package
-# manifests, .npmrc, the workspace file, changesets, release-plan code,
+# manifests, .npmrc, the workspace file, changesets,
 # Storybook config, vite configs, source, other tests and engineering docs.
 # Owner ruling, issue branchLeft/workspace#4323. GitHub applies the LAST
 # matching pattern. No catch-all line. The five shared standards lines
@@ -16,7 +16,8 @@
 /.github/workflows/                     @branchLeft/branchleft-admin
 /.github/actions/                       @branchLeft/branchleft-admin
 
-# 2. Gate scripts and tests that the required ci check runs, and the configs and setup files that decide whether tests count.
+# 2. Gate scripts (release-plan.mjs runs as the publish gate) and tests that the required ci check runs, and the configs and setup files that decide whether tests count.
+/scripts/release-plan.mjs               @branchLeft/branchleft-admin
 /scripts/release-plan.test.mjs          @branchLeft/branchleft-admin
 /scripts/peer-bump-safety*              @branchLeft/branchleft-admin
 /scripts/publish-workflow.test.mjs      @branchLeft/branchleft-admin
