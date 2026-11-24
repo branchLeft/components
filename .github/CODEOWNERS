@@ -9,16 +9,18 @@
 # EVERYTHING ELSE is released and lands on agent review plus green CI: package
 # manifests, .npmrc, the workspace file, changesets,
 # Storybook config, vite configs, source, other tests, engineering docs, and
-# the CodeQL and Dependabot settings.
+# the Dependabot settings.
 # Owner ruling. GitHub applies the LAST
 # matching pattern. No catch-all line. The seven shared standards lines
 # (SYNC-1) stay the final lines of this file.
 
 # 1. ci.yml holds the required check and the Storybook deploy; publish.yml is the
 # release. The local actions run inside them. standards.yml and docs-lint.yml
-# come from the shared lines at the end; codeql.yml is released.
+# come from the shared lines at the end. codeql.yml grants a write permission, so
+# it stays owned.
 /.github/workflows/ci.yml               @branchLeft/branchleft-admin
 /.github/workflows/publish.yml          @branchLeft/branchleft-admin
+/.github/workflows/codeql.yml           @branchLeft/branchleft-admin
 /.github/actions/                       @branchLeft/branchleft-admin
 
 # 2. Gate scripts (release-plan.mjs runs as the publish gate) and tests that the required ci check runs, and the configs and setup files that decide whether tests count.
