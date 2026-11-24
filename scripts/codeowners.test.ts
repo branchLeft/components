@@ -9,14 +9,16 @@ import { isOwned, parseCodeowners, patternToRegExp } from './codeowners-match';
 
 const OWNER = '@branchLeft/branchleft-admin';
 
-// The five shared lines of the standards template (SYNC-1): they stay the final
+// The seven shared lines of the standards template (SYNC-1): they stay the final
 // lines of the file, so a repo's own lines sit above them.
 const TEMPLATE_TAIL: readonly string[] = [
   `/.standardsignore ${OWNER}`,
   `/.standards.mode ${OWNER}`,
   `/.docs-lint* ${OWNER}`,
   `/.standards-db-tooling ${OWNER}`,
-  `/.github/ ${OWNER}`,
+  `/.github/CODEOWNERS ${OWNER}`,
+  `/.github/workflows/standards.yml ${OWNER}`,
+  `/.github/workflows/docs-lint.yml ${OWNER}`,
 ];
 
 // Every kept class must have an owned sample, and every released class a free one.
@@ -29,6 +31,7 @@ const FREE_CLASSES: readonly string[] = [
   'checker',
   'probe',
   'lint-config',
+  'ci-config',
   'asset',
   'changeset',
   'install-config',
@@ -104,7 +107,7 @@ describe('CODEOWNERS file shape', () => {
     expect(others).toEqual([]);
   });
 
-  it('ends with the five lines of the standards template', () => {
+  it('ends with the seven lines of the standards template', () => {
     const tail = rules
       .slice(-TEMPLATE_TAIL.length)
       .map((r) => `${r.pattern} ${r.owners.join(' ')}`);
@@ -132,6 +135,9 @@ const SABOTAGE: ReadonlyArray<readonly [string, string]> = [
   ['/test-utils/', 'test-utils/axe-setup.ts'],
   ['/test-utils/', 'test-utils/localstorage-setup.ts'],
   ['/scripts/assert-dist*', 'scripts/assert-dist.mjs'],
+  ['/.github/workflows/ci.yml', '.github/workflows/ci.yml'],
+  ['/.github/workflows/publish.yml', '.github/workflows/publish.yml'],
+  ['/.github/actions/', '.github/actions/example/action.yml'],
 ];
 
 describe('CODEOWNERS sabotage', () => {
