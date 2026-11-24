@@ -20,7 +20,7 @@ const TEMPLATE_TAIL: readonly string[] = [
 ];
 
 // Every kept class must have an owned sample, and every released class a free one.
-const OWNED_CLASSES: readonly string[] = ['c1', 'c2', 'c3', 'c8'];
+const OWNED_CLASSES: readonly string[] = ['c1', 'c3', 'c8'];
 const FREE_CLASSES: readonly string[] = [
   'source',
   'test',
@@ -30,6 +30,12 @@ const FREE_CLASSES: readonly string[] = [
   'probe',
   'lint-config',
   'asset',
+  'changeset',
+  'install-config',
+  'manifest',
+  'vite',
+  'release-plan',
+  'storybook',
 ];
 
 interface Sample {
@@ -110,8 +116,6 @@ describe('CODEOWNERS file shape', () => {
 // Sabotage: delete the one line that owns each path of the publish gate and the
 // path must turn free, which proves the line is what owns it (not a later line).
 const SABOTAGE: ReadonlyArray<readonly [string, string]> = [
-  ['/.changeset/', '.changeset/config.json'],
-  ['**/.npmrc', '.npmrc'],
   ['/scripts/release-plan.test.mjs', 'scripts/release-plan.test.mjs'],
   ['/scripts/peer-bump-safety*', 'scripts/peer-bump-safety.test.mjs'],
   ['/scripts/publish-workflow.test.mjs', 'scripts/publish-workflow.test.mjs'],
@@ -127,8 +131,6 @@ const SABOTAGE: ReadonlyArray<readonly [string, string]> = [
   ['**/vitest.config.*', 'packages/brand-branchleft/vitest.config.ts'],
   ['/test-utils/', 'test-utils/axe-setup.ts'],
   ['/test-utils/', 'test-utils/localstorage-setup.ts'],
-  ['/.pnpmfile.cjs', '.pnpmfile.cjs'],
-  ['/.pnpmfile.mjs', '.pnpmfile.mjs'],
   ['/scripts/assert-dist*', 'scripts/assert-dist.mjs'],
 ];
 
