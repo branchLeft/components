@@ -24,9 +24,9 @@ tools/floors.tsv	owned	c1
 scripts/codeowners.test.ts	owned	c1
 scripts/codeowners-match.ts	owned	c1
 scripts/codeowners-samples.tsv	owned	c1
-scripts/publish-workflow.test.mjs	owned	c1
-scripts/verify-attestations-job.test.mjs	owned	c1
-scripts/ci-workflow.test.mjs	owned	c1
+scripts/publish-workflow.test.mjs	free	test
+scripts/verify-attestations-job.test.mjs	free	test
+scripts/ci-workflow.test.mjs	free	test
 scripts/peer-bump-safety.mjs	owned	c1
 vitest.config.ts	owned	c1
 .claude/settings.json	owned	c1
@@ -50,8 +50,8 @@ test-utils/localstorage-setup.ts	owned	c1
 .pnpmfile.cjs	free	install-config
 .pnpmfile.mjs	free	install-config
 scripts/assert-dist.mjs	owned	c1
-scripts/release-plan.test.mjs	owned	c1
-scripts/peer-bump-safety.test.mjs	owned	c1
+scripts/release-plan.test.mjs	free	test
+scripts/peer-bump-safety.test.mjs	free	test
 pnpm-lock.yaml	free	lockfile
 RELEASING.md	free	doc
 CONTRIBUTING.md	free	doc

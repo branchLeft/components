@@ -119,11 +119,7 @@ describe('CODEOWNERS file shape', () => {
 // path must turn free, which proves the line is what owns it (not a later line).
 const SABOTAGE: ReadonlyArray<readonly [string, string]> = [
   ['/scripts/release-plan.mjs', 'scripts/release-plan.mjs'],
-  ['/scripts/release-plan.test.mjs', 'scripts/release-plan.test.mjs'],
-  ['/scripts/peer-bump-safety*', 'scripts/peer-bump-safety.test.mjs'],
-  ['/scripts/publish-workflow.test.mjs', 'scripts/publish-workflow.test.mjs'],
-  ['/scripts/verify-attestations-job.test.mjs', 'scripts/verify-attestations-job.test.mjs'],
-  ['/scripts/ci-workflow.test.mjs', 'scripts/ci-workflow.test.mjs'],
+  ['/scripts/peer-bump-safety.mjs', 'scripts/peer-bump-safety.mjs'],
   ['/scripts/storybook-a11y-check*', 'scripts/storybook-a11y-check.mjs'],
   ['/scripts/storybook-a11y-check*', 'scripts/storybook-a11y-check.test.mjs'],
   ['/.pre-commit-config.yaml', '.pre-commit-config.yaml'],

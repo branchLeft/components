@@ -121,7 +121,11 @@ describe('publish workflow attestation', () => {
   });
 
   it('pins every action in the workflow by a 40-character commit with a version comment', () => {
-    const uses = workflowText.split('\n').filter((line) => /^\s+uses: /.test(line));
+    // A local composite (`./.github/actions/...`) lives in this repo and is
+    // reviewed with it, so it has no commit pin; every remote action still does.
+    const uses = workflowText
+      .split('\n')
+      .filter((line) => /^\s+uses: /.test(line) && !/uses: \.\//.test(line));
     expect(uses.length).toBeGreaterThan(0);
     for (const line of uses) {
       expect(line).toMatch(/uses: [\w./-]+@[0-9a-f]{40} # v\d+\.\d+\.\d+/);

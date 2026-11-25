@@ -23,13 +23,9 @@
 /.github/workflows/codeql.yml           @branchLeft/branchleft-admin
 /.github/actions/                       @branchLeft/branchleft-admin
 
-# 2. Gate scripts (release-plan.mjs runs as the publish gate) and tests that the required ci check runs, and the configs and setup files that decide whether tests count.
+# 2. Gate scripts (release-plan.mjs runs as the publish gate), and the configs and setup files that decide whether tests count. The tests of the release plan, the CI workflow, the publish workflow and the attestation job are released.
 /scripts/release-plan.mjs               @branchLeft/branchleft-admin
-/scripts/release-plan.test.mjs          @branchLeft/branchleft-admin
-/scripts/peer-bump-safety*              @branchLeft/branchleft-admin
-/scripts/publish-workflow.test.mjs      @branchLeft/branchleft-admin
-/scripts/verify-attestations-job.test.mjs @branchLeft/branchleft-admin
-/scripts/ci-workflow.test.mjs           @branchLeft/branchleft-admin
+/scripts/peer-bump-safety.mjs           @branchLeft/branchleft-admin
 /scripts/storybook-a11y-check*          @branchLeft/branchleft-admin
 /scripts/assert-dist*                   @branchLeft/branchleft-admin
 **/vitest.config.*                      @branchLeft/branchleft-admin

@@ -20,44 +20,22 @@ jobs:
     name: Lint, Format & Test
     runs-on: ubuntu-latest
     # Observed 172-251s (median 199s) over the 12 successful runs since the
-    # Storybook accessibility check visits pages four at a time. Everything but
-    # the two Playwright steps took at most 216s. Each Playwright step is bounded
-    # at 3 minutes below, so a hang in both leaves 4 minutes for the rest:
-    # 3 + 3 + 4 = 10. A test in scripts/ci-workflow.test.mjs holds that sum.
+    # Storybook accessibility check visits pages four at a time. The Playwright
+    # install is inside the setup composite, which takes no step timeout, so the job
+    # timeout is its bound. Each apt and browser attempt is capped at 50s.
     timeout-minutes: 10
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      # Playwright's system dependencies and Chromium are installed with the
+      # dependencies, so the Storybook accessibility check below has its browser.
+      - name: Setup pnpm, Node and dependencies
+        uses: ./.github/actions/setup-pnpm-node
         with:
-          node-version-file: .nvmrc
-          registry-url: https://npm.pkg.github.com
-          scope: '@branchleft'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-        with:
-          run_install: false
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: echo "store=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ${{ steps.pnpm-cache.outputs.store }}
-          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-store-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+          playwright: 'true'
 
       - name: Setup Python (for pre-commit)
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
@@ -99,52 +77,6 @@ jobs:
       # which only runs on `main`) so a PR that regresses a story's contrast
       # or breaks a PublicPress story's load fails CI before merge, not after
       # a deploy.
-      # The browser build is tied to the locked Playwright version, so the cache
-      # is keyed on that version alone, with no restore-keys fallback.
-      - name: Get Playwright version
-        id: playwright-version
-        run: node -p "'version=' + require('@playwright/test/package.json').version" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
-
-      # The apt step is the one that hung on a runner-network fault, so the
-      # system dependencies get their own timeout and bounded retry. Measured
-      # since the browser cache landed: apt 8-34s, the browser step 0-1s on a
-      # cache hit and 15-37s on a miss. Three attempts of at most 50s plus 15s
-      # of sleep are 165s, inside the 3-minute step bound. Kept
-      # (not dropped) because the runner-images readme does not list the
-      # libraries Playwright's Chromium needs. The browser download is a
-      # separate step below and does not use apt.
-      - name: Install Playwright system dependencies
-        timeout-minutes: 3
-        run: |
-          for attempt in 1 2 3; do
-            if timeout 50 npx playwright install-deps chromium; then
-              exit 0
-            fi
-            echo "::warning::install-deps attempt $attempt failed"
-            if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
-          done
-          echo "::error::install-deps failed after 3 attempts"
-          exit 1
-
-      - name: Install Playwright Chromium
-        timeout-minutes: 3
-        run: |
-          for attempt in 1 2 3; do
-            if timeout 50 npx playwright install chromium; then
-              exit 0
-            fi
-            echo "::warning::browser install attempt $attempt failed"
-            if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
-          done
-          echo "::error::browser install failed after 3 attempts"
-          exit 1
-
       - name: Storybook accessibility check
         run: node scripts/storybook-a11y-check.mjs
 
@@ -190,34 +122,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: Setup pnpm, Node and dependencies
+        uses: ./.github/actions/setup-pnpm-node
         with:
-          node-version-file: .nvmrc
-          registry-url: https://npm.pkg.github.com
-          scope: '@branchleft'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-        with:
-          run_install: false
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: echo "store=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ${{ steps.pnpm-cache.outputs.store }}
-          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-store-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          node-auth-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Storybook
         run: pnpm build:storybook

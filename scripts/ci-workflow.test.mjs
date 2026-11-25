@@ -1,41 +1,62 @@
-// Reads the real .github/workflows/ci.yml and asserts the Playwright steps
-// stay resilient to a runner-network fault on apt: the browser cache is
-// SHA-pinned and keyed on the locked version, and the system-dependency and
-// browser installs each carry a step timeout and a bounded retry. This reads
-// the file text (no YAML parser), so it checks the shape the steps are written
-// in, not that GitHub runs them.
+// Reads the real setup composite, .github/actions/setup-pnpm-node/action.yml, and
+// the workflows that call it. It asserts that the Playwright steps stay
+// resilient to a runner-network fault on apt: the browser cache is SHA-pinned
+// and keyed on the locked version, and the system-dependency and browser
+// installs each carry a bounded retry that fails closed. The ci job turns them
+// on; the deploy and publish jobs do not. This reads the file text (no YAML
+// parser), so it checks the shape the steps are written in, not that GitHub
+// runs them.
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const ci = readFileSync(path.resolve(here, '..', '.github', 'workflows', 'ci.yml'), 'utf8');
+const read = (...parts) => readFileSync(path.resolve(here, '..', ...parts), 'utf8');
+const action = read('.github', 'actions', 'setup-pnpm-node', 'action.yml');
+const ci = read('.github', 'workflows', 'ci.yml');
+const publish = read('.github', 'workflows', 'publish.yml');
 
-// The body of one named step: from its `- name:` line to the next step (a
-// line at the same `- ` indent) or the next job or top-level key.
-function stepBlock(name) {
-  const lines = ci.split('\n');
-  const start = lines.findIndex((line) => line.trim() === `- name: ${name}`);
-  if (start === -1) throw new Error(`no step named "${name}" in ci.yml`);
+const COMPOSITE = './.github/actions/setup-pnpm-node';
+
+// The body of one named step in the composite: from its four-space `- name:`
+// line to the next step.
+function actionStep(name) {
+  const lines = action.split('\n');
+  const start = lines.findIndex((line) => line === `    - name: ${name}`);
+  if (start === -1) throw new Error(`no step named "${name}" in the composite`);
   const body = [];
   for (const line of lines.slice(start + 1)) {
-    if (/^ {6}- /.test(line) || /^ {0,4}\S/.test(line)) break;
+    if (/^ {4}- name: /.test(line) || /^\S/.test(line)) break;
     body.push(line);
   }
   return body.join('\n');
 }
 
-// The shell lines of one named step: the lines under its `run: |`, trimmed and
-// with blank lines dropped.
+// The shell lines of one composite step: under its `run: |`, trimmed, blank
+// lines dropped.
 function runScript(name) {
-  const lines = stepBlock(name).split('\n');
+  const lines = actionStep(name).split('\n');
   const at = lines.findIndex((line) => line.trim() === 'run: |');
   if (at === -1) throw new Error(`step "${name}" has no run: | script`);
   return lines
     .slice(at + 1)
     .map((line) => line.trim())
     .filter((line) => line !== '');
+}
+
+// The body of one named step in a workflow job: from its six-space `- name:`
+// line to the next step.
+function workflowStep(source, name) {
+  const lines = source.split('\n');
+  const start = lines.findIndex((line) => line.trim() === `- name: ${name}`);
+  if (start === -1) throw new Error(`no step named "${name}"`);
+  const body = [];
+  for (const line of lines.slice(start + 1)) {
+    if (/^ {6}- /.test(line) || /^ {0,4}\S/.test(line)) break;
+    body.push(line);
+  }
+  return body.join('\n');
 }
 
 // A retry loop fails closed when, after its final `done`, only the `::error::`
@@ -59,39 +80,50 @@ function expectRetryFailsClosed(name, installCommand, errorText) {
   expect(script[successExit - 1]).toBe(`if timeout 50 ${installCommand}; then`);
 }
 
-describe('ci.yml Playwright steps', () => {
-  it('pins every uses: line to a 40-character commit SHA', () => {
-    const refs = [...ci.matchAll(/^\s*(?:- )?uses:\s*(\S+)/gm)].map((m) => m[1]);
-    expect(refs.length).toBeGreaterThan(0);
-    for (const ref of refs) {
-      expect(ref).toMatch(/@[0-9a-f]{40}$/);
+describe('setup composite Playwright steps', () => {
+  it('pins every uses: line in the composite and the workflows to a 40-character commit SHA', () => {
+    for (const source of [action, ci, publish]) {
+      const refs = [...source.matchAll(/^\s*(?:- )?uses:\s*(\S+)/gm)]
+        .map((m) => m[1])
+        .filter((ref) => !ref.startsWith('./'));
+      expect(refs.length).toBeGreaterThan(0);
+      for (const ref of refs) {
+        expect(ref).toMatch(/@[0-9a-f]{40}$/);
+      }
     }
   });
 
   it('caches the Playwright browsers with a SHA-pinned actions/cache keyed on the locked version', () => {
-    const block = stepBlock('Cache Playwright browsers');
+    const block = actionStep('Cache Playwright browsers');
     expect(block).toMatch(/uses: actions\/cache@[0-9a-f]{40} # v\d+\.\d+\.\d+/);
     expect(block).toContain('path: ~/.cache/ms-playwright');
     expect(block).toContain(
       'key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}'
     );
+    expect(block).not.toContain('restore-keys');
   });
 
-  it('gives the system-dependency install a step timeout and a bounded retry', () => {
-    const block = stepBlock('Install Playwright system dependencies');
-    expect(block).toMatch(/timeout-minutes: \d+/);
-    expect(block).toMatch(/for attempt in 1 2 3; do/);
-    expect(block).toContain('npx playwright install-deps chromium');
-    expect(block).toMatch(/sleep \$\(\(attempt \* \d+\)\)/);
+  it('gives the system-dependency install and the browser install a bounded retry, separate from apt', () => {
+    const deps = actionStep('Install Playwright system dependencies');
+    const browsers = actionStep('Install Playwright Chromium');
+    expect(deps).toMatch(/for attempt in 1 2 3; do/);
+    expect(deps).toContain('npx playwright install-deps chromium');
+    expect(deps).toMatch(/sleep \$\(\(attempt \* \d+\)\)/);
+    expect(browsers).toMatch(/for attempt in 1 2 3; do/);
+    expect(browsers).toContain('npx playwright install chromium');
+    expect(browsers).not.toContain('--with-deps');
+    expect(browsers).not.toContain('install-deps');
   });
 
-  it('gives the browser download a step timeout and a bounded retry, separate from apt', () => {
-    const block = stepBlock('Install Playwright Chromium');
-    expect(block).toMatch(/timeout-minutes: \d+/);
-    expect(block).toMatch(/for attempt in 1 2 3; do/);
-    expect(block).toContain('npx playwright install chromium');
-    expect(block).not.toContain('--with-deps');
-    expect(block).not.toContain('install-deps');
+  it('gates every Playwright step on the playwright input', () => {
+    for (const name of [
+      'Get Playwright version',
+      'Cache Playwright browsers',
+      'Install Playwright system dependencies',
+      'Install Playwright Chromium',
+    ]) {
+      expect(actionStep(name)).toContain("if: inputs.playwright == 'true'");
+    }
   });
 
   it('system-dependency retry fails closed: its last failed attempt prints ::error:: and exits 1', () => {
@@ -111,53 +143,40 @@ describe('ci.yml Playwright steps', () => {
   });
 });
 
-// The Playwright steps are bounded so that a hang in both still fits inside the
-// job's own timeout. REST_OF_JOB_MAX_MINUTES is the measured ceiling for every
-// other step (3.6 minutes over the 12 runs since the accessibility check went
-// parallel), rounded up.
-const REST_OF_JOB_MAX_MINUTES = 4;
-const PLAYWRIGHT_STEPS = ['Install Playwright system dependencies', 'Install Playwright Chromium'];
+describe('workflows call the setup composite', () => {
+  it('the ci job installs with Playwright on', () => {
+    const block = workflowStep(ci, 'Setup pnpm, Node and dependencies');
+    expect(block).toContain(`uses: ${COMPOSITE}`);
+    expect(block).toContain("playwright: 'true'");
+    expect(block).toContain('node-auth-token: ${{ secrets.GITHUB_TOKEN }}');
+  });
 
-// The `ci` job's timeout: the 4-space `timeout-minutes` between `  ci:` and
-// its `    steps:`.
-function jobTimeoutMinutes() {
-  const lines = ci.split('\n');
-  const start = lines.findIndex((line) => line === '  ci:');
-  const steps = lines.findIndex((line, i) => i > start && line === '    steps:');
-  if (start === -1 || steps === -1) throw new Error('no ci job in ci.yml');
-  const hit = lines
-    .slice(start, steps)
-    .map((line) => /^ {4}timeout-minutes: (\d+)$/.exec(line))
-    .find((m) => m !== null);
-  if (!hit) throw new Error('the ci job has no timeout-minutes');
-  return Number(hit[1]);
-}
+  it('the publish job installs with Playwright off', () => {
+    const block = workflowStep(publish, 'Setup pnpm, Node and dependencies');
+    expect(block).toContain(`uses: ${COMPOSITE}`);
+    expect(block).not.toContain('playwright:');
+  });
 
-function stepTimeoutMinutes(name) {
-  const hit = /^ {8}timeout-minutes: (\d+)$/m.exec(stepBlock(name));
-  if (!hit) throw new Error(`step "${name}" has no timeout-minutes`);
-  return Number(hit[1]);
-}
+  it('no workflow still carries an inline Playwright install', () => {
+    expect(ci).not.toContain('npx playwright');
+    expect(ci).not.toContain('Install Playwright');
+    expect(publish).not.toContain('playwright install');
+  });
+});
 
 describe('ci.yml job timeout', () => {
+  // The `ci` job's timeout: the 4-space `timeout-minutes` between `  ci:` and
+  // its `    steps:`. Playwright's bound is the job timeout now, since a
+  // composite step takes no timeout-minutes.
   it('holds the 10-minute job timeout', () => {
-    expect(jobTimeoutMinutes()).toBe(10);
-  });
-
-  it('fits both Playwright step bounds plus the rest of the job', () => {
-    const bounds = PLAYWRIGHT_STEPS.map(stepTimeoutMinutes);
-    const total = bounds.reduce((a, b) => a + b, 0) + REST_OF_JOB_MAX_MINUTES;
-    expect(jobTimeoutMinutes()).toBeGreaterThanOrEqual(total);
-  });
-
-  it.each(PLAYWRIGHT_STEPS)('%s: three attempts and their sleeps fit the step bound', (name) => {
-    const script = runScript(name).join('\n');
-    const attempt = /timeout (\d+) npx playwright/.exec(script);
-    const sleep = /sleep \$\(\(attempt \* (\d+)\)\)/.exec(script);
-    expect(attempt).not.toBeNull();
-    expect(sleep).not.toBeNull();
-    // Attempts 1 and 2 sleep before the next; attempt 3 does not.
-    const worstSeconds = 3 * Number(attempt?.[1]) + Number(sleep?.[1]) * (1 + 2);
-    expect(worstSeconds).toBeLessThanOrEqual(stepTimeoutMinutes(name) * 60);
+    const lines = ci.split('\n');
+    const start = lines.findIndex((line) => line === '  ci:');
+    const steps = lines.findIndex((line, i) => i > start && line === '    steps:');
+    const hit = lines
+      .slice(start, steps)
+      .map((line) => /^ {4}timeout-minutes: (\d+)$/.exec(line))
+      .find((m) => m !== null);
+    expect(hit).toBeDefined();
+    expect(Number(hit[1])).toBe(10);
   });
 });
