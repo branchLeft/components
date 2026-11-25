@@ -9,9 +9,9 @@
 # EVERYTHING ELSE is released and lands on agent review plus green CI: package
 # manifests, .npmrc, the workspace file, changesets,
 # Storybook config, vite configs, source, other tests, engineering docs, and
-# the Dependabot settings.
+# the Dependabot settings are owned by the shared line at the end.
 # Owner ruling. GitHub applies the LAST
-# matching pattern. No catch-all line. The seven shared standards lines
+# matching pattern. No catch-all line. The five shared standards lines
 # (SYNC-1) stay the final lines of this file.
 
 # 1. ci.yml holds the required check and the Storybook deploy; publish.yml is the
@@ -50,13 +50,11 @@
 /README.md                              @branchLeft/branchleft-admin
 **/OFL.txt                              @branchLeft/branchleft-admin
 
-# Floor file, then the standards entries (SYNC-1): the last seven lines below
+# Floor file, then the standards entries (SYNC-1): the last five lines below
 # are the shared template and stay the final lines of this file.
 /tools/floors.tsv        @branchLeft/branchleft-admin
 /.standardsignore        @branchLeft/branchleft-admin
 /.standards.mode         @branchLeft/branchleft-admin
 /.docs-lint*             @branchLeft/branchleft-admin
 /.standards-db-tooling   @branchLeft/branchleft-admin
-/.github/CODEOWNERS      @branchLeft/branchleft-admin
-/.github/workflows/standards.yml  @branchLeft/branchleft-admin
-/.github/workflows/docs-lint.yml  @branchLeft/branchleft-admin
+/.github/                @branchLeft/branchleft-admin
