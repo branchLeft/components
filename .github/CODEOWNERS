@@ -8,8 +8,7 @@
 # (b) HUMAN-FACING DOCS: LICENSE, README and font licence text.
 # EVERYTHING ELSE is released and lands on agent review plus green CI: package
 # manifests, .npmrc, the workspace file, changesets,
-# Storybook config, vite configs, source, other tests, engineering docs, and
-# the Dependabot settings are owned by the shared line at the end.
+# Storybook config, vite configs, source, other tests and engineering docs.
 # Owner ruling. GitHub applies the LAST
 # matching pattern. No catch-all line. The five shared standards lines
 # (SYNC-1) stay the final lines of this file.
