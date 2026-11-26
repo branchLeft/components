@@ -13,7 +13,10 @@ scripts/release-plan.mjs	owned	c3
 .storybook/main.ts	free	storybook
 CLAUDE.md	owned	c1
 .github/CODEOWNERS	owned	c1
-.github/dependabot.yml	owned	c1
+.github/dependabot.yml	free	ci-config
+.github/workflows/codeql.yml	owned	c3
+.github/workflows/standards.yml	owned	c3
+.github/workflows/docs-lint.yml	owned	c3
 .standardsignore	owned	c1
 .standards.mode	owned	c1
 .docs-lint.mode	owned	c1

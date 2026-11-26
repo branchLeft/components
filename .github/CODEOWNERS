@@ -1,19 +1,25 @@
 # Code owners. The owner is a required reviewer ONLY for:
 # (a) GUARDRAILS: anything that, if changed, could weaken an agent guardrail or
-#     stop a required check protecting us (workflows and actions, the gate
-#     scripts the required ci check runs, vitest configs and test
-#     setup, lint and ignore files, floors, agent rules, ruleset definitions,
-#     CODEOWNERS and its proof test).
+#     stop a required check protecting us (the workflows that enforce a required
+#     check or publish, and the actions they call, the gate scripts and tests
+#     the required ci check runs, vitest configs and test setup, lint and
+#     ignore files, floors, agent rules, ruleset definitions, CODEOWNERS and
+#     its proof test).
 # (b) HUMAN-FACING DOCS: LICENSE, README and font licence text.
 # EVERYTHING ELSE is released and lands on agent review plus green CI: package
 # manifests, .npmrc, the workspace file, changesets,
 # Storybook config, vite configs, source, other tests and engineering docs.
-# Owner ruling, issue branchLeft/workspace#4323. GitHub applies the LAST
+# Owner ruling. GitHub applies the LAST
 # matching pattern. No catch-all line. The five shared standards lines
 # (SYNC-1) stay the final lines of this file.
 
-# 1. Workflows and actions decide pass or fail for every pull request and deploy.
-/.github/workflows/                     @branchLeft/branchleft-admin
+# 1. ci.yml holds the required check and the Storybook deploy; publish.yml is the
+# release. The local actions run inside them. standards.yml and docs-lint.yml
+# come from the shared lines at the end. codeql.yml grants a write permission, so
+# it stays owned.
+/.github/workflows/ci.yml               @branchLeft/branchleft-admin
+/.github/workflows/publish.yml          @branchLeft/branchleft-admin
+/.github/workflows/codeql.yml           @branchLeft/branchleft-admin
 /.github/actions/                       @branchLeft/branchleft-admin
 
 # 2. Gate scripts (release-plan.mjs runs as the publish gate), and the configs and setup files that decide whether tests count. The tests of the release plan, the CI workflow, the publish workflow and the attestation job are released.
@@ -43,12 +49,13 @@
 /README.md                              @branchLeft/branchleft-admin
 **/OFL.txt                              @branchLeft/branchleft-admin
 
-# Floor file, then the standards entries (SYNC-1): the last five lines below
-# are the shared template and stay the final lines of this file. The last line
-# also owns this file and the Dependabot configuration.
+# Floor file, then the standards entries (SYNC-1): the last seven lines below
+# are the shared template and stay the final lines of this file.
 /tools/floors.tsv        @branchLeft/branchleft-admin
 /.standardsignore        @branchLeft/branchleft-admin
 /.standards.mode         @branchLeft/branchleft-admin
 /.docs-lint*             @branchLeft/branchleft-admin
 /.standards-db-tooling   @branchLeft/branchleft-admin
-/.github/                @branchLeft/branchleft-admin
+/.github/CODEOWNERS      @branchLeft/branchleft-admin
+/.github/workflows/standards.yml  @branchLeft/branchleft-admin
+/.github/workflows/docs-lint.yml  @branchLeft/branchleft-admin
